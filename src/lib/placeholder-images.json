@@ -1,3 +1,142 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "doctor-1",
+      "description": "Portrait of Dr. Amina Nakigudde",
+      "imageUrl": "https://images.unsplash.com/photo-1685022036259-04cf91a89af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-2",
+      "description": "Portrait of Dr. Ben Muwonge",
+      "imageUrl": "https://images.unsplash.com/photo-1612276529731-4b21494e6d71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-3",
+      "description": "Portrait of Dr. Charity Atim",
+      "imageUrl": "https://images.unsplash.com/photo-1527613426441-4da17471b66d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-4",
+      "description": "Portrait of Dr. David Okello",
+      "imageUrl": "https://images.unsplash.com/photo-1657551856874-d492ef8ecba0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-5",
+      "description": "Portrait of Dr. Esther Nabatanzi",
+      "imageUrl": "https://images.unsplash.com/photo-1685022036259-04cf91a89af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-6",
+      "description": "Portrait of Dr. Frank Tumwebaze",
+      "imageUrl": "https://images.unsplash.com/photo-1722938203460-0e4f1108f1f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-7",
+      "description": "Portrait of Dr. Grace Lwanga",
+      "imageUrl": "https://images.unsplash.com/photo-1527613426441-4da17471b66d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-8",
+      "description": "Portrait of Dr. Henry Ssenyonga",
+      "imageUrl": "https://images.unsplash.com/photo-1615177393114-bd2917a4f74a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-9",
+      "description": "Portrait of Dr. Irene Kizza",
+      "imageUrl": "https://images.unsplash.com/photo-1683348858689-f4e10994804d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-10",
+      "description": "Portrait of Dr. James Otim",
+      "imageUrl": "https://images.unsplash.com/photo-1615177393114-bd2917a4f74a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-11",
+      "description": "Portrait of Dr. Ketty Wambede",
+      "imageUrl": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-12",
+      "description": "Portrait of Dr. Lydia Nanteza",
+      "imageUrl": "https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-13",
+      "description": "Portrait of Dr. Moses Byaruhanga",
+      "imageUrl": "https://images.unsplash.com/photo-1615177393114-bd2917a4f74a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-14",
+      "description": "Portrait of Dr. Norah Mirembe",
+      "imageUrl": "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-15",
+      "description": "Portrait of Dr. Peter Mugisha",
+      "imageUrl": "https://images.unsplash.com/photo-1722938203460-0e4f1108f1f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-16",
+      "description": "Portrait of Dr. Rachel Namubiru",
+      "imageUrl": "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-17",
+      "description": "Portrait of Dr. Sam Kiwanuka",
+      "imageUrl": "https://images.unsplash.com/photo-1722938203460-0e4f1108f1f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "doctor-18",
+      "description": "Portrait of Dr. Tendo Nagenda",
+      "imageUrl": "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-19",
+      "description": "Portrait of Dr. Victoria Achen",
+      "imageUrl": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NjM0NjQ4OTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "doctor-20",
+      "description": "Portrait of Dr. William Kato",
+      "imageUrl": "https://images.unsplash.com/photo-1707568732078-bcf805f6d834?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzYzNDk1MTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "user-avatar",
+      "description": "Avatar for Alex Mukisa",
+      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM0OTU3MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "hero-image",
+      "description": "Hero image for the home page",
+      "imageUrl": "https://images.unsplash.com/photo-1758691463203-cce9d415b2b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWRpY2FsJTIwaGVhbHRofGVufDB8fHx8MTc2MzU0NDIzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical health"
+    },
+    {
+      "id": "prescription-upload",
+      "description": "Placeholder for prescription upload",
+      "imageUrl": "https://images.unsplash.com/photo-1631980837318-a95df3216bb8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtZWRpY2FsJTIwcHJlc2NyaXB0aW9ufGVufDB8fHx8MTc2MzU0NDIzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical prescription"
+    }
+  ]
 }
