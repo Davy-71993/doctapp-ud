@@ -37,25 +37,27 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center bg-background/95 backdrop-blur-sm sticky top-0 z-50 border-b">
-        <Link href="/" className="flex items-center justify-center">
-          <Stethoscope className="h-6 w-6 text-primary" />
-          <span className="ml-2 text-lg font-semibold">DoctApp UG</span>
-        </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link
-            href="/login"
-            className="text-sm font-medium hover:underline underline-offset-4"
-          >
-            Login
-          </Link>
-          <Button asChild>
-            <Link href="/register">Register</Link>
-          </Button>
-        </nav>
+        <div className="container max-w-7xl flex items-center">
+            <Link href="/" className="flex items-center justify-center">
+                <Stethoscope className="h-6 w-6 text-primary" />
+                <span className="ml-2 text-lg font-semibold">DoctApp UG</span>
+            </Link>
+            <nav className="ml-auto flex gap-4 sm:gap-6">
+                <Link
+                    href="/login"
+                    className="text-sm font-medium hover:underline underline-offset-4"
+                >
+                    Login
+                </Link>
+                <Button asChild>
+                    <Link href="/register">Register</Link>
+                </Button>
+            </nav>
+        </div>
       </header>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-secondary/50">
-          <div className="container px-4 md:px-6">
+          <div className="container max-w-7xl px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
                 {heroImage && (
                     <div className="relative mx-auto aspect-video overflow-hidden rounded-xl sm:w-full lg:order-last">
@@ -91,7 +93,7 @@ export default function LandingPage() {
         </section>
 
         <section id="features" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container max-w-7xl px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">
@@ -124,18 +126,20 @@ export default function LandingPage() {
         </section>
 
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} DoctApp UG. All rights reserved.
-        </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link href="#" className="text-xs hover:underline underline-offset-4">
-            Terms of Service
-          </Link>
-          <Link href="#" className="text-xs hover:underline underline-offset-4">
-            Privacy
-          </Link>
-        </nav>
+      <footer className="border-t">
+        <div className="container max-w-7xl flex flex-col gap-2 sm:flex-row py-6 shrink-0 items-center px-4 md:px-6">
+            <p className="text-xs text-muted-foreground">
+            &copy; {new Date().getFullYear()} DoctApp UG. All rights reserved.
+            </p>
+            <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+            <Link href="#" className="text-xs hover:underline underline-offset-4">
+                Terms of Service
+            </Link>
+            <Link href="#" className="text-xs hover:underline underline-offset-4">
+                Privacy
+            </Link>
+            </nav>
+        </div>
       </footer>
     </div>
   );
