@@ -78,7 +78,7 @@ export default function LandingPage() {
                         DoctApp UG is the all-in-one health super-app for Uganda. Find doctors, manage appointments, track your health, and order medicine seamlessly.
                         </p>
                     </div>
-                    <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                    <div className="flex justify-center">
                         <Button size="lg" asChild>
                             <Link href="/register">
                                 Get Started
