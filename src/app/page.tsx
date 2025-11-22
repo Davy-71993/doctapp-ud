@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stethoscope, Calendar, Activity, Pill, ChevronRight } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ImagePlaceholder } from '@/components/image-placeholder';
 
 const features = [
   {
@@ -33,6 +34,15 @@ const features = [
   },
 ];
 
+const partners = [
+    { id: 'partner-1' },
+    { id: 'partner-2' },
+    { id: 'partner-3' },
+    { id: 'partner-4' },
+    { id: 'partner-5' },
+    { id: 'partner-6' },
+];
+
 export default function LandingPage() {
     const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image');
   return (
@@ -43,10 +53,10 @@ export default function LandingPage() {
                 <Stethoscope className="h-6 w-6 text-primary" />
                 <span className="ml-2 text-lg font-semibold">DoctApp UG</span>
             </Link>
-            <nav className="ml-auto flex gap-4 sm:gap-6">
+            <nav className="ml-auto flex items-center gap-4 sm:gap-6">
                 <Link
                     href="/login"
-                    className="text-sm font-medium hover:underline underline-offset-4"
+                    className="text-sm font-medium hover:underline underline-offset-4 block"
                 >
                     Login
                 </Link>
@@ -118,6 +128,28 @@ export default function LandingPage() {
                     <p>{feature.description}</p>
                   </CardContent>
                 </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="partners" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container max-w-7xl mx-auto px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                  Our Trusted Partners
+                </h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  We collaborate with a network of trusted healthcare providers to ensure you receive the best care.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 items-center">
+              {partners.map((partner) => (
+                <div key={partner.id} className="flex justify-center">
+                  <ImagePlaceholder id={partner.id} className="grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all" />
+                </div>
               ))}
             </div>
           </div>
