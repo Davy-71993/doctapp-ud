@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Stethoscope, Calendar, Activity, Pill, ChevronRight } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ImagePlaceholder } from '@/components/image-placeholder';
@@ -35,12 +35,42 @@ const features = [
 ];
 
 const partners = [
-    { id: 'partner-1' },
-    { id: 'partner-2' },
-    { id: 'partner-3' },
-    { id: 'partner-4' },
-    { id: 'partner-5' },
-    { id: 'partner-6' },
+    { 
+      id: 'partner-1',
+      name: 'Nakasero Hospital',
+      title: 'Hospital',
+      description: 'A leading private hospital in Kampala offering a wide range of specialized medical services.',
+    },
+    { 
+      id: 'partner-2',
+      name: 'The Surgery',
+      title: 'Clinic',
+      description: 'A premier GP clinic providing comprehensive primary healthcare for individuals and families.',
+    },
+    { 
+      id: 'partner-3',
+      name: 'Pan Dental Surgery',
+      title: 'Dental Clinic',
+      description: 'State-of-the-art dental services from routine check-ups to advanced cosmetic dentistry.',
+    },
+    { 
+      id: 'partner-4',
+      name: 'Ecopharm Pharmacy',
+      title: 'Pharmacy',
+      description: 'Your trusted source for quality medicines, health products, and professional advice.',
+    },
+    { 
+      id: 'partner-5',
+      name: 'Dr. Amina Nakigudde',
+      title: 'Specialist',
+      description: 'Renowned cardiologist specializing in the diagnosis and treatment of heart conditions.',
+    },
+    { 
+      id: 'partner-6',
+      name: 'IMC Clinic',
+      title: 'Clinic Network',
+      description: 'A network of clinics across Uganda providing accessible and affordable healthcare services.',
+    },
 ];
 
 export default function LandingPage() {
@@ -110,7 +140,7 @@ export default function LandingPage() {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   A Better Way to Manage Your Health
                 </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   We provide you with the tools to take control of your healthcare journey, from finding the right specialist to getting your medication delivered.
                 </p>
               </div>
@@ -140,16 +170,28 @@ export default function LandingPage() {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Our Trusted Partners
                 </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   We collaborate with a network of trusted healthcare providers to ensure you receive the best care.
                 </p>
               </div>
             </div>
-            <div className="mx-auto mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 items-center">
+            <div className="mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {partners.map((partner) => (
-                <div key={partner.id} className="flex justify-center">
-                  <ImagePlaceholder id={partner.id} className="grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all" />
-                </div>
+                <Card key={partner.id} className="group relative overflow-hidden transition-shadow hover:shadow-lg">
+                  <CardHeader className="flex-row items-center gap-4">
+                    <ImagePlaceholder id={partner.id} className="h-16 w-16 rounded-lg" imageClassName='object-contain'/>
+                    <div>
+                      <CardTitle className='text-lg'>{partner.name}</CardTitle>
+                      <p className="text-sm font-medium text-primary">{partner.title}</p>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">{partner.description}</p>
+                  </CardContent>
+                  <CardFooter className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button className="w-full">View Details</Button>
+                  </CardFooter>
+                </Card>
               ))}
             </div>
           </div>
