@@ -4,18 +4,16 @@ import {
   Calendar,
   Activity,
   Pill,
-  ChevronRight,
 } from 'lucide-react';
 import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
+  CardContent,
+  CardDescription
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar } from '@/components/ui/avatar';
 import { recentActivities, userProfile } from '@/lib/mock-data';
-import { ImagePlaceholder } from '@/components/image-placeholder';
 
 const actionCards = [
   {
@@ -54,62 +52,54 @@ const actionCards = [
 
 export default function HomePage() {
   return (
-    <div className="space-y-8">
-      <section className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-          Your Health, One Tap Away
-        </h1>
-        <p className="mt-2 text-lg text-muted-foreground">
-          Welcome back, {userProfile.name.split(' ')[0]}!
-        </p>
-      </section>
-
-      <section>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {actionCards.map((card) => (
-            <Link href={card.href} key={card.title}>
-              <Card className="h-full transition-transform hover:scale-105 hover:shadow-lg">
-                <CardHeader>
-                  <div
-                    className={`w-12 h-12 rounded-lg flex items-center justify-center ${card.color}`}
-                  >
-                    <card.icon className={`w-6 h-6 ${card.textColor}`} />
-                  </div>
-                  <CardTitle className="pt-2 text-base md:text-lg">{card.title}</CardTitle>
-                </CardHeader>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold tracking-tight mb-4">
-          Recent Activity
-        </h2>
-        <div className="space-y-4">
-          {recentActivities.map((activity) => (
-            <Card key={activity.id}>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div className="flex items-center gap-4">
-                   <Avatar className="h-10 w-10">
-                    <div className="w-full h-full flex items-center justify-center bg-secondary rounded-full">
-                      <activity.icon className="h-5 w-5 text-muted-foreground" />
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <div className="lg:col-span-5 grid sm:grid-cols-2 gap-4">
+            {actionCards.map((card) => (
+                <Link href={card.href} key={card.title}>
+                <Card className="h-full transition-transform hover:scale-105 hover:shadow-lg flex flex-col justify-between">
+                    <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <div
+                        className={`w-12 h-12 rounded-lg flex items-center justify-center ${card.color}`}
+                        >
+                        <card.icon className={`w-6 h-6 ${card.textColor}`} />
+                        </div>
                     </div>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-base">{activity.title}</CardTitle>
-                    <CardDescription>{activity.description}</CardDescription>
-                  </div>
-                </div>
-                <div className="text-right">
-                    <p className="text-sm text-muted-foreground">{activity.time}</p>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
+                    <CardTitle className="pt-4 text-lg md:text-xl">{card.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <CardDescription>{card.description}</CardDescription>
+                    </CardContent>
+                </Card>
+                </Link>
+            ))}
         </div>
-      </section>
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+            <CardDescription>
+              An overview of your latest health activities.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {recentActivities.map((activity) => (
+               <div key={activity.id} className="flex items-center gap-4">
+               <Avatar className="h-10 w-10">
+                 <div className="w-full h-full flex items-center justify-center bg-secondary rounded-full">
+                   <activity.icon className="h-5 w-5 text-muted-foreground" />
+                 </div>
+               </Avatar>
+               <div className="flex-1">
+                 <p className="text-sm font-medium leading-none">{activity.title}</p>
+                 <p className="text-sm text-muted-foreground">{activity.description}</p>
+               </div>
+               <div className="text-right">
+                   <p className="text-sm text-muted-foreground">{activity.time}</p>
+               </div>
+             </div>
+            ))}
+          </CardContent>
+        </Card>
     </div>
   );
 }
