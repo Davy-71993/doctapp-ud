@@ -15,6 +15,7 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Home,
@@ -41,12 +42,57 @@ const navItems = [
   { href: "/profile", label: "My Profile", icon: User },
 ];
 
+const AppSidebar = () => {
+    const pathname = usePathname();
+    const { state } = useSidebar();
+
+    const isTabActive = (href: string) => {
+        return pathname.startsWith(href);
+    };
+
+    return (
+        <Sidebar>
+            <SidebarHeader className="h-14 lg:h-[60px] border-b p-2">
+            <div className="flex w-full items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <Stethoscope className="h-7 w-7 text-primary" />
+                    <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">DoctApp UG</span>
+                </div>
+                <SidebarTrigger className="hidden md:flex group-data-[collapsible=icon]:hidden" />
+            </div>
+            </SidebarHeader>
+            <SidebarContent>
+            <SidebarMenu className="gap-2 p-2">
+                {navItems.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                    <Link href={item.href} passHref>
+                    <SidebarMenuButton
+                        isActive={isTabActive(item.href)}
+                        tooltip={{ children: item.label }}
+                    >
+                        <item.icon />
+                        <span>{item.label}</span>
+                    </SidebarMenuButton>
+                    </Link>
+                </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+            </SidebarContent>
+            <SidebarFooter>
+            <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <Button variant="ghost" className="w-full justify-start">
+                    <LogOut />
+                    <span>Sign Out</span>
+                </Button>
+            </div>
+            </SidebarFooter>
+        </Sidebar>
+    )
+}
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  const isTabActive = (href: string) => {
-    return pathname.startsWith(href);
-  };
 
   const getPageTitle = () => {
     const activeItem = navItems.find(item => pathname.startsWith(item.href));
@@ -55,40 +101,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader className="h-14 lg:h-[60px] border-b">
-          <div className="flex items-center gap-2">
-            <Stethoscope className="h-7 w-7 text-primary" />
-            <span className="text-xl font-semibold">DoctApp UG</span>
-          </div>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu className="gap-2 p-2">
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <Link href={item.href} passHref>
-                  <SidebarMenuButton
-                    isActive={isTabActive(item.href)}
-                    tooltip={{ children: item.label }}
-                  >
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarContent>
-        <SidebarFooter>
-           <div className="flex items-center gap-2">
-             <ThemeToggle />
-             <Button variant="ghost" className="w-full justify-start">
-                <LogOut />
-                <span>Sign Out</span>
-             </Button>
-           </div>
-        </SidebarFooter>
-      </Sidebar>
+      <AppSidebar />
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
           <SidebarTrigger className="md:hidden" />
