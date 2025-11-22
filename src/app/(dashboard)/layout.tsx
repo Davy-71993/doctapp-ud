@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from "next/link";
@@ -55,14 +56,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <Sidebar>
-        <SidebarHeader>
+        <SidebarHeader className="h-14 lg:h-[60px] border-b">
           <div className="flex items-center gap-2">
             <Stethoscope className="h-7 w-7 text-primary" />
             <span className="text-xl font-semibold">DoctApp UG</span>
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu>
+          <SidebarMenu className="gap-2 p-2">
             {navItems.map((item) => (
               <SidebarMenuItem key={item.href}>
                 <Link href={item.href} passHref>
