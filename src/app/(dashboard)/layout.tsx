@@ -52,14 +52,14 @@ const AppSidebar = () => {
 
     return (
         <Sidebar>
-            <SidebarHeader className="h-14 lg:h-[60px] border-b p-2">
-            <div className="flex w-full items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <Stethoscope className="h-7 w-7 text-primary" />
-                    <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">DoctApp UG</span>
+            <SidebarHeader className="h-14 lg:h-[60px] border-b p-2 flex items-center">
+                <div className="flex w-full items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Stethoscope className="h-7 w-7 text-primary" />
+                        <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">DoctApp UG</span>
+                    </div>
+                    <SidebarTrigger className="hidden md:flex group-data-[collapsible=icon]:hidden" />
                 </div>
-                <SidebarTrigger className="hidden md:flex group-data-[collapsible=icon]:hidden" />
-            </div>
             </SidebarHeader>
             <SidebarContent>
             <SidebarMenu className="gap-2 p-2">
