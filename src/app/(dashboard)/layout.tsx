@@ -27,12 +27,11 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { userProfile } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/search", label: "Find a Doctor", icon: Search },
   { href: "/appointments", label: "Appointments", icon: Calendar },
   { href: "/track", label: "Health Trackers", icon: Activity },
@@ -44,14 +43,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const isTabActive = (href: string) => {
-    if (href === "/") return pathname === "/";
+    // Exact match for dashboard, prefix match for others.
+    if (href === "/dashboard") return pathname === href;
+    // For other routes, we want to match if the pathname starts with the href,
+    // but also handle the case where the href is a parent of the current path.
+    // e.g., href="/search" should be active for "/search/doctor-1"
     return pathname.startsWith(href);
   };
 
   const getPageTitle = () => {
-    const activeItem = navItems.find(item => isTabActive(item.href));
-    if (pathname === '/') return 'Dashboard';
-    return activeItem ? activeItem.label : pathname.split('/').pop()?.replace(/-/g, ' ');
+    // Find the most specific match first
+    const sortedNavItems = [...navItems].sort((a, b) => b.href.length - a.href.length);
+    const activeItem = sortedNavItems.find(item => isTabActive(item.href));
+    
+    if (pathname === '/dashboard') return 'Dashboard';
+    
+    if (activeItem) return activeItem.label;
+
+    // Fallback for dynamic pages or pages not in nav
+    const pathParts = pathname.split('/').filter(Boolean);
+    return pathParts.length > 0 ? pathParts[pathParts.length - 1].replace(/-/g, ' ') : 'Page';
   }
 
   return (
