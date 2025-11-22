@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -43,26 +44,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const isTabActive = (href: string) => {
-    // Exact match for dashboard, prefix match for others.
-    if (href === "/dashboard") return pathname === href;
-    // For other routes, we want to match if the pathname starts with the href,
-    // but also handle the case where the href is a parent of the current path.
-    // e.g., href="/search" should be active for "/search/doctor-1"
     return pathname.startsWith(href);
   };
 
   const getPageTitle = () => {
-    // Find the most specific match first
-    const sortedNavItems = [...navItems].sort((a, b) => b.href.length - a.href.length);
-    const activeItem = sortedNavItems.find(item => isTabActive(item.href));
-    
-    if (pathname === '/dashboard') return 'Dashboard';
-    
-    if (activeItem) return activeItem.label;
-
-    // Fallback for dynamic pages or pages not in nav
-    const pathParts = pathname.split('/').filter(Boolean);
-    return pathParts.length > 0 ? pathParts[pathParts.length - 1].replace(/-/g, ' ') : 'Page';
+    const activeItem = navItems.find(item => pathname.startsWith(item.href));
+    return activeItem ? activeItem.label : "Dashboard";
   }
 
   return (
