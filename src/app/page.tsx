@@ -221,6 +221,12 @@ export default function LandingPage() {
                 </Card>
               ))}
             </div>
+            <div className="flex justify-center md:justify-end mt-8">
+              <Button variant="outline">
+                Become a Partner
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </section>
 
