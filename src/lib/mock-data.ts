@@ -1,4 +1,5 @@
 import type {
+  User,
   Doctor,
   Appointment,
   Activity,
@@ -6,6 +7,10 @@ import type {
   HealthData,
 } from '@/lib/types';
 import { Pill, Stethoscope, FileText, Calendar as CalendarIcon } from 'lucide-react';
+
+export const users: User[] = [
+    { id: '1', email: 'm@example.com', password: 'password123', firstName: 'Alex', lastName: 'Mukisa' }
+]
 
 export const doctors: Doctor[] = [
   { id: '1', name: 'Dr. Amina Nakigudde', specialty: 'Cardiologist', hospital: 'Nakasero Hospital', rating: 4.9, reviews: 215, image: 'doctor-1', location: 'Kampala' },

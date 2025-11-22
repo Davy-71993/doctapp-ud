@@ -1,5 +1,13 @@
 import type { LucideIcon } from 'lucide-react';
 
+export type User = {
+  id: string;
+  email: string;
+  password?: string;
+  firstName: string;
+  lastName: string;
+}
+
 export type Doctor = {
   id: string;
   name: string;
