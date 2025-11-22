@@ -57,40 +57,37 @@ export default function LandingPage() {
         </div>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-secondary/50">
-          <div className="container max-w-7xl mx-auto px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-                {heroImage && (
-                    <div className="relative mx-auto aspect-video overflow-hidden rounded-xl sm:w-full lg:order-last">
-                        <Image
-                            src={heroImage.imageUrl}
-                            alt={heroImage.description}
-                            fill
-                            className="object-cover"
-                            data-ai-hint={heroImage.imageHint}
-                        />
+        <section className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center text-white">
+            {heroImage && (
+                <Image
+                    src={heroImage.imageUrl}
+                    alt={heroImage.description}
+                    fill
+                    className="object-cover -z-10"
+                    data-ai-hint={heroImage.imageHint}
+                />
+            )}
+            <div className="absolute inset-0 bg-black/50 -z-10"></div>
+            <div className="container max-w-7xl mx-auto px-4 md:px-6 text-center">
+                <div className="flex flex-col justify-center items-center space-y-4">
+                    <div className="space-y-2">
+                        <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                        Your Health, One Tap Away
+                        </h1>
+                        <p className="max-w-[600px] mx-auto text-gray-200 md:text-xl">
+                        DoctApp UG is the all-in-one health super-app for Uganda. Find doctors, manage appointments, track your health, and order medicine seamlessly.
+                        </p>
                     </div>
-                )}
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Your Health, One Tap Away
-                  </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    DoctApp UG is the all-in-one health super-app for Uganda. Find doctors, manage appointments, track your health, and order medicine seamlessly.
-                  </p>
+                    <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                        <Button size="lg" asChild>
+                            <Link href="/register">
+                                Get Started
+                                <ChevronRight className="ml-2 h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button size="lg" asChild>
-                    <Link href="/register">
-                        Get Started
-                        <ChevronRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
             </div>
-          </div>
         </section>
 
         <section id="features" className="w-full py-12 md:py-24 lg:py-32">
@@ -145,5 +142,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-    
