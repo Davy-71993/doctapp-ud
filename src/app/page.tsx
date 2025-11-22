@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Stethoscope, Calendar, Activity, Pill, ChevronRight } from 'lucide-react';
+import { Stethoscope, Calendar, Activity, Pill, ChevronRight, Ambulance, PhoneCall, Hospital } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 
@@ -70,6 +70,33 @@ const partners = [
       name: 'IMC Clinic',
       title: 'Clinic Network',
       description: 'A network of clinics across Uganda providing accessible and affordable healthcare services.',
+    },
+];
+
+const emergencyServices = [
+    {
+      icon: Ambulance,
+      title: 'Ambulance Service',
+      description: 'Request an ambulance for immediate medical transportation to the nearest hospital.',
+      action: 'Call Now',
+      color: 'text-red-500',
+      bgColor: 'bg-red-100 dark:bg-red-900/30'
+    },
+    {
+      icon: PhoneCall,
+      title: 'Emergency Hotline',
+      description: 'Get 24/7 access to medical advice and support from qualified professionals.',
+      action: 'Call Now',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-100 dark:bg-blue-900/30'
+    },
+    {
+      icon: Hospital,
+      title: '24/7 Pharmacy',
+      description: 'Find and contact pharmacies that are open around the clock for your urgent needs.',
+      action: 'Find a Pharmacy',
+      color: 'text-emerald-500',
+      bgColor: 'bg-emerald-100 dark:bg-emerald-900/30'
     },
 ];
 
@@ -190,6 +217,42 @@ export default function LandingPage() {
                   </CardContent>
                   <CardFooter className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Button className="w-full">View Details</Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="emergency" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container max-w-7xl mx-auto px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <div className="inline-block rounded-lg bg-red-100 dark:bg-red-900/80 px-3 py-1 text-sm font-semibold text-red-700 dark:text-red-200">
+                  Emergency Services
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                  Get Help Fast
+                </h2>
+                <p className="max-w-[900px] mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Immediate assistance for medical emergencies. Your safety is our priority.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:max-w-none lg:grid-cols-3 mt-12">
+              {emergencyServices.map((service) => (
+                <Card key={service.title} className="h-full flex flex-col">
+                  <CardHeader className="items-center text-center">
+                    <div className={`mb-4 rounded-full p-4 ${service.bgColor}`}>
+                      <service.icon className={`h-8 w-8 ${service.color}`} />
+                    </div>
+                    <CardTitle>{service.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center text-sm text-muted-foreground flex-grow">
+                    <p>{service.description}</p>
+                  </CardContent>
+                  <CardFooter className="justify-center">
+                    <Button variant={service.action === 'Call Now' ? 'destructive' : 'default'}>{service.action}</Button>
                   </CardFooter>
                 </Card>
               ))}
