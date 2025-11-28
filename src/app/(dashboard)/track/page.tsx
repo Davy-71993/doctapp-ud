@@ -1,12 +1,13 @@
-import { AiAdvice } from '@/components/track/ai-advice';
-import { healthData, userProfile } from '@/lib/mock-data';
+import { healthData } from '@/lib/mock-data';
 import { PeriodTracker } from '@/components/track/period-tracker';
 import { ChartTracker } from '@/components/track/chart-tracker';
 import { ListTracker } from '@/components/track/list-tracker';
 import { PregnancyTracker } from '@/components/track/pregnancy-tracker';
 import { BloodPressureTracker } from '@/components/track/blood-pressure-tracker';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { HeartPulse, Droplets, Baby, ShieldAlert, CircleAlert } from 'lucide-react';
+import { Droplets, CircleAlert } from 'lucide-react';
+import { userProfile } from '@/lib/mock-data';
+import { AiAdvice } from '@/components/track/ai-advice';
 
 export default function TrackPage() {
   return (
@@ -18,8 +19,6 @@ export default function TrackPage() {
         </p>
       </div>
 
-      <AiAdvice healthData={healthData} />
-      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <PeriodTracker />
         
@@ -84,6 +83,7 @@ export default function TrackPage() {
         </Card>
 
       </div>
+      <AiAdvice healthData={healthData} />
     </div>
   );
 }

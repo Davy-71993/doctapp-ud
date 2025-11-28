@@ -5,14 +5,17 @@ import { getPersonalizedHealthAdvice } from '@/ai/flows/personalized-health-advi
 import type { HealthData } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Lightbulb, ShieldAlert, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function AiAdvice({ healthData }: { healthData: HealthData }) {
   const [advice, setAdvice] = useState<string | null>(null);
   const [recommendConsult, setRecommendConsult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleGetAdvice = async () => {
@@ -30,6 +33,7 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
       const result = await getPersonalizedHealthAdvice(input);
       setAdvice(result.advice);
       setRecommendConsult(result.recommendProfessionalConsultation);
+      setIsDialogOpen(true);
     } catch (error) {
       console.error(error);
       toast({
@@ -43,42 +47,57 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
   };
 
   return (
-    <div className="space-y-4">
-      <Button onClick={handleGetAdvice} disabled={isLoading} className="w-full">
-        {isLoading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Getting Advice...
-          </>
-        ) : (
-          <>
-            <Lightbulb className="mr-2 h-4 w-4" />
-            Get AI Health Advice
-          </>
-        )}
-      </Button>
+    <>
+      <div className="fixed bottom-6 right-6 z-50">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={handleGetAdvice} disabled={isLoading} size="icon" className="rounded-full w-14 h-14 shadow-lg">
+                {isLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  <Lightbulb className="h-6 w-6" />
+                )}
+                <span className="sr-only">Get AI Health Advice</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Get AI Health Advice</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
-      {advice && (
-        <Alert variant={recommendConsult ? "destructive" : "default"}>
-          {recommendConsult ? (
-            <ShieldAlert className="h-4 w-4" />
-          ) : (
-            <Lightbulb className="h-4 w-4" />
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>
+                    <div className="flex items-center gap-2">
+                        {recommendConsult ? <ShieldAlert className="h-6 w-6 text-destructive" /> : <Lightbulb className="h-6 w-6 text-primary" />}
+                         <span>{recommendConsult ? "Consult a Professional" : "Personalized Advice"}</span>
+                    </div>
+                </DialogTitle>
+            </DialogHeader>
+          {advice && (
+            <Alert variant={recommendConsult ? "destructive" : "default"} className="mt-4 border-0">
+              <AlertDescription>
+                {advice}
+                {recommendConsult && (
+                  <p className="mt-2 font-semibold">
+                    This AI recommendation suggests you see a healthcare professional.
+                  </p>
+                )}
+                <p className="mt-4 text-xs text-muted-foreground">
+                  Disclaimer: This AI advice is not a substitute for professional medical advice.
+                </p>
+              </AlertDescription>
+            </Alert>
           )}
-          <AlertTitle>{recommendConsult ? "Consult a Professional" : "Personalized Advice"}</AlertTitle>
-          <AlertDescription>
-            {advice}
-            {recommendConsult && (
-              <p className="mt-2 font-semibold">
-                This AI recommendation suggests you see a healthcare professional.
-              </p>
-            )}
-             <p className="mt-2 text-xs text-muted-foreground">
-              Disclaimer: This AI advice is not a substitute for professional medical advice.
-            </p>
-          </AlertDescription>
-        </Alert>
-      )}
-    </div>
+           <DialogFooter>
+            <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
