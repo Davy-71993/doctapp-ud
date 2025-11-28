@@ -37,9 +37,9 @@ export default function ServicesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Our Services</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Find a Service</h1>
         <p className="text-muted-foreground">
-          Explore the range of healthcare services we offer.
+          Find the healthcare service you need.
         </p>
       </div>
 
