@@ -36,15 +36,17 @@ export function ImagePlaceholder({
     height = 500;
   }
 
+  const imageProps = fill 
+    ? { fill: true }
+    : { width: width, height: height };
+
   return (
     <div className={cn("relative overflow-hidden", className)}>
       <Image
         src={placeholder.imageUrl}
         alt={placeholder.description}
-        height={1000}
-        width={1000}
         className={cn("object-cover", imageClassName)}
-        {...(fill ? { fill: true } : { width: width, height: height })}
+        {...imageProps}
       />
     </div>
   );
