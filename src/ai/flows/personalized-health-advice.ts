@@ -12,6 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const PersonalizedHealthAdviceInputSchema = z.object({
+  userQuery: z.string().optional().describe('The user\'s specific question about their health.'),
   periodData: z.array(
     z.object({
       date: z.string().describe('Date of the period entry (YYYY-MM-DD).'),
@@ -61,16 +62,40 @@ const personalizedHealthAdvicePrompt = ai.definePrompt({
   output: {schema: PersonalizedHealthAdviceOutputSchema},
   prompt: `You are an AI health assistant providing personalized health advice to users based on their tracked health data.
 
-  Analyze the following data and provide tailored advice. Also, determine if the user needs to see a healthcare professional. If you think the user should seek a professional, set the "recommendProfessionalConsultation" field to true. If the data looks normal, you can also set "recommendProfessionalConsultation" field to false.
+  The user has the following question: "{{userQuery}}"
 
-  Period Data: {{#if periodData}}{{#each periodData}}Date: {{{date}}} {{/each}}{{else}}No period data provided.{{/if}}
-  Temperature Data: {{#if temperatureData}}{{#each temperatureData}}Date: {{{date}}}, Temperature: {{{temperature}}} Â°C {{/each}}{{else}}No temperature data provided.{{/if}}
-  Blood Sugar Data: {{#if bloodSugarData}}{{#each bloodSugarData}}Date: {{{date}}}, Blood Sugar: {{{bloodSugar}}} mg/dL {{/each}}{{else}}No blood sugar data provided.{{/if}}
-  Blood Pressure Data: {{#if bloodPressureData}}{{#each bloodPressureData}}Date: {{{date}}}, Systolic: {{{systolic}}}, Diastolic: {{{diastolic}}} mmHg {{/each}}{{else}}No blood pressure data provided.{{/if}}
-  Allergies: {{#if allergies}}{{#each allergies}}{{{this}}}{{/each}}{{else}}No allergies provided.{{/if}}
-  Pregnancy Status: {{#if pregnancyStatus}}{{{pregnancyStatus}}}{{else}}No pregnancy status provided.{{/if}}
+  Analyze the following data and provide tailored advice to answer their question. Also, determine if the user needs to see a healthcare professional. If you think the user should seek a professional, set the "recommendProfessionalConsultation" field to true. If the data looks normal, you can also set "recommendProfessionalConsultation" field to false.
 
-  Based on the data, provide specific advice and recommendations. The advice should be short (2-3 sentences).`,
+  {{#if periodData}}
+  Period Data:
+  {{#each periodData}}Date: {{{date}}} {{/each}}
+  {{/if}}
+
+  {{#if temperatureData}}
+  Temperature Data:
+  {{#each temperatureData}}Date: {{{date}}}, Temperature: {{{temperature}}} Â°C {{/each}}
+  {{/if}}
+
+  {{#if bloodSugarData}}
+  Blood Sugar Data:
+  {{#each bloodSugarData}}Date: {{{date}}}, Blood Sugar: {{{bloodSugar}}} mg/dL {{/each}}
+  {{/if}}
+
+  {{#if bloodPressureData}}
+  Blood Pressure Data:
+  {{#each bloodPressureData}}Date: {{{date}}}, Systolic: {{{systolic}}}, Diastolic: {{{diastolic}}} mmHg {{/each}}
+  {{/if}}
+
+  {{#if allergies}}
+  Allergies:
+  {{#each allergies}}{{{this}}}{{/each}}
+  {{/if}}
+
+  {{#if pregnancyStatus}}
+  Pregnancy Status: {{{pregnancyStatus}}}
+  {{/if}}
+
+  Based on the data, provide specific advice and recommendations to answer the user's question. The advice should be short (2-3 sentences).`,
 });
 
 const personalizedHealthAdviceFlow = ai.defineFlow(

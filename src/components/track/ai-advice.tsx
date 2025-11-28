@@ -38,6 +38,7 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
 
     try {
       const input = {
+        userQuery: userQuery,
         periodData: healthData.period.map(p => ({ date: format(p.date, 'yyyy-MM-dd') })),
         temperatureData: healthData.temperature.map(t => ({ date: t.date, temperature: t.temperature })),
         bloodSugarData: healthData.bloodSugar.map(bs => ({ date: bs.date, bloodSugar: bs.level })),
