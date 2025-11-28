@@ -32,6 +32,8 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 import { userProfile } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -44,7 +46,7 @@ const navItems = [
 
 const AppSidebar = () => {
     const pathname = usePathname();
-    const { state } = useSidebar();
+    const { state, setOpen } = useSidebar();
 
     const isTabActive = (href: string) => {
         return pathname.startsWith(href);
@@ -54,7 +56,10 @@ const AppSidebar = () => {
         <Sidebar>
             <SidebarHeader className="h-14 lg:h-[60px] border-b p-2">
                 <div className="flex h-full w-full items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div 
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => { if(state === 'collapsed') setOpen(true)} }
+                    >
                         <Stethoscope className="h-7 w-7 text-primary" />
                         <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">DoctApp UG</span>
                     </div>
@@ -80,11 +85,21 @@ const AppSidebar = () => {
             </SidebarContent>
             <SidebarFooter>
             <div className="flex items-center gap-2 group-data-[collapsible=icon]:flex-col">
-                <ThemeToggle />
-                <Button variant="ghost" className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:p-2">
-                    <LogOut />
-                    <span className="group-data-[collapsible=icon]:hidden">Sign Out</span>
-                </Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <ThemeToggle />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" align="center">Toggle Theme</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:p-2">
+                            <LogOut />
+                            <span className="group-data-[collapsible=icon]:hidden">Sign Out</span>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" align="center">Sign Out</TooltipContent>
+                </Tooltip>
             </div>
             </SidebarFooter>
         </Sidebar>
