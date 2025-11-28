@@ -34,7 +34,11 @@ export default function LoginPage() {
         title: "Login Successful",
         description: `Welcome back, ${user.firstName}!`,
       });
-      router.push("/dashboard");
+      if (user.role === 'specialist') {
+        router.push("/specialist/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
     } else {
       toast({
         title: "Invalid Credentials",

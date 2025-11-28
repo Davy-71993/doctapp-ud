@@ -6,7 +6,8 @@ export type User = {
   password?: string;
   firstName: string;
   lastName: string;
-}
+  role: 'patient' | 'specialist';
+};
 
 export type Doctor = {
   id: string;
@@ -41,6 +42,14 @@ export type UserProfile = {
   district: string;
   bloodGroup: string;
   avatar: string;
+};
+
+export type Patient = {
+    id: string;
+    name: string;
+    avatar: string;
+    lastCheckup: string;
+    status: 'Stable' | 'Critical' | 'Needs Review';
 };
 
 export type PeriodData = { date: Date };

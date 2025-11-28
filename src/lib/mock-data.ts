@@ -5,12 +5,14 @@ import type {
   Activity,
   UserProfile,
   HealthData,
+  Patient,
 } from '@/lib/types';
 import { Pill, Stethoscope, FileText, Calendar as CalendarIcon } from 'lucide-react';
 
 export const users: User[] = [
-    { id: '1', email: 'm@example.com', password: 'password123', firstName: 'Alex', lastName: 'Mukisa' }
-]
+    { id: '1', email: 'm@example.com', password: 'password123', firstName: 'Alex', lastName: 'Mukisa', role: 'patient' },
+    { id: '2', email: 'dr.amina@example.com', password: 'password123', firstName: 'Amina', lastName: 'Nakigudde', role: 'specialist' }
+];
 
 export const doctors: Doctor[] = [
   { id: '1', name: 'Dr. Amina Nakigudde', specialty: 'Cardiologist', hospital: 'Nakasero Hospital', rating: 4.9, reviews: 215, image: 'doctor-1', location: 'Kampala' },
@@ -109,3 +111,12 @@ export const healthData: HealthData = {
       status: 'Not Pregnant'
   }
 };
+
+
+export const patients: Patient[] = [
+    { id: '1', name: 'Brenda Nansubuga', avatar: 'patient-1', lastCheckup: '2 weeks ago', status: 'Stable' },
+    { id: '2', name: 'Charles Oboth', avatar: 'patient-2', lastCheckup: '1 month ago', status: 'Needs Review' },
+    { id: '3', name: 'Doreen Abenakyo', avatar: 'patient-3', lastCheckup: '3 days ago', status: 'Stable' },
+    { id: '4', name: 'Edward Musisi', avatar: 'patient-4', lastCheckup: '1 week ago', status: 'Critical' },
+    { id: '5', name: 'Fiona Katushabe', avatar: 'patient-5', lastCheckup: '5 days ago', status: 'Stable' },
+];
