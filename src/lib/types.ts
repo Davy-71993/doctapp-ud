@@ -52,3 +52,24 @@ export type HealthData = {
   temperature: TemperatureData[];
   bloodSugar: BloodSugarData[];
 };
+
+export type Specialist =
+  | 'Medical Officer'
+  | 'Pharmacist'
+  | 'Midwife'
+  | 'Orthopedist'
+  | 'Lab Technician'
+  | 'Gynecologist'
+  | 'Dentist'
+  | 'ENT Specialist'
+  | 'Cardiologist'
+  | 'Pediatrician'
+  | 'Dermatologist'
+  | 'Neurologist'
+  | 'Oncologist'
+  | 'Psychiatrist'
+  | 'General Practitioner'
+  | 'Endocrinologist'
+  | 'Urologist'
+  | 'Ophthalmologist'
+  | 'Radiologist';

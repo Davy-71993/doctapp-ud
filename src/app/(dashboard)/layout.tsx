@@ -37,7 +37,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/comp
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/search", label: "Find a Doctor", icon: Search },
+  { href: "/search", label: "Find a Specialist", icon: Search },
   { href: "/appointments", label: "Appointments", icon: Calendar },
   { href: "/track", label: "Health Trackers", icon: Activity },
   { href: "/order-medicine", label: "Order Medicine", icon: Pill },
@@ -55,9 +55,11 @@ const AppSidebar = () => {
     return (
         <Sidebar>
             <SidebarHeader className="h-14 lg:h-[60px] border-b p-2">
-                <div className="flex h-full w-full items-center justify-between">
+                <div 
+                    className="flex h-full w-full items-center justify-between"
+                >
                     <div 
-                        className="flex items-center gap-2 cursor-pointer"
+                        className="flex items-center gap-2 h-full cursor-pointer"
                         onClick={() => { if(state === 'collapsed') setOpen(true)} }
                     >
                         <Stethoscope className="h-7 w-7 text-primary" />

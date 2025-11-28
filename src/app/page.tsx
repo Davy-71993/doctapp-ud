@@ -10,7 +10,7 @@ import { ImagePlaceholder } from '@/components/image-placeholder';
 const features = [
   {
     icon: Stethoscope,
-    title: 'Find a Doctor',
+    title: 'Find a Specialist',
     description: 'Easily search for doctors by specialty and location. Read reviews and book appointments with top-rated professionals in your area.',
     color: 'text-emerald-500',
   },

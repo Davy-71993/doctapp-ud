@@ -33,6 +33,11 @@ export const doctors: Doctor[] = [
   { id: '18', name: 'Dr. Tendo Nagenda', specialty: 'Dermatologist', hospital: 'SAS Clinic', rating: 4.8, reviews: 130, image: 'doctor-18', location: 'Kampala' },
   { id: '19', name: 'Dr. Victoria Achen', specialty: 'Gynecologist', hospital: 'St. Mary\'s Hospital Lacor', rating: 4.9, reviews: 280, image: 'doctor-19', location: 'Gulu' },
   { id: '20', name: 'Dr. William Kato', specialty: 'Cardiologist', hospital: 'Uganda Heart Institute', rating: 4.9, reviews: 220, image: 'doctor-20', location: 'Kampala' },
+  { id: '21', name: 'Mr. John Doe', specialty: 'Pharmacist', hospital: 'Ecopharm Pharmacy', rating: 4.8, reviews: 150, image: 'doctor-2', location: 'Kampala' },
+  { id: '22', name: 'Ms. Jane Smith', specialty: 'Midwife', hospital: 'Nakasero Hospital', rating: 4.9, reviews: 200, image: 'doctor-3', location: 'Kampala' },
+  { id: '23', name: 'Mr. Alex Ray', specialty: 'Lab Technician', hospital: 'Lancet Laboratories', rating: 4.7, reviews: 120, image: 'doctor-4', location: 'Kampala' },
+  { id: '24', name: 'Dr. Medical Officer', specialty: 'Medical Officer', hospital: 'Kampala Capital City Authority', rating: 4.5, reviews: 90, image: 'doctor-6', location: 'Kampala' },
+
 ];
 
 export const appointments: Appointment[] = [

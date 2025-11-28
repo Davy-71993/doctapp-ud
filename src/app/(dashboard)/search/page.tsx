@@ -15,7 +15,27 @@ import type { Doctor } from '@/lib/types';
 import { Search as SearchIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const specialties = [...new Set(doctors.map(d => d.specialty))];
+const specialties = [
+    "Medical Officer",
+    "Pharmacist",
+    "Midwife",
+    "Orthopedist",
+    "Lab Technician",
+    "Gynecologist",
+    "Dentist",
+    "ENT Specialist",
+    "Cardiologist",
+    "Pediatrician",
+    "Dermatologist",
+    "Neurologist",
+    "Oncologist",
+    "Psychiatrist",
+    "General Practitioner",
+    "Endocrinologist",
+    "Urologist",
+    "Ophthalmologist",
+    "Radiologist",
+];
 const locations = ['Kampala', 'Wakiso', 'Gulu', 'Jinja', 'Mbale', 'Mbarara'];
 
 export default function SearchPage() {
@@ -59,7 +79,7 @@ export default function SearchPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Find a Doctor</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Find a Specialist</h1>
         <p className="text-muted-foreground">
           Search for specialists in your area.
         </p>
@@ -82,7 +102,7 @@ export default function SearchPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Specialties</SelectItem>
-              {specialties.map(s => (
+              {[...new Set(specialties)].sort().map(s => (
                 <SelectItem key={s} value={s}>{s}</SelectItem>
               ))}
             </SelectContent>
@@ -105,7 +125,7 @@ export default function SearchPage() {
         {filteredDoctors.length > 0 ? (
           filteredDoctors.map(doctor => <DoctorCard key={doctor.id} doctor={doctor} />)
         ) : (
-          <p>No doctors found matching your criteria.</p>
+          <p>No specialists found matching your criteria.</p>
         )}
       </div>
     </div>

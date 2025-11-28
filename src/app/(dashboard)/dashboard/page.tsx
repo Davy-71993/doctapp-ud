@@ -17,7 +17,7 @@ import { recentActivities } from '@/lib/mock-data';
 
 const actionCards = [
   {
-    title: 'Find a Doctor',
+    title: 'Find a Specialist',
     description: 'Search by specialty or location',
     icon: Stethoscope,
     href: '/search',
