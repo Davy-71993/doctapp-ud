@@ -4,6 +4,7 @@ import {
   Calendar,
   Activity,
   Pill,
+  LayoutGrid,
 } from 'lucide-react';
 import {
   Card,
@@ -48,12 +49,20 @@ const actionCards = [
     color: 'bg-rose-100 dark:bg-rose-900',
     textColor: 'text-rose-700 dark:text-rose-300',
   },
+  {
+    title: 'Browse Services',
+    description: 'Ambulance, home care, and more',
+    icon: LayoutGrid,
+    href: '/services',
+    color: 'bg-indigo-100 dark:bg-indigo-900',
+    textColor: 'text-indigo-700 dark:text-indigo-300',
+  },
 ];
 
 export default function DashboardPage() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <div className="lg:col-span-5 grid sm:grid-cols-2 gap-4">
+        <div className="lg:col-span-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {actionCards.map((card) => (
                 <Link href={card.href} key={card.title}>
                 <Card className="h-full transition-transform hover:scale-105 hover:shadow-lg flex flex-col justify-between">
