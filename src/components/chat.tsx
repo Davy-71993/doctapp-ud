@@ -55,19 +55,37 @@ function ChatMessage({ message }: ChatMessageProps) {
 }
 
 type ChatInputProps = {
-  onSendMessage: () => void;
+  onSendMessage: (message: string) => void;
   isLoading: boolean;
 };
 
 function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
+  const [input, setInput] = useState('');
+
+  const handleSend = () => {
+    if (input.trim()) {
+      onSendMessage(input.trim());
+      setInput('');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  };
+
   return (
     <div className="flex items-center gap-2 border-t p-4">
       <Input
         placeholder="Ask for health advice..."
         className="flex-1"
-        disabled
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        disabled={isLoading}
       />
-      <Button onClick={onSendMessage} disabled={isLoading}>
+      <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
         {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         <span className="sr-only">Send Message</span>
       </Button>
@@ -77,7 +95,7 @@ function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
 
 type ChatProps = {
   messages: ChatMessage[];
-  onSendMessage: () => void;
+  onSendMessage: (message: string) => void;
   isLoading: boolean;
 };
 
@@ -101,7 +119,7 @@ export function Chat({ messages, onSendMessage, isLoading }: ChatProps) {
             {messages.length === 0 && !isLoading && (
                 <div className="text-center text-muted-foreground p-8">
                     <Lightbulb className="mx-auto h-10 w-10 mb-4" />
-                    <p>Click the button below to get personalized health advice based on your tracked data.</p>
+                    <p>Ask a question to get personalized health advice based on your tracked data.</p>
                 </div>
             )}
           {messages.map((message) => (
