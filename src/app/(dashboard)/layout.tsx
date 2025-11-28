@@ -79,11 +79,11 @@ const AppSidebar = () => {
             </SidebarMenu>
             </SidebarContent>
             <SidebarFooter>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 group-data-[collapsible=icon]:flex-col">
                 <ThemeToggle />
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:p-2">
                     <LogOut />
-                    <span>Sign Out</span>
+                    <span className="group-data-[collapsible=icon]:hidden">Sign Out</span>
                 </Button>
             </div>
             </SidebarFooter>
