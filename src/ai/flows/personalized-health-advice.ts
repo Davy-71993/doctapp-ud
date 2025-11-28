@@ -11,7 +11,13 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+const ChatMessageSchema = z.object({
+  sender: z.enum(['user', 'ai']),
+  content: z.string(),
+});
+
 const PersonalizedHealthAdviceInputSchema = z.object({
+  chatHistory: z.array(ChatMessageSchema).optional().describe('The history of the conversation so far.'),
   userQuery: z.string().optional().describe('The user\'s specific question about their health.'),
   periodData: z.array(
     z.object({
@@ -60,12 +66,20 @@ const personalizedHealthAdvicePrompt = ai.definePrompt({
   name: 'personalizedHealthAdvicePrompt',
   input: {schema: PersonalizedHealthAdviceInputSchema},
   output: {schema: PersonalizedHealthAdviceOutputSchema},
-  prompt: `You are an AI health assistant providing personalized health advice to users based on their tracked health data.
+  prompt: `You are an AI health assistant providing personalized health advice to users based on their tracked health data and conversation history.
 
-  The user has the following question: "{{userQuery}}"
+  Analyze the following data and conversation to provide tailored advice to answer the user's latest question. Also, determine if the user needs to see a healthcare professional. If you think the user should seek a professional, set the "recommendProfessionalConsultation" field to true. If the data looks normal, you can also set "recommendProfessionalConsultation" field to false.
 
-  Analyze the following data and provide tailored advice to answer their question. Also, determine if the user needs to see a healthcare professional. If you think the user should seek a professional, set the "recommendProfessionalConsultation" field to true. If the data looks normal, you can also set "recommendProfessionalConsultation" field to false.
+  {{#if chatHistory}}
+  Conversation History:
+  {{#each chatHistory}}
+  {{#if (eq sender 'user')}}User: {{else}}AI: {{/if}}{{{content}}}
+  {{/each}}
+  {{/if}}
 
+  The user's current question is: "{{userQuery}}"
+  
+  Relevant Health Data:
   {{#if periodData}}
   Period Data:
   {{#each periodData}}Date: {{{date}}} {{/each}}
@@ -95,7 +109,7 @@ const personalizedHealthAdvicePrompt = ai.definePrompt({
   Pregnancy Status: {{{pregnancyStatus}}}
   {{/if}}
 
-  Based on the data, provide specific advice and recommendations to answer the user's question. The advice should be short (2-3 sentences).`,
+  Based on all the information, provide a specific, concise (2-3 sentences) answer to the user's question.`,
 });
 
 const personalizedHealthAdviceFlow = ai.defineFlow(

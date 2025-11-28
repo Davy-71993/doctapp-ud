@@ -100,21 +100,18 @@ type ChatProps = {
 };
 
 export function Chat({ messages, onSendMessage, isLoading }: ChatProps) {
-    const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const viewportRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTo({
-                top: scrollAreaRef.current.scrollHeight,
-                behavior: 'smooth'
-            });
+        if (viewportRef.current) {
+            viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
         }
     }, [messages]);
 
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+      <ScrollArea className="flex-1 p-4" viewportRef={viewportRef}>
         <div className="space-y-4">
             {messages.length === 0 && !isLoading && (
                 <div className="text-center text-muted-foreground p-8">

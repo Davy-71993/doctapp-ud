@@ -33,11 +33,13 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
         content: userQuery,
         timestamp: new Date(),
     };
-    setMessages((prev) => [...prev, userMessage]);
 
+    const newMessages: ChatMessageType[] = [...messages, userMessage];
+    setMessages(newMessages);
 
     try {
       const input = {
+        chatHistory: newMessages.map(({sender, content}) => ({sender, content})),
         userQuery: userQuery,
         periodData: healthData.period.map(p => ({ date: format(p.date, 'yyyy-MM-dd') })),
         temperatureData: healthData.temperature.map(t => ({ date: t.date, temperature: t.temperature })),
