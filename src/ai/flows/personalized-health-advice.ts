@@ -73,7 +73,7 @@ const personalizedHealthAdvicePrompt = ai.definePrompt({
   {{#if chatHistory}}
   Conversation History:
   {{#each chatHistory}}
-  {{#if (eq sender 'user')}}User: {{else}}AI: {{/if}}{{{content}}}
+  {{#if (eq sender "user")}}User: {{/if}}{{#if (eq sender "ai")}}AI: {{/if}}{{{content}}}
   {{/each}}
   {{/if}}
 
