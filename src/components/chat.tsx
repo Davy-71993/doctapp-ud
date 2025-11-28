@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, User, Bot, Loader2, Lightbulb, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format } } from 'date-fns';
+import { format } from 'date-fns';
 
 export type ChatMessage = {
   id: string;
