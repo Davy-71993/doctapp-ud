@@ -22,7 +22,10 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
       const input = {
         periodData: healthData.period.map(p => ({ date: format(p.date, 'yyyy-MM-dd') })),
         temperatureData: healthData.temperature.map(t => ({ date: t.date, temperature: t.temperature })),
-        bloodSugarData: healthData.bloodSugar.map(bs => ({ date: bs.date, bloodSugar: bs.level }))
+        bloodSugarData: healthData.bloodSugar.map(bs => ({ date: bs.date, bloodSugar: bs.level })),
+        bloodPressureData: healthData.bloodPressure.map(bp => ({ date: bp.date, systolic: bp.systolic, diastolic: bp.diastolic })),
+        allergies: healthData.allergies,
+        pregnancyStatus: healthData.pregnancy.status,
       };
       const result = await getPersonalizedHealthAdvice(input);
       setAdvice(result.advice);

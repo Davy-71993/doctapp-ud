@@ -92,5 +92,20 @@ export const healthData: HealthData = {
     { date: '2023-10-05', level: 105 },
     { date: '2023-10-06', level: 99 },
     { date: '2023-10-07', level: 108 },
-  ]
+  ],
+  bloodPressure: [
+      { date: '2023-10-01', systolic: 120, diastolic: 80 },
+      { date: '2023-10-02', systolic: 122, diastolic: 81 },
+      { date: '2023-10-03', systolic: 118, diastolic: 79 },
+      { date: '2023-10-04', systolic: 125, diastolic: 82 },
+      { date: '2023-10-05', systolic: 121, diastolic: 80 },
+  ],
+  allergies: [
+      'Pollen',
+      'Dust Mites',
+      'Penicillin'
+  ],
+  pregnancy: {
+      status: 'Not Pregnant'
+  }
 };

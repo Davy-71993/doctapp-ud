@@ -35,7 +35,7 @@ const actionCards = [
   },
   {
     title: 'Track Health',
-    description: 'Monitor your vitals and cycles',
+    description: 'Log allergies, blood pressure, and more',
     icon: Activity,
     href: '/track',
     color: 'bg-amber-100 dark:bg-amber-900',

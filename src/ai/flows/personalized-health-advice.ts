@@ -29,6 +29,15 @@ const PersonalizedHealthAdviceInputSchema = z.object({
       bloodSugar: z.number().describe('Blood sugar level in mg/dL.'),
     })
   ).optional().describe('An array of blood sugar data entries.'),
+  bloodPressureData: z.array(
+    z.object({
+        date: z.string().describe('Date of the blood pressure entry (YYYY-MM-DD).'),
+        systolic: z.number().describe('Systolic blood pressure in mmHg.'),
+        diastolic: z.number().describe('Diastolic blood pressure in mmHg.'),
+    })
+  ).optional().describe('An array of blood pressure data entries.'),
+  allergies: z.array(z.string()).optional().describe('A list of known allergies.'),
+  pregnancyStatus: z.string().optional().describe("The user's pregnancy status (e.g., 'Pregnant', 'Not Pregnant').")
 });
 
 export type PersonalizedHealthAdviceInput = z.infer<typeof PersonalizedHealthAdviceInputSchema>;
@@ -57,6 +66,9 @@ const personalizedHealthAdvicePrompt = ai.definePrompt({
   Period Data: {{#if periodData}}{{#each periodData}}Date: {{{date}}} {{/each}}{{else}}No period data provided.{{/if}}
   Temperature Data: {{#if temperatureData}}{{#each temperatureData}}Date: {{{date}}}, Temperature: {{{temperature}}} Â°C {{/each}}{{else}}No temperature data provided.{{/if}}
   Blood Sugar Data: {{#if bloodSugarData}}{{#each bloodSugarData}}Date: {{{date}}}, Blood Sugar: {{{bloodSugar}}} mg/dL {{/each}}{{else}}No blood sugar data provided.{{/if}}
+  Blood Pressure Data: {{#if bloodPressureData}}{{#each bloodPressureData}}Date: {{{date}}}, Systolic: {{{systolic}}}, Diastolic: {{{diastolic}}} mmHg {{/each}}{{else}}No blood pressure data provided.{{/if}}
+  Allergies: {{#if allergies}}{{#each allergies}}{{{this}}}{{/each}}{{else}}No allergies provided.{{/if}}
+  Pregnancy Status: {{#if pregnancyStatus}}{{{pregnancyStatus}}}{{else}}No pregnancy status provided.{{/if}}
 
   Based on the data, provide specific advice and recommendations. The advice should be short (2-3 sentences).`,
 });

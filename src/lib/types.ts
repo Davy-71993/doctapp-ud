@@ -46,11 +46,17 @@ export type UserProfile = {
 export type PeriodData = { date: Date };
 export type TemperatureData = { date: string; temperature: number };
 export type BloodSugarData = { date: string; level: number };
+export type BloodPressureData = { date: string; systolic: number; diastolic: number };
+export type AllergyData = string;
+export type PregnancyData = { status: 'Not Pregnant' | 'Pregnant'; dueDate?: Date };
 
 export type HealthData = {
   period: PeriodData[];
   temperature: TemperatureData[];
   bloodSugar: BloodSugarData[];
+  bloodPressure: BloodPressureData[];
+  allergies: AllergyData[];
+  pregnancy: PregnancyData;
 };
 
 export type Specialist =
