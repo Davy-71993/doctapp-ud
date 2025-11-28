@@ -24,7 +24,17 @@ export function ImagePlaceholder({
     return <div className={cn("bg-muted", className)}></div>;
   }
 
-  const [width, height] = placeholder.imageUrl.split('/').slice(-2);
+  const urlParts = placeholder.imageUrl.split('/');
+  const widthStr = urlParts.slice(-2)[0];
+  const heightStr = urlParts.slice(-1)[0];
+  
+  let width = parseInt(widthStr, 10);
+  let height = parseInt(heightStr, 10);
+
+  if (isNaN(width) || isNaN(height)) {
+    width = 500;
+    height = 500;
+  }
 
   return (
     <div className={cn("relative overflow-hidden", className)}>
@@ -34,7 +44,7 @@ export function ImagePlaceholder({
         height={1000}
         width={1000}
         className={cn("object-cover", imageClassName)}
-        {...(fill ? { fill: true } : { width: parseInt(width), height: parseInt(height) })}
+        {...(fill ? { fill: true } : { width: width, height: height })}
       />
     </div>
   );
