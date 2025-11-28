@@ -32,7 +32,7 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 import { userProfile } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 
 const navItems = [
@@ -61,7 +61,7 @@ const AppSidebar = () => {
                         onClick={() => { if(state === 'collapsed') setOpen(true)} }
                     >
                         <Stethoscope className="h-7 w-7 text-primary" />
-                        <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden">DoctApp UG</span>
+                        <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden line-clamp-1">DoctApp UG</span>
                     </div>
                     <SidebarTrigger className="hidden md:flex group-data-[collapsible=icon]:hidden" />
                 </div>
