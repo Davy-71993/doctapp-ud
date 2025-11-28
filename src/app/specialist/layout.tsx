@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { doctors } from "@/lib/mock-data";
+import { AiAdvice } from "@/components/track/ai-advice";
 
 
 const navItems = [
@@ -135,6 +136,7 @@ export default function SpecialistLayout({ children }: { children: React.ReactNo
           </div>
         </header>
         <main className="flex-1 p-4 lg:p-6">{children}</main>
+        <AiAdvice />
       </SidebarInset>
     </SidebarProvider>
   );
