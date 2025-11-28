@@ -4,24 +4,33 @@ import { useState } from 'react';
 import { getPersonalizedHealthAdvice } from '@/ai/flows/personalized-health-advice';
 import type { HealthData } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Lightbulb, ShieldAlert, Loader2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Lightbulb, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Chat, ChatMessage as ChatMessageType } from '@/components/chat';
+
 
 export function AiAdvice({ healthData }: { healthData: HealthData }) {
-  const [advice, setAdvice] = useState<string | null>(null);
-  const [recommendConsult, setRecommendConsult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+  const [messages, setMessages] = useState<ChatMessageType[]>([]);
 
   const handleGetAdvice = async () => {
     setIsLoading(true);
-    setAdvice(null);
+
     try {
+        const userMessage: ChatMessageType = {
+            id: Date.now().toString(),
+            sender: 'user',
+            content: 'Can you give me some health advice based on my latest data?',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, userMessage]);
+
+
       const input = {
         periodData: healthData.period.map(p => ({ date: format(p.date, 'yyyy-MM-dd') })),
         temperatureData: healthData.temperature.map(t => ({ date: t.date, temperature: t.temperature })),
@@ -31,9 +40,16 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
         pregnancyStatus: healthData.pregnancy.status,
       };
       const result = await getPersonalizedHealthAdvice(input);
-      setAdvice(result.advice);
-      setRecommendConsult(result.recommendProfessionalConsultation);
-      setIsDialogOpen(true);
+      
+      const aiMessage: ChatMessageType = {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        content: result.advice,
+        isSuggestion: result.recommendProfessionalConsultation,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+
     } catch (error) {
       console.error(error);
       toast({
@@ -41,6 +57,14 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
         description: "Could not fetch AI-powered health advice. Please try again later.",
         variant: "destructive"
       });
+      const errorMessage: ChatMessageType = {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        content: 'Sorry, I was unable to get advice for you. Please try again later.',
+        isSuggestion: true,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -52,12 +76,8 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button onClick={handleGetAdvice} disabled={isLoading} size="icon" className="rounded-full w-14 h-14 shadow-lg">
-                {isLoading ? (
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                ) : (
-                  <Lightbulb className="h-6 w-6" />
-                )}
+              <Button onClick={() => setIsDialogOpen(true)} size="icon" className="rounded-full w-14 h-14 shadow-lg">
+                <Lightbulb className="h-6 w-6" />
                 <span className="sr-only">Get AI Health Advice</span>
               </Button>
             </TooltipTrigger>
@@ -69,33 +89,23 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[625px] h-[70vh] flex flex-col">
             <DialogHeader>
                 <DialogTitle>
                     <div className="flex items-center gap-2">
-                        {recommendConsult ? <ShieldAlert className="h-6 w-6 text-destructive" /> : <Lightbulb className="h-6 w-6 text-primary" />}
-                         <span>{recommendConsult ? "Consult a Professional" : "Personalized Advice"}</span>
+                         <Lightbulb className="h-6 w-6 text-primary" />
+                         <span>AI Health Assistant</span>
                     </div>
                 </DialogTitle>
+                <DialogDescription>
+                    Get personalized health advice based on your tracked data.
+                </DialogDescription>
             </DialogHeader>
-          {advice && (
-            <Alert variant={recommendConsult ? "destructive" : "default"} className="mt-4 border-0">
-              <AlertDescription>
-                {advice}
-                {recommendConsult && (
-                  <p className="mt-2 font-semibold">
-                    This AI recommendation suggests you see a healthcare professional.
-                  </p>
-                )}
-                <p className="mt-4 text-xs text-muted-foreground">
-                  Disclaimer: This AI advice is not a substitute for professional medical advice.
-                </p>
-              </AlertDescription>
-            </Alert>
-          )}
-           <DialogFooter>
-            <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
-          </DialogFooter>
+            <Chat 
+                messages={messages} 
+                onSendMessage={handleGetAdvice}
+                isLoading={isLoading}
+            />
         </DialogContent>
       </Dialog>
     </>
