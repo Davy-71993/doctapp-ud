@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { getPersonalizedHealthAdvice } from '@/ai/flows/personalized-health-advice';
-import type { HealthData } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Lightbulb, Loader2 } from 'lucide-react';
@@ -10,9 +9,9 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Chat, ChatMessage as ChatMessageType } from '@/components/chat';
+import { healthData, userProfile } from '@/lib/mock-data';
 
-
-export function AiAdvice({ healthData }: { healthData: HealthData }) {
+export function AiAdvice() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const [messages, setMessages] = useState<ChatMessageType[]>([
@@ -87,7 +86,7 @@ export function AiAdvice({ healthData }: { healthData: HealthData }) {
                 <TooltipTrigger asChild>
                     <PopoverTrigger asChild>
                         <Button size="icon" className="rounded-full w-14 h-14 shadow-lg">
-                            <Lightbulb className="h-6 w-6" />
+                            {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Lightbulb className="h-6 w-6" />}
                             <span className="sr-only">Get AI Health Advice</span>
                         </Button>
                     </PopoverTrigger>

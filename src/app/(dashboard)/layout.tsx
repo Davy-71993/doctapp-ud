@@ -34,6 +34,7 @@ import { userProfile } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { AiAdvice } from "@/components/track/ai-advice";
 
 
 const navItems = [
@@ -51,6 +52,9 @@ const AppSidebar = () => {
     const { state, setOpen } = useSidebar();
 
     const isTabActive = (href: string) => {
+        if (href === '/dashboard') {
+            return pathname === href;
+        }
         return pathname.startsWith(href);
     };
 
@@ -114,7 +118,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const getPageTitle = () => {
-    const activeItem = navItems.find(item => pathname.startsWith(item.href));
+    if (pathname === '/dashboard') return "Dashboard";
+    const activeItem = navItems.find(item => item.href !== '/dashboard' && pathname.startsWith(item.href));
     return activeItem ? activeItem.label : "Dashboard";
   }
 
@@ -136,6 +141,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <main className="flex-1 p-4 lg:p-6">{children}</main>
+        <AiAdvice />
       </SidebarInset>
     </SidebarProvider>
   );

@@ -7,7 +7,6 @@ import { BloodPressureTracker } from '@/components/track/blood-pressure-tracker'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Droplets, CircleAlert } from 'lucide-react';
 import { userProfile } from '@/lib/mock-data';
-import { AiAdvice } from '@/components/track/ai-advice';
 
 export default function TrackPage() {
   return (
@@ -83,7 +82,6 @@ export default function TrackPage() {
         </Card>
 
       </div>
-      <AiAdvice healthData={healthData} />
     </div>
   );
 }
