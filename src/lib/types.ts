@@ -97,3 +97,10 @@ export type Specialist =
   | 'Urologist'
   | 'Ophthalmologist'
   | 'Radiologist';
+
+export type Partner = {
+    id: string;
+    name: string;
+    type: 'Hospital' | 'Clinic' | 'Pharmacy' | 'Drug Shop' | 'Ambulance' | 'Emergency';
+    documents?: string[];
+};

@@ -4,6 +4,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -16,6 +17,8 @@ import {
   SidebarTrigger,
   SidebarInset,
   useSidebar,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
@@ -24,19 +27,38 @@ import {
   Stethoscope,
   Briefcase,
   ShieldCheck,
-  Network
+  Network,
+  ChevronDown,
+  Hospital,
+  Activity,
+  Pill,
+  Truck,
+  Siren,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { users } from "@/lib/mock-data";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
 
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/specialists", label: "Specialists", icon: ShieldCheck },
-  { href: "/admin/partners", label: "Partners", icon: Network },
+];
+
+const partnerSubItems = [
+    { href: "/admin/partners/hospitals", label: "Hospitals", icon: Hospital },
+    { href: "/admin/partners/clinics", label: "Clinics", icon: Activity },
+    { href: "/admin/partners/pharmacies", label: "Pharmacies", icon: Pill },
+    { href: "/admin/partners/drug-shops", label: "Drug Shops", icon: Pill },
+    { href: "/admin/partners/ambulance", label: "Ambulance", icon: Truck },
+    { href: "/admin/partners/emergencies", label: "Emergencies", icon: Siren },
+];
+
+const bottomNavItems = [
   { href: "/admin/services", label: "Services", icon: Briefcase },
   { href: "/admin/users", label: "Users", icon: Users },
 ];
@@ -44,6 +66,7 @@ const navItems = [
 const AdminSidebar = () => {
     const pathname = usePathname();
     const { state, setOpen } = useSidebar();
+    const [partnersOpen, setPartnersOpen] = useState(pathname.startsWith('/admin/partners'));
 
     const isTabActive = (href: string) => {
         if (href === '/admin/dashboard') {
@@ -83,6 +106,51 @@ const AdminSidebar = () => {
                     </Link>
                 </SidebarMenuItem>
                 ))}
+
+                <Collapsible open={partnersOpen} onOpenChange={setPartnersOpen} className="w-full">
+                    <CollapsibleTrigger asChild>
+                        <SidebarMenuButton 
+                            isActive={isTabActive('/admin/partners')}
+                            tooltip={{children: "Partners"}}
+                            className="justify-between"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Network />
+                                <span>Partners</span>
+                            </div>
+                            <ChevronDown className={cn("h-4 w-4 transition-transform", partnersOpen && "rotate-180")} />
+                        </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <SidebarMenuSub className="mt-1">
+                            {partnerSubItems.map(item => (
+                                <SidebarMenuItem key={item.href}>
+                                     <Link href={item.href} passHref>
+                                        <SidebarMenuSubButton isActive={pathname === item.href}>
+                                            <item.icon />
+                                            <span>{item.label}</span>
+                                        </SidebarMenuSubButton>
+                                     </Link>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenuSub>
+                    </CollapsibleContent>
+                </Collapsible>
+
+
+                {bottomNavItems.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                        <Link href={item.href} passHref>
+                        <SidebarMenuButton
+                            isActive={isTabActive(item.href)}
+                            tooltip={{ children: item.label }}
+                        >
+                            <item.icon />
+                            <span>{item.label}</span>
+                        </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                ))}
             </SidebarMenu>
             </SidebarContent>
             <SidebarFooter>
@@ -113,8 +181,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const adminUser = users.find(d => d.role === 'admin');
 
   const getPageTitle = () => {
+    const allNavItems = [...navItems, ...partnerSubItems, ...bottomNavItems];
     if (pathname === '/admin/dashboard') return "Dashboard";
-    const activeItem = navItems.find(item => item.href !== '/admin/dashboard' && pathname.startsWith(item.href));
+
+    if (pathname.startsWith('/admin/partners') && !partnerSubItems.some(item => item.href === pathname)) {
+        return "Partners";
+    }
+
+    const activeItem = allNavItems.find(item => item.href !== '/admin/dashboard' && pathname.startsWith(item.href));
     return activeItem ? activeItem.label : "Dashboard";
   }
 

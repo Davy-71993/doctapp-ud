@@ -141,15 +141,6 @@ export const verifiedSpecialists = [
     { id: 'vs2', name: 'Dr. David Okello', specialty: 'Neurologist' },
 ];
 
-export const pendingPartners = [
-    { id: 'pp1', name: 'IMC Clinic', type: 'Clinic', documents: ['Registration.pdf'] },
-];
-
-export const verifiedPartners = [
-    { name: 'Nakasero Hospital', type: 'Hospital' },
-    { name: 'Ecopharm Pharmacy', type: 'Pharmacy' },
-];
-
 export const pendingServices = [
     { id: 'psv1', name: 'Advanced MRI Scan', category: 'Radiology', description: 'High-resolution magnetic resonance imaging.' },
 ];
