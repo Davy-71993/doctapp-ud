@@ -129,3 +129,32 @@ export const specialistServices: SpecialistService[] = [
     { id: '2', name: 'Cardiac Consultation', description: 'In-depth consultation about heart health, risk factors, and treatment plans.', duration: 45, price: 150000 },
     { id: '3', name: 'Stress Test', description: 'Monitors heart performance during physical activity to diagnose coronary artery disease.', duration: 60, price: 250000 },
 ];
+
+
+export const pendingSpecialists = [
+    { id: 'ps1', name: 'Dr. Ben Muwonge', specialty: 'Pediatrician', documents: ['Medical_License.pdf', 'CV.pdf'] },
+    { id: 'ps2', name: 'Dr. Charity Atim', specialty: 'Dermatologist', documents: ['Medical_Degree.pdf', 'Board_Cert.pdf'] },
+];
+
+export const verifiedSpecialists = [
+    { id: 'vs1', name: 'Dr. Amina Nakigudde', specialty: 'Cardiologist' },
+    { id: 'vs2', name: 'Dr. David Okello', specialty: 'Neurologist' },
+];
+
+export const pendingPartners = [
+    { id: 'pp1', name: 'IMC Clinic', type: 'Clinic', documents: ['Registration.pdf'] },
+];
+
+export const verifiedPartners = [
+    { name: 'Nakasero Hospital', type: 'Hospital' },
+    { name: 'Ecopharm Pharmacy', type: 'Pharmacy' },
+];
+
+export const pendingServices = [
+    { id: 'psv1', name: 'Advanced MRI Scan', category: 'Radiology', description: 'High-resolution magnetic resonance imaging.' },
+];
+
+export const verifiedServices = [
+    { name: 'ECG Test', category: 'Cardiology' },
+    { name: 'Dental Cleaning', category: 'Dentistry' },
+];
