@@ -12,9 +12,12 @@ import type {
 import { Pill, Stethoscope, FileText, Calendar as CalendarIcon } from 'lucide-react';
 
 export const users: User[] = [
-    { id: '1', email: 'm@example.com', password: 'password123', firstName: 'Alex', lastName: 'Mukisa', role: 'patient' },
-    { id: '2', email: 'dr.amina@example.com', password: 'password123', firstName: 'Amina', lastName: 'Nakigudde', role: 'specialist' },
-    { id: '3', email: 'admin@example.com', password: 'password123', firstName: 'Admin', lastName: 'User', role: 'admin' }
+    { id: '1', email: 'm@example.com', password: 'password123', firstName: 'Alex', lastName: 'Mukisa', role: 'patient', dateJoined: '2023-10-01' },
+    { id: '2', email: 'dr.amina@example.com', password: 'password123', firstName: 'Amina', lastName: 'Nakigudde', role: 'specialist', dateJoined: '2023-09-15' },
+    { id: '3', email: 'admin@example.com', password: 'password123', firstName: 'Admin', lastName: 'User', role: 'admin', dateJoined: '2023-08-01' },
+    { id: '4', email: 'brenda.n@example.com', password: 'password123', firstName: 'Brenda', lastName: 'Nansubuga', role: 'patient', dateJoined: '2023-10-05' },
+    { id: '5', email: 'charles.o@example.com', password: 'password123', firstName: 'Charles', lastName: 'Oboth', role: 'patient', dateJoined: '2023-10-12' },
+    { id: '6', email: 'dr.ben@example.com', password: 'password123', firstName: 'Ben', lastName: 'Muwonge', role: 'specialist', dateJoined: '2023-09-20' },
 ];
 
 export const doctors: Doctor[] = [
@@ -139,13 +142,4 @@ export const pendingSpecialists = [
 export const verifiedSpecialists = [
     { id: 'vs1', name: 'Dr. Amina Nakigudde', specialty: 'Cardiologist' },
     { id: 'vs2', name: 'Dr. David Okello', specialty: 'Neurologist' },
-];
-
-export const pendingServices = [
-    { id: 'psv1', name: 'Advanced MRI Scan', category: 'Radiology', description: 'High-resolution magnetic resonance imaging.' },
-];
-
-export const verifiedServices = [
-    { name: 'ECG Test', category: 'Cardiology' },
-    { name: 'Dental Cleaning', category: 'Dentistry' },
 ];

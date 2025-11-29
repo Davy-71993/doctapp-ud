@@ -8,6 +8,7 @@ export type User = {
   firstName: string;
   lastName: string;
   role: 'patient' | 'specialist' | 'admin';
+  dateJoined: string;
 };
 
 export type Doctor = {
