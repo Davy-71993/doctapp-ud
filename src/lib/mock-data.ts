@@ -13,7 +13,8 @@ import { Pill, Stethoscope, FileText, Calendar as CalendarIcon } from 'lucide-re
 
 export const users: User[] = [
     { id: '1', email: 'm@example.com', password: 'password123', firstName: 'Alex', lastName: 'Mukisa', role: 'patient' },
-    { id: '2', email: 'dr.amina@example.com', password: 'password123', firstName: 'Amina', lastName: 'Nakigudde', role: 'specialist' }
+    { id: '2', email: 'dr.amina@example.com', password: 'password123', firstName: 'Amina', lastName: 'Nakigudde', role: 'specialist' },
+    { id: '3', email: 'admin@example.com', password: 'password123', firstName: 'Admin', lastName: 'User', role: 'admin' }
 ];
 
 export const doctors: Doctor[] = [

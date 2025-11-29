@@ -36,6 +36,8 @@ export default function LoginPage() {
       });
       if (user.role === 'specialist') {
         router.push("/specialist/dashboard");
+      } else if (user.role === 'admin') {
+        router.push("/admin/dashboard");
       } else {
         router.push("/dashboard");
       }

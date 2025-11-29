@@ -7,7 +7,7 @@ export type User = {
   password?: string;
   firstName: string;
   lastName: string;
-  role: 'patient' | 'specialist';
+  role: 'patient' | 'specialist' | 'admin';
 };
 
 export type Doctor = {
