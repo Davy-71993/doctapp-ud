@@ -3,7 +3,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   SidebarProvider,
@@ -42,6 +42,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { users } from "@/lib/mock-data";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 
 const navItems = [
@@ -69,6 +70,8 @@ const bottomNavItems = [
 
 const AdminSidebar = () => {
     const pathname = usePathname();
+    const router = useRouter();
+    const { toast } = useToast();
     const { state, setOpen } = useSidebar();
     const [partnersOpen, setPartnersOpen] = useState(pathname.startsWith('/admin/partners'));
     const [servicesOpen, setServicesOpen] = useState(pathname.startsWith('/admin/services'));
@@ -80,6 +83,14 @@ const AdminSidebar = () => {
         }
         return pathname.startsWith(href);
     };
+
+    const handleLogout = () => {
+        toast({
+            title: "Logged Out",
+            description: "You have been successfully signed out.",
+        });
+        router.push("/login");
+    }
 
     return (
         <Sidebar>
@@ -199,7 +210,11 @@ const AdminSidebar = () => {
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:p-2">
+                        <Button 
+                            variant="ghost" 
+                            className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:p-2"
+                            onClick={handleLogout}
+                        >
                             <LogOut />
                             <span className="group-data-[collapsible=icon]:hidden">Sign Out</span>
                         </Button>
