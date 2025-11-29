@@ -183,7 +183,7 @@ const AdminSidebar = () => {
                         >
                             <item.icon />
                             <span>{item.label}</span>
-                        </Button>
+                        </SidebarMenuButton>
                         </Link>
                     </SidebarMenuItem>
                 ))}
