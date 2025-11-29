@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 
 export type User = {
@@ -66,6 +67,14 @@ export type HealthData = {
   bloodPressure: BloodPressureData[];
   allergies: AllergyData[];
   pregnancy: PregnancyData;
+};
+
+export type SpecialistService = {
+    id: string;
+    name: string;
+    description: string;
+    duration: number; // in minutes
+    price: number; // in UGX
 };
 
 export type Specialist =

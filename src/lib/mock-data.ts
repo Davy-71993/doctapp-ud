@@ -1,3 +1,4 @@
+
 import type {
   User,
   Doctor,
@@ -6,6 +7,7 @@ import type {
   UserProfile,
   HealthData,
   Patient,
+  SpecialistService,
 } from '@/lib/types';
 import { Pill, Stethoscope, FileText, Calendar as CalendarIcon } from 'lucide-react';
 
@@ -119,4 +121,10 @@ export const patients: Patient[] = [
     { id: '3', name: 'Doreen Abenakyo', avatar: 'patient-3', lastCheckup: '3 days ago', status: 'Stable' },
     { id: '4', name: 'Edward Musisi', avatar: 'patient-4', lastCheckup: '1 week ago', status: 'Critical' },
     { id: '5', name: 'Fiona Katushabe', avatar: 'patient-5', lastCheckup: '5 days ago', status: 'Stable' },
+];
+
+export const specialistServices: SpecialistService[] = [
+    { id: '1', name: 'ECG Test', description: 'Comprehensive electrocardiogram to check for heart conditions.', duration: 30, price: 100000 },
+    { id: '2', name: 'Cardiac Consultation', description: 'In-depth consultation about heart health, risk factors, and treatment plans.', duration: 45, price: 150000 },
+    { id: '3', name: 'Stress Test', description: 'Monitors heart performance during physical activity to diagnose coronary artery disease.', duration: 60, price: 250000 },
 ];
