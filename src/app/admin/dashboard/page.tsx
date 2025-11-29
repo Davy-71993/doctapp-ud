@@ -1,3 +1,7 @@
+
+'use client';
+
+import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts';
 import {
   Card,
   CardHeader,
@@ -15,8 +19,16 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { users, doctors } from '@/lib/mock-data';
-import { Users, ShieldCheck, UserCheck, Activity } from 'lucide-react';
-import Link from 'next/link';
+import { Users, ShieldCheck, UserCheck } from 'lucide-react';
+
+const userGrowthData = [
+  { month: 'Jan', users: 150, specialists: 20 },
+  { month: 'Feb', users: 200, specialists: 25 },
+  { month: 'Mar', users: 220, specialists: 30 },
+  { month: 'Apr', users: 270, specialists: 35 },
+  { month: 'May', users: 310, specialists: 40 },
+  { month: 'Jun', users: 350, specialists: 45 },
+];
 
 export default function AdminDashboardPage() {
   const patientCount = users.filter(u => u.role === 'patient').length;
@@ -28,6 +40,14 @@ export default function AdminDashboardPage() {
     { id: 2, user: 'Ecopharm Pharmacy', action: 'Added as partner', timestamp: '1 day ago' },
     { id: 3, user: 'Alex Mukisa', action: 'Registered', timestamp: '2 days ago' },
   ];
+
+  const specialistDistribution = doctors.reduce((acc, doctor) => {
+    acc[doctor.specialty] = (acc[doctor.specialty] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const specialistDistributionData = Object.entries(specialistDistribution).map(([name, count]) => ({ name, count }));
+
 
   return (
     <div className="space-y-8">
@@ -69,6 +89,61 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle>User Growth</CardTitle>
+                    <CardDescription>New users and specialists over the past 6 months.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-64 w-full">
+                        <ResponsiveContainer>
+                            <LineChart data={userGrowthData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="month" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis fontSize={12} tickLine={false} axisLine={false} />
+                                <Tooltip
+                                    contentStyle={{
+                                    backgroundColor: 'hsl(var(--background))',
+                                    border: '1px solid hsl(var(--border))',
+                                    }}
+                                />
+                                <Legend />
+                                <Line type="monotone" dataKey="users" stroke="hsl(var(--chart-1))" name="Users" />
+                                <Line type="monotone" dataKey="specialists" stroke="hsl(var(--chart-2))" name="Specialists" />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Specialist Distribution</CardTitle>
+                    <CardDescription>Number of specialists per specialty.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-64 w-full">
+                        <ResponsiveContainer>
+                             <BarChart data={specialistDistributionData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} interval={0} angle={-45} textAnchor="end" height={60} />
+                                <YAxis fontSize={12} tickLine={false} axisLine={false} />
+                                <Tooltip
+                                    contentStyle={{
+                                    backgroundColor: 'hsl(var(--background))',
+                                    border: '1px solid hsl(var(--border))',
+                                    }}
+                                />
+                                <Bar dataKey="count" fill="hsl(var(--chart-1))" name="Count" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+
 
       <Card>
         <CardHeader>
