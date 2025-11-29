@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Building, Syringe, Plus } from 'lucide-react';
 
-const connections = [
+const partners = [
     { name: 'Nakasero Hospital', type: 'Hospital', avatar: 'CH' },
     { name: 'Ecopharm Pharmacy', type: 'Pharmacy', avatar: 'EP' },
     { name: 'The Surgery', type: 'Clinic', avatar: 'TS' },
@@ -15,20 +15,20 @@ const requests = [
     { name: 'St. Francis Hospital Nsambya', type: 'Hospital', avatar: 'SF' },
 ]
 
-export default function ConnectionsPage() {
+export default function PartnersPage() {
   return (
     <div className="space-y-8">
       <div>
         <div className="flex justify-between items-center">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Connections</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Partners</h1>
                 <p className="text-muted-foreground">
                     Manage your professional network of clinics and pharmacies.
                 </p>
             </div>
             <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Add New Connection
+                Add New Partner
             </Button>
         </div>
       </div>
@@ -37,10 +37,10 @@ export default function ConnectionsPage() {
         <Card>
           <CardHeader>
             <CardTitle>My Network</CardTitle>
-            <CardDescription>Your current professional connections.</CardDescription>
+            <CardDescription>Your current professional partners.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {connections.map((conn) => (
+            {partners.map((conn) => (
               <div key={conn.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-4">
                   <Avatar>
@@ -59,7 +59,7 @@ export default function ConnectionsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Connection Requests</CardTitle>
+            <CardTitle>Partnership Requests</CardTitle>
             <CardDescription>New requests to join your network.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

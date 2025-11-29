@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { patients } from '@/lib/mock-data';
-import { Users, AlertTriangle, CheckCircle2, Inbox, Link as LinkIcon, Building, Syringe } from 'lucide-react';
+import { Users, AlertTriangle, CheckCircle2, Inbox, Link as LinkIcon, Building, Syringe, Network } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -139,10 +139,10 @@ export default function SpecialistDashboardPage() {
                             <span>Check Inbox</span>
                         </Button>
                     </Link>
-                     <Link href="/specialist/connections">
+                     <Link href="/specialist/partners">
                         <Button variant="outline" className="w-full h-20 flex-col gap-2">
-                            <LinkIcon className="h-6 w-6"/>
-                            <span>Connections</span>
+                            <Network className="h-6 w-6"/>
+                            <span>Partners</span>
                         </Button>
                     </Link>
                 </CardContent>
