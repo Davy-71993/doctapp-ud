@@ -77,6 +77,14 @@ export type SpecialistService = {
     price: number; // in UGX
 };
 
+export type Service = {
+    id: string;
+    name: string;
+    category: string;
+    description?: string;
+};
+
+
 export type Specialist =
   | 'Medical Officer'
   | 'Pharmacist'
@@ -101,6 +109,6 @@ export type Specialist =
 export type Partner = {
     id: string;
     name: string;
-    type: 'Hospital' | 'Clinic' | 'Pharmacy' | 'Drug Shop' | 'Ambulance' | 'Emergency';
+    type: 'Hospital' | 'Clinic' | 'Pharmacy' | 'Drug Shop';
     documents?: string[];
 };
