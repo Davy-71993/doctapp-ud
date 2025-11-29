@@ -35,7 +35,7 @@ import { users } from "@/lib/mock-data";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/verification", label: "Verification", icon: ShieldCheck },
+  { href: "/admin/specialists", label: "Specialists", icon: ShieldCheck },
   { href: "/admin/partners", label: "Partners", icon: Network },
   { href: "/admin/services", label: "Services", icon: Briefcase },
   { href: "/admin/users", label: "Users", icon: Users },
