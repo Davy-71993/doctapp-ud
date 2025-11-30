@@ -67,7 +67,7 @@ const actionCards = [
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {actionCards.map((card) => (
               <Link href={card.href} key={card.title}>
               <Card className="h-full transition-transform hover:scale-105 hover:shadow-lg flex flex-col justify-between">
