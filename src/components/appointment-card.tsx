@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Appointment } from '@/lib/types';
@@ -9,6 +10,7 @@ import { ImagePlaceholder } from '@/components/image-placeholder';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Trash2 } from 'lucide-react';
 
 type AppointmentCardProps = {
   appointment: Appointment;
@@ -30,6 +32,13 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
       description: `Please contact the hospital to reschedule your appointment.`,
     });
   };
+
+  const handleDelete = () => {
+    toast({
+      title: "Appointment Deleted",
+      description: `Your past appointment with ${appointment.doctor.name} has been removed.`,
+    });
+  }
 
   const statusColors = {
     upcoming: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
@@ -56,17 +65,33 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
             {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
           </Badge>
         </div>
-        <div className="pt-4 text-sm">
-          <p><strong>Date:</strong> {format(new Date(appointment.date), 'MMMM dd, yyyy')}</p>
-          <p><strong>Time:</strong> {appointment.time}</p>
+        <div className="pt-4 space-y-2 text-sm">
+          <div>
+            <p><strong>Date:</strong> {format(new Date(appointment.date), 'MMMM dd, yyyy')}</p>
+            <p><strong>Time:</strong> {appointment.time}</p>
+          </div>
+          {appointment.reason && (
+            <div>
+                <p><strong>Reason for visit:</strong></p>
+                <p className="text-muted-foreground">{appointment.reason}</p>
+            </div>
+          )}
         </div>
       </CardHeader>
-      {appointment.status === 'upcoming' && (
-        <CardFooter className="gap-2">
-          <Button variant="outline" onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleReschedule}>Reschedule</Button>
-        </CardFooter>
-      )}
+      <CardFooter className="gap-2">
+        {appointment.status === 'upcoming' && (
+            <>
+            <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+            <Button onClick={handleReschedule}>Reschedule</Button>
+            </>
+        )}
+        {appointment.status !== 'upcoming' && (
+            <Button variant="destructive" size="sm" onClick={handleDelete}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+            </Button>
+        )}
+      </CardFooter>
     </Card>
   );
 }

@@ -28,6 +28,7 @@ export type Appointment = {
   date: string;
   time: string;
   status: 'upcoming' | 'past' | 'cancelled';
+  reason?: string;
 };
 
 export type Activity = {

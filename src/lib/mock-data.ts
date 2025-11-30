@@ -49,11 +49,11 @@ export const doctors: Doctor[] = [
 ];
 
 export const appointments: Appointment[] = [
-  { id: '1', doctor: doctors[4], date: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(), time: '10:00 AM', status: 'upcoming' },
-  { id: '2', doctor: doctors[2], date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(), time: '02:30 PM', status: 'upcoming' },
-  { id: '3', doctor: doctors[0], date: new Date(new Date().setDate(new Date().getDate() - 14)).toISOString(), time: '09:00 AM', status: 'past' },
-  { id: '4', doctor: doctors[9], date: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(), time: '11:00 AM', status: 'past' },
-  { id: '5', doctor: doctors[6], date: new Date(new Date().setDate(new Date().getDate() - 45)).toISOString(), time: '03:00 PM', status: 'past' },
+  { id: '1', doctor: doctors[4], date: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(), time: '10:00 AM', status: 'upcoming', reason: 'Routine check-up and consultation.' },
+  { id: '2', doctor: doctors[2], date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(), time: '02:30 PM', status: 'upcoming', reason: 'Follow-up on skin rash.' },
+  { id: '3', doctor: doctors[0], date: new Date(new Date().setDate(new Date().getDate() - 14)).toISOString(), time: '09:00 AM', status: 'past', reason: 'ECG and blood pressure monitoring.' },
+  { id: '4', doctor: doctors[9], date: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(), time: '11:00 AM', status: 'past', reason: 'General flu symptoms.' },
+  { id: '5', doctor: doctors[6], date: new Date(new Date().setDate(new Date().getDate() - 45)).toISOString(), time: '03:00 PM', status: 'past', reason: 'Review of scan results.' },
 ];
 
 export const recentActivities: Activity[] = [
