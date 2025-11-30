@@ -85,8 +85,8 @@ export default function SearchPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="relative md:col-span-1">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Search by name or specialty..."
@@ -96,7 +96,7 @@ export default function SearchPage() {
           />
         </div>
         <Select onValueChange={(val) => { setSpecialty(val); handleFilterChange(); }} defaultValue="all">
-          <SelectTrigger>
+          <SelectTrigger className="w-full md:w-auto">
             <SelectValue placeholder="All Specialties" />
           </SelectTrigger>
           <SelectContent>
@@ -107,7 +107,7 @@ export default function SearchPage() {
           </SelectContent>
         </Select>
         <Select onValueChange={(val) => { setLocation(val); handleFilterChange(); }} defaultValue="all">
-          <SelectTrigger>
+          <SelectTrigger className="w-full md:w-auto">
             <SelectValue placeholder="All Locations" />
           </SelectTrigger>
           <SelectContent>
