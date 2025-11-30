@@ -96,9 +96,9 @@ export default function SearchPage() {
             onChange={handleSearchChange}
           />
         </div>
-        <div className="flex gap-4">
+        <div className="grid grid-cols-2 md:flex gap-4">
           <Select onValueChange={(val) => { setSpecialty(val); handleFilterChange(); }} defaultValue="all">
-            <SelectTrigger className="w-auto">
+            <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="All Specialties" />
             </SelectTrigger>
             <SelectContent>
@@ -109,7 +109,7 @@ export default function SearchPage() {
             </SelectContent>
           </Select>
           <Select onValueChange={(val) => { setLocation(val); handleFilterChange(); }} defaultValue="all">
-            <SelectTrigger className="w-auto">
+            <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="All Locations" />
             </SelectTrigger>
             <SelectContent>
