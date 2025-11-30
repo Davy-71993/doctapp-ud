@@ -1,3 +1,6 @@
+
+'use client';
+
 import Link from 'next/link';
 import {
   Stethoscope,
@@ -14,7 +17,9 @@ import {
   CardDescription
 } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
-import { recentActivities } from '@/lib/mock-data';
+import { recentActivities, healthData } from '@/lib/mock-data';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts';
+
 
 const actionCards = [
   {
@@ -83,32 +88,60 @@ export default function DashboardPage() {
               </Link>
           ))}
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>
-            An overview of your latest health activities.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {recentActivities.map((activity) => (
-             <div key={activity.id} className="flex items-center gap-4">
-             <Avatar className="h-10 w-10">
-               <div className="w-full h-full flex items-center justify-center bg-secondary rounded-full">
-                 <activity.icon className="h-5 w-5 text-muted-foreground" />
-               </div>
-             </Avatar>
-             <div className="flex-1">
-               <p className="text-sm font-medium leading-none">{activity.title}</p>
-               <p className="text-sm text-muted-foreground">{activity.description}</p>
-             </div>
-             <div className="text-right">
-                 <p className="text-sm text-muted-foreground">{activity.time}</p>
-             </div>
-           </div>
-          ))}
-        </CardContent>
-      </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+             <Card>
+                <CardHeader>
+                    <CardTitle>Health Summary</CardTitle>
+                    <CardDescription>A quick look at your recent vitals.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-64 w-full">
+                         <ResponsiveContainer>
+                            <BarChart data={healthData.bloodPressure.slice(-5)}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis fontSize={12} tickLine={false} axisLine={false} unit=" mmHg" />
+                                <Tooltip
+                                    contentStyle={{
+                                    backgroundColor: 'hsl(var(--background))',
+                                    border: '1px solid hsl(var(--border))',
+                                    }}
+                                />
+                                <Legend />
+                                <Bar dataKey="systolic" fill="hsl(var(--chart-1))" name="Systolic" />
+                                <Bar dataKey="diastolic" fill="hsl(var(--chart-2))" name="Diastolic" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>
+                    An overview of your latest health activities.
+                </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                {recentActivities.map((activity) => (
+                    <div key={activity.id} className="flex items-center gap-4">
+                    <Avatar className="h-10 w-10">
+                    <div className="w-full h-full flex items-center justify-center bg-secondary rounded-full">
+                        <activity.icon className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    </Avatar>
+                    <div className="flex-1">
+                    <p className="text-sm font-medium leading-none">{activity.title}</p>
+                    <p className="text-sm text-muted-foreground">{activity.description}</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-sm text-muted-foreground">{activity.time}</p>
+                    </div>
+                </div>
+                ))}
+                </CardContent>
+            </Card>
+      </div>
     </div>
   );
 }

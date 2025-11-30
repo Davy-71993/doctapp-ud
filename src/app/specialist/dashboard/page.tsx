@@ -1,3 +1,6 @@
+
+'use client';
+
 import {
   Card,
   CardHeader,
@@ -21,6 +24,7 @@ import { Users, AlertTriangle, CheckCircle2, Inbox, Link as LinkIcon, Building, 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 const statusIcons = {
   Stable: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -39,6 +43,15 @@ export default function SpecialistDashboardPage() {
   const patientCount = patients.length;
   const criticalCount = patients.filter(p => p.status === 'Critical').length;
   const needsReviewCount = patients.filter(p => p.status === 'Needs Review').length;
+
+  const patientStatusData = [
+    { name: 'Stable', value: patients.filter(p => p.status === 'Stable').length },
+    { name: 'Needs Review', value: needsReviewCount },
+    { name: 'Critical', value: criticalCount },
+  ];
+
+  const PIE_COLORS = ['hsl(var(--chart-2))', 'hsl(var(--chart-4))', 'hsl(var(--chart-1))'];
+
 
   return (
     <div className="space-y-8">
@@ -123,6 +136,44 @@ export default function SpecialistDashboardPage() {
         
         <div className="space-y-8">
             <Card>
+              <CardHeader>
+                  <CardTitle>Patient Overview</CardTitle>
+                  <CardDescription>Distribution of patient statuses.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                  <div className="h-52 w-full">
+                      <ResponsiveContainer>
+                          <PieChart>
+                              <Pie
+                                  data={patientStatusData}
+                                  cx="50%"
+                                  cy="50%"
+                                  labelLine={false}
+                                  outerRadius={80}
+                                  fill="#8884d8"
+                                  dataKey="value"
+                                  nameKey="name"
+                              >
+                                  {patientStatusData.map((entry, index) => (
+                                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                                  ))}
+                              </Pie>
+                              <Tooltip
+                                  contentStyle={{
+                                      backgroundColor: 'hsl(var(--background))',
+                                      border: '1px solid hsl(var(--border))',
+                                  }}
+                              />
+                              <Legend />
+                          </PieChart>
+                      </ResponsiveContainer>
+                  </div>
+              </CardContent>
+            </Card>
+        </div>
+      </div>
+       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <Card>
                 <CardHeader>
                     <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
@@ -148,7 +199,7 @@ export default function SpecialistDashboardPage() {
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card className="lg:col-span-2">
                 <CardHeader>
                     <CardTitle>Your Network</CardTitle>
                     <CardDescription>Connect with pharmacies and clinics.</CardDescription>
@@ -171,8 +222,6 @@ export default function SpecialistDashboardPage() {
                 </CardContent>
             </Card>
         </div>
-
-      </div>
     </div>
   );
 }
