@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -17,6 +18,8 @@ import type { Doctor } from '@/lib/types';
 import { addDays, format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { CheckCircle, Clock } from 'lucide-react';
+import { Textarea } from './ui/textarea';
+import { Label } from './ui/label';
 
 const timeSlots = [
   '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM',
@@ -27,6 +30,7 @@ export function BookingModal({ doctor }: { doctor: Doctor }) {
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<string | undefined>();
+  const [reason, setReason] = useState('');
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -38,13 +42,14 @@ export function BookingModal({ doctor }: { doctor: Doctor }) {
       description: `Your appointment with ${doctor.name} on ${format(selectedDate!, 'PPP')} at ${selectedSlot} is confirmed.`,
       variant: 'default',
     });
-    resetAndClose();
+    setStep(4);
   };
 
   const resetAndClose = () => {
     setStep(1);
     setSelectedDate(new Date());
     setSelectedSlot(undefined);
+    setReason('');
     setOpen(false);
   }
 
@@ -105,12 +110,24 @@ export function BookingModal({ doctor }: { doctor: Doctor }) {
           <>
             <DialogHeader>
               <DialogTitle>Confirm Your Appointment</DialogTitle>
+              <DialogDescription>Review the details and provide a reason for your visit.</DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 text-sm">
-              <p><strong>Doctor:</strong> {doctor.name}</p>
-              <p><strong>Specialty:</strong> {doctor.specialty}</p>
-              <p><strong>Date:</strong> {format(selectedDate!, 'PPP')}</p>
-              <p><strong>Time:</strong> {selectedSlot}</p>
+            <div className="space-y-4">
+                <div className="space-y-2 text-sm p-4 rounded-md border bg-muted/50">
+                    <p><strong>Doctor:</strong> {doctor.name}</p>
+                    <p><strong>Specialty:</strong> {doctor.specialty}</p>
+                    <p><strong>Date:</strong> {format(selectedDate!, 'PPP')}</p>
+                    <p><strong>Time:</strong> {selectedSlot}</p>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="reason">Reason for Visit (Optional)</Label>
+                    <Textarea 
+                        id="reason"
+                        placeholder="Briefly describe the reason for your appointment..."
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                    />
+                </div>
             </div>
             <DialogFooter>
               <Button variant="ghost" onClick={() => setStep(2)}>Back</Button>
@@ -135,7 +152,13 @@ export function BookingModal({ doctor }: { doctor: Doctor }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+        if (!isOpen) {
+            resetAndClose();
+        } else {
+            setOpen(true);
+        }
+    }}>
       <DialogTrigger asChild>
         <Button className="w-full mt-4">Book Now</Button>
       </DialogTrigger>
