@@ -25,14 +25,16 @@ export function ImagePlaceholder({
   }
 
   const urlParts = placeholder.imageUrl.split('/');
-  const widthStr = urlParts.slice(-2)[0];
-  const heightStr = urlParts.slice(-1)[0];
+  const heightStr = urlParts.pop();
+  const widthStr = urlParts.pop();
   
-  let width = parseInt(widthStr, 10);
-  let height = parseInt(heightStr, 10);
+  let width = widthStr ? parseInt(widthStr, 10) : 500;
+  let height = heightStr ? parseInt(heightStr, 10) : 500;
 
-  if (isNaN(width) || isNaN(height)) {
+  if (isNaN(width)) {
     width = 500;
+  }
+  if (isNaN(height)) {
     height = 500;
   }
 
@@ -46,6 +48,7 @@ export function ImagePlaceholder({
         src={placeholder.imageUrl}
         alt={placeholder.description}
         className={cn("object-cover", imageClassName)}
+        data-ai-hint={placeholder.imageHint}
         {...imageProps}
       />
     </div>
