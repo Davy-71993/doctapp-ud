@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { recentActivities, healthData } from '@/lib/mock-data';
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend, LineChart, Line } from 'recharts';
 
 
 const actionCards = [
@@ -88,16 +88,16 @@ export default function DashboardPage() {
               </Link>
           ))}
       </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
              <Card>
                 <CardHeader>
-                    <CardTitle>Health Summary</CardTitle>
-                    <CardDescription>A quick look at your recent vitals.</CardDescription>
+                    <CardTitle>Blood Pressure</CardTitle>
+                    <CardDescription>Recent systolic & diastolic readings.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="h-64 w-full">
                          <ResponsiveContainer>
-                            <BarChart data={healthData.bloodPressure.slice(-5)}>
+                            <BarChart data={healthData.bloodPressure.slice(-7)}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis fontSize={12} tickLine={false} axisLine={false} unit=" mmHg" />
@@ -111,6 +111,37 @@ export default function DashboardPage() {
                                 <Bar dataKey="systolic" fill="hsl(var(--chart-1))" name="Systolic" />
                                 <Bar dataKey="diastolic" fill="hsl(var(--chart-2))" name="Diastolic" />
                             </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Blood Sugar</CardTitle>
+                    <CardDescription>Recent glucose level readings.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-64 w-full">
+                        <ResponsiveContainer>
+                            <LineChart data={healthData.bloodSugar.slice(-7)}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis 
+                                    fontSize={12} 
+                                    tickLine={false} 
+                                    axisLine={false} 
+                                    unit=" mg/dL"
+                                    domain={['dataMin - 5', 'dataMax + 5']}
+                                 />
+                                <Tooltip
+                                    contentStyle={{
+                                    backgroundColor: 'hsl(var(--background))',
+                                    border: '1px solid hsl(var(--border))',
+                                    }}
+                                />
+                                <Legend />
+                                <Line type="monotone" dataKey="level" stroke="hsl(var(--chart-3))" name="Level" />
+                            </LineChart>
                         </ResponsiveContainer>
                     </div>
                 </CardContent>
