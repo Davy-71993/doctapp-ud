@@ -120,18 +120,19 @@ export function BookingModal({ doctor }: { doctor: Doctor }) {
                     <p><strong>Time:</strong> {selectedSlot}</p>
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="reason">Reason for Visit (Optional)</Label>
+                    <Label htmlFor="reason">Reason for Visit</Label>
                     <Textarea 
                         id="reason"
                         placeholder="Briefly describe the reason for your appointment..."
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
+                        required
                     />
                 </div>
             </div>
             <DialogFooter>
               <Button variant="ghost" onClick={() => setStep(2)}>Back</Button>
-              <Button onClick={handleBooking}>Confirm Booking</Button>
+              <Button onClick={handleBooking} disabled={!reason.trim()}>Confirm Booking</Button>
             </DialogFooter>
           </>
         );
