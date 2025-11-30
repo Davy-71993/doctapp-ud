@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -85,8 +86,8 @@ export default function SearchPage() {
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
+      <div className="flex flex-col md:flex-row flex-wrap gap-4">
+        <div className="relative flex-1 min-w-[200px]">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Search by name or specialty..."
@@ -95,28 +96,30 @@ export default function SearchPage() {
             onChange={handleSearchChange}
           />
         </div>
-        <Select onValueChange={(val) => { setSpecialty(val); handleFilterChange(); }} defaultValue="all">
-          <SelectTrigger className="w-full md:w-auto">
-            <SelectValue placeholder="All Specialties" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Specialties</SelectItem>
-            {[...new Set(specialties)].sort().map(s => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select onValueChange={(val) => { setLocation(val); handleFilterChange(); }} defaultValue="all">
-          <SelectTrigger className="w-full md:w-auto">
-            <SelectValue placeholder="All Locations" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Locations</SelectItem>
-            {locations.map(l => (
-              <SelectItem key={l} value={l}>{l}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex gap-4">
+          <Select onValueChange={(val) => { setSpecialty(val); handleFilterChange(); }} defaultValue="all">
+            <SelectTrigger className="w-auto">
+              <SelectValue placeholder="All Specialties" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Specialties</SelectItem>
+              {[...new Set(specialties)].sort().map(s => (
+                <SelectItem key={s} value={s}>{s}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select onValueChange={(val) => { setLocation(val); handleFilterChange(); }} defaultValue="all">
+            <SelectTrigger className="w-auto">
+              <SelectValue placeholder="All Locations" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Locations</SelectItem>
+              {locations.map(l => (
+                <SelectItem key={l} value={l}>{l}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
