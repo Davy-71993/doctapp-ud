@@ -9,7 +9,7 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText, Check, X } from 'lucide-react';
+import { Plus, FileText, Check, X, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Partner } from '@/lib/types';
 
@@ -19,7 +19,18 @@ function PendingItem({ item }: { item: Partner }) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-muted/50 rounded-lg gap-4">
             <div>
                 <p className="font-semibold">{item.name}</p>
-                <p className="text-sm text-muted-foreground">{item.type}</p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span>{item.type}</span>
+                    {item.location && (
+                        <>
+                            <span className="h-4 border-l"></span>
+                            <div className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4" />
+                                <span>{item.location}</span>
+                            </div>
+                        </>
+                    )}
+                </div>
                 {item.documents && (
                      <div className="flex items-center gap-2 mt-2">
                         {item.documents.map((doc: string) => (
@@ -47,12 +58,23 @@ function PendingItem({ item }: { item: Partner }) {
 
 function VerifiedItem({ item }: { item: Partner }) {
     return (
-         <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-muted/30 rounded-lg gap-3">
             <div>
                 <p className="font-semibold">{item.name}</p>
-                <p className="text-sm text-muted-foreground">{item.type}</p>
+                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span>{item.type}</span>
+                    {item.location && (
+                        <>
+                            <span className="h-4 border-l"></span>
+                            <div className="flex items-center gap-1">
+                                <MapPin className="h-4 w-4" />
+                                <span>{item.location}</span>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-end sm:self-center">
                 <Badge variant="secondary">Verified</Badge>
                 <Button variant="outline" size="sm">View Details</Button>
             </div>

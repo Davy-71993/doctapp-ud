@@ -113,4 +113,5 @@ export type Partner = {
     name: string;
     type: 'Hospital' | 'Clinic' | 'Pharmacy' | 'Drug Shop';
     documents?: string[];
+    location?: string;
 };
