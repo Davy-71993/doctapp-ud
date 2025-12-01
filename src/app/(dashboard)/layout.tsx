@@ -27,6 +27,7 @@ import {
   LogOut,
   Pill,
   LayoutGrid,
+  Inbox,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImagePlaceholder } from "@/components/image-placeholder";
@@ -43,6 +44,7 @@ const navItems = [
   { href: "/search", label: "Find a Specialist", icon: Search },
   { href: "/appointments", label: "Appointments", icon: Calendar },
   { href: "/track", label: "Health Trackers", icon: Activity },
+  { href: "/inbox", label: "Inbox", icon: Inbox },
   { href: "/order-medicine", label: "Order Medicine", icon: Pill },
   { href: "/services", label: "Services", icon: LayoutGrid },
   { href: "/profile", label: "My Profile", icon: User },

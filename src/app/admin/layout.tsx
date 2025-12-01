@@ -34,6 +34,7 @@ import {
   Pill,
   Truck,
   Siren,
+  Inbox,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ import { useToast } from "@/hooks/use-toast";
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/specialists", label: "Specialists", icon: ShieldCheck },
+  { href: "/admin/inbox", label: "Inbox", icon: Inbox },
 ];
 
 const partnerSubItems = [
