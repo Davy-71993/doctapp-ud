@@ -57,8 +57,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
             </Avatar>
             <div>
               <CardTitle className="text-lg">{appointment.doctor.name}</CardTitle>
-              <CardDescription>{appointment.doctor.specialty}</CardDescription>
-              <p className="text-sm text-muted-foreground">{appointment.doctor.hospital}</p>
+              <CardDescription>{appointment.doctor.specialty} ({appointment.doctor.hospital})</CardDescription>
             </div>
           </div>
           <Badge className={cn('whitespace-nowrap', statusColors[appointment.status])}>
@@ -66,14 +65,13 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
           </Badge>
         </div>
         <div className="pt-4 space-y-2 text-sm">
-          <div>
-            <p><strong>Date:</strong> {format(new Date(appointment.date), 'MMMM dd, yyyy')}</p>
-            <p><strong>Time:</strong> {appointment.time}</p>
-          </div>
           {appointment.reason && (
             <div>
                 <p><strong>Reason for visit:</strong></p>
                 <p className="text-muted-foreground">{appointment.reason}</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                    {format(new Date(appointment.date), 'MMMM dd, yyyy')} at {appointment.time}
+                </p>
             </div>
           )}
         </div>
