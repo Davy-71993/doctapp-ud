@@ -1,6 +1,6 @@
 
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Ambulance, Home, Hospital, Stethoscope } from "lucide-react";
+import { Ambulance, Home, Hospital, Stethoscope, Pill } from "lucide-react";
 import Link from "next/link";
 
 const services = [
@@ -35,6 +35,22 @@ const services = [
     icon: Hospital,
     color: "bg-purple-100 dark:bg-purple-900",
     textColor: "text-purple-700 dark:text-purple-300",
+  },
+  {
+    title: "Pharmacies",
+    href: "/services/pharmacies",
+    description: "Find licensed pharmacies to get your prescribed medication.",
+    icon: Pill,
+    color: "bg-orange-100 dark:bg-orange-900",
+    textColor: "text-orange-700 dark:text-orange-300",
+  },
+    {
+    title: "Drug Shops",
+    href: "/services/drug-shops",
+    description: "Find licensed drug shops for over-the-counter medication.",
+    icon: Pill,
+    color: "bg-yellow-100 dark:bg-yellow-900",
+    textColor: "text-yellow-700 dark:text-yellow-300",
   },
 ];
 

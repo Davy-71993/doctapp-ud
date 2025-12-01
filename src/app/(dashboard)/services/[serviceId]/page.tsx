@@ -3,7 +3,7 @@
 
 import { useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Ambulance, Home, Hospital, Stethoscope, Phone, MapPin } from "lucide-react";
+import { Ambulance, Home, Hospital, Stethoscope, Phone, MapPin, Pill } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
@@ -44,6 +44,23 @@ const servicesData = {
       { id: "p8", name: "Nakasero Hospital", location: "Kampala", phone: "0414 346 150", avatar: "NH" },
       { id: "p9", name: "Mulago National Referral Hospital", location: "Kampala", phone: "0414 554 001", avatar: "MH" },
       { id: "p10", name: "Mengo Hospital", location: "Kampala", phone: "0414 270 272", avatar: "MH" },
+    ],
+  },
+  "pharmacies": {
+    title: "Pharmacies",
+    description: "Find licensed pharmacies to get your prescribed medication.",
+    icon: Pill,
+    providers: [
+      { id: "p11", name: "Ecopharm Pharmacy", location: "Kampala", phone: "0772 111 222", avatar: "EP" },
+      { id: "p12", name: "C&A Pharmacy", location: "Kampala", phone: "0703 333 444", avatar: "CA" },
+    ],
+  },
+  "drug-shops": {
+    title: "Drug Shops",
+    description: "Find licensed drug shops for over-the-counter medication.",
+    icon: Pill,
+    providers: [
+      { id: "p13", name: "Goodlife Pharmacy", location: "Kampala", phone: "0800 211 011", avatar: "GP" },
     ],
   },
 };
