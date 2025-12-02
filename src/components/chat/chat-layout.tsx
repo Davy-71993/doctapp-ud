@@ -92,12 +92,14 @@ export function ChatLayout({ currentUser, contacts, messages: initialMessages, d
                 defaultSize={25}
                 minSize={20}
                 maxSize={30}
-                className={cn(isMobile && !selectedChat ? "block" : "hidden", "sm:block")}
+                className={cn(isMobile && selectedChat ? "hidden" : "block", "sm:block")}
             >
                 <ChatList
                     chats={chats}
                     selectedChat={selectedChat}
-                    onSelectChat={setSelectedChat}
+                    onSelectChat={(chat) => {
+                        setSelectedChat(chat);
+                    }}
                     currentUser={currentUser}
                     contacts={contacts}
                     onNewChat={(newChat) => {
@@ -108,7 +110,7 @@ export function ChatLayout({ currentUser, contacts, messages: initialMessages, d
                     }}
                 />
             </ResizablePanel>
-            <ResizableHandle withHandle />
+            <ResizableHandle withHandle className={cn(isMobile && "hidden", "sm:flex")} />
             <ResizablePanel
                 defaultSize={75}
                 className={cn(isMobile && !selectedChat ? "hidden" : "block", "sm:block")}
@@ -122,9 +124,11 @@ export function ChatLayout({ currentUser, contacts, messages: initialMessages, d
                         isMobile={isMobile}
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center text-muted-foreground">
-                        Select a chat to start messaging
-                    </div>
+                    !isMobile && (
+                        <div className="flex h-full items-center justify-center text-muted-foreground">
+                            Select a chat to start messaging
+                        </div>
+                    )
                 )}
             </ResizablePanel>
         </ResizablePanelGroup>

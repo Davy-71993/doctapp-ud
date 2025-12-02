@@ -24,6 +24,7 @@ interface ChatListProps {
 export function ChatList({ chats, selectedChat, onSelectChat, currentUser, contacts, onNewChat }: ChatListProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [contactSearchTerm, setContactSearchTerm] = useState('');
 
     const filteredChats = chats.filter(chat =>
         chat.contact.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -31,7 +32,7 @@ export function ChatList({ chats, selectedChat, onSelectChat, currentUser, conta
 
     const filteredContacts = contacts.filter(contact =>
         contact.id !== currentUser.id &&
-        contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+        contact.name.toLowerCase().includes(contactSearchTerm.toLowerCase())
     );
 
     const handleSelectContact = (contact: Contact) => {
@@ -41,6 +42,7 @@ export function ChatList({ chats, selectedChat, onSelectChat, currentUser, conta
         } else {
             onNewChat({ id: contact.id, contact, messages: [] });
         }
+        setContactSearchTerm('');
         setDialogOpen(false);
     }
     
@@ -64,8 +66,8 @@ export function ChatList({ chats, selectedChat, onSelectChat, currentUser, conta
                                 <Input
                                     placeholder="Search contacts..."
                                     className="pl-10"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    value={contactSearchTerm}
+                                    onChange={(e) => setContactSearchTerm(e.target.value)}
                                 />
                             </div>
                             <ScrollArea className="mt-4 h-[300px]">
