@@ -44,7 +44,6 @@ const navItems = [
   { href: "/specialist/patients", label: "Patients", icon: Users },
   { href: "/specialist/inbox", label: "Inbox", icon: Inbox },
   { href: "/specialist/my-service-providers", label: "My Service Providers", icon: Building },
-  { href: "/specialist/service-providers", label: "Service Providers", icon: Network },
   { href: "/specialist/services", label: "Services", icon: Briefcase },
 ];
 
