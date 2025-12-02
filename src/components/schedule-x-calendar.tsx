@@ -49,7 +49,7 @@ export function ScheduleXCalendar({ events, onCreateBlock }: ScheduleXCalendarPr
                 events: transformedEvents,
                 dayBoundaries: {
                     start: '00:00',
-                    end: '24:00',
+                    end: '23:59',
                 },
                 scrollToTime: currentTime,
                 callbacks: {
