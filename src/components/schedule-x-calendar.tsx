@@ -48,8 +48,8 @@ export function ScheduleXCalendar({ events, onCreateBlock }: ScheduleXCalendarPr
                 firstDayOfWeek: 1, // Monday
                 events: transformedEvents,
                 dayBoundaries: {
-                    start: '06:00',
-                    end: '22:00',
+                    start: '00:00',
+                    end: '24:00',
                 },
                 scrollToTime: currentTime,
                 callbacks: {

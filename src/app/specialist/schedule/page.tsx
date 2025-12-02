@@ -9,6 +9,9 @@ import { ScheduleXCalendar } from '@/components/schedule-x-calendar';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { AddServiceDialog } from '@/components/add-service-dialog';
+import type { SpecialistService } from '@/lib/types';
+
 
 export default function SchedulePage() {
   const { toast } = useToast();
@@ -47,10 +50,11 @@ export default function SchedulePage() {
     });
   }
 
-  const handleAddSchedule = () => {
+  const handleAddSchedule = (newService: Omit<SpecialistService, 'id'>) => {
+    // This is a placeholder. You can adapt the dialog or create a new one for schedules.
     toast({
-      title: "Add New Schedule",
-      description: "You can implement a dialog here to create a new event."
+      title: "New Schedule Added (Placeholder)",
+      description: `A new event "${newService.name}" has been created.`,
     });
   }
 
@@ -58,11 +62,19 @@ export default function SchedulePage() {
 
   return (
     <div className="space-y-8 h-[calc(100vh_-_10rem)] flex flex-col">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">My Schedule</h1>
-        <p className="text-muted-foreground">
-          View your appointments and manage your availability.
-        </p>
+      <div className="flex justify-between items-center">
+        <div>
+            <h1 className="text-3xl font-bold tracking-tight">My Schedule</h1>
+            <p className="text-muted-foreground">
+            View your appointments and manage your availability.
+            </p>
+        </div>
+        <AddServiceDialog onAddService={handleAddSchedule}>
+            <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add New Schedule
+            </Button>
+        </AddServiceDialog>
       </div>
 
       <div className="flex-grow">
@@ -71,24 +83,6 @@ export default function SchedulePage() {
             onCreateBlock={handleCreateBlock}
         />
       </div>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button 
-              size="icon" 
-              className="rounded-full w-14 h-14 shadow-lg fixed bottom-24 right-6 z-50"
-              onClick={handleAddSchedule}
-            >
-              <Plus className="h-6 w-6" />
-              <span className="sr-only">Add New Schedule</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="left">
-            <p>Add New Schedule</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
 
     </div>
   );
