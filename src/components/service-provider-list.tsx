@@ -13,6 +13,7 @@ import { Plus, FileText, Check, X, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { ServiceProvider } from '@/lib/types';
 import { doctors } from '@/lib/mock-data';
+import Link from 'next/link';
 
 
 function PendingItem({ item }: { item: ServiceProvider }) {
@@ -79,7 +80,9 @@ function VerifiedItem({ item }: { item: ServiceProvider }) {
             </div>
             <div className="flex items-center gap-2 self-end sm:self-center">
                 <Badge variant="secondary">Verified</Badge>
-                <Button variant="outline" size="sm">View Details</Button>
+                <Link href={`/service-providers/${item.id}`}>
+                    <Button variant="outline" size="sm">View Details</Button>
+                </Link>
             </div>
         </div>
     )
