@@ -19,27 +19,25 @@ export function ScheduleXCalendar({ events, onCreateBlock }: ScheduleXCalendarPr
     const calendarApp = useRef<CalendarApp | null>(null);
 
     useEffect(() => {
-        if (calendarRef.current && !calendarApp.current) {
-            const transformedEvents = events.map(e => ({
-                id: e.id,
-                title: e.title,
-                start: e.start.toISOString(),
-                end: e.end.toISOString(),
-                // Add styling based on type
-                ...(e.type === 'appointment' && {
-                    style: {
-                        color: 'white',
-                        backgroundColor: '#3b82f6', // blue-500
-                    },
-                }),
-                ...(e.type === 'unavailable' && {
-                     style: {
-                        color: 'white',
-                        backgroundColor: '#a1a1aa', // gray-400
-                    },
-                })
-            }));
+        const transformedEvents = events.map(e => ({
+            id: e.id,
+            title: e.title,
+            start: e.start.toISOString(),
+            end: e.end.toISOString(),
+            ...(e.type === 'appointment' ? {
+                style: {
+                    backgroundColor: 'hsl(var(--primary))',
+                    color: 'hsl(var(--primary-foreground))',
+                }
+            } : {
+                style: {
+                    backgroundColor: 'hsl(var(--muted))',
+                    color: 'hsl(var(--muted-foreground))',
+                }
+            })
+        }));
 
+        if (calendarRef.current && !calendarApp.current) {
             const now = new Date();
             const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
@@ -76,15 +74,6 @@ export function ScheduleXCalendar({ events, onCreateBlock }: ScheduleXCalendarPr
 
             calendarApp.current.render(calendarRef.current);
         } else if (calendarApp.current) {
-            // Update events if they change
-            const transformedEvents = events.map(e => ({
-                id: e.id,
-                title: e.title,
-                start: e.start.toISOString(),
-                end: e.end.toISOString(),
-                 ...(e.type === 'appointment' && { class: 'sx-event-primary' }),
-                 ...(e.type === 'unavailable' && { class: 'sx-event-secondary' })
-            }));
             calendarApp.current.events.set(transformedEvents);
         }
     }, [events, onCreateBlock]);

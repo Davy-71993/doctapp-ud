@@ -53,9 +53,10 @@ export default function SchedulePage() {
 
   }, [specialistId]);
 
-  const handleCreateBlock = (block: Omit<TimeBlock, 'id' | 'type'>) => {
+  const handleCreateBlock = (block: { start: Date; end: Date }) => {
     const newBlock: TimeBlock = {
       id: `unavailable-${Date.now()}`,
+      title: 'Unavailable',
       ...block,
       type: 'unavailable'
     };
@@ -67,11 +68,12 @@ export default function SchedulePage() {
   }
 
   const handleAddSchedule = (newService: Omit<SpecialistService, 'id'> & { name: string; duration: number }) => {
+    const now = new Date();
     const newEvent: TimeBlock = {
         id: `event-${Date.now()}`,
         title: newService.name,
-        start: new Date(), // This should be from the dialog
-        end: new Date(new Date().getTime() + newService.duration * 60 * 1000), // This should be from the dialog
+        start: now,
+        end: new Date(now.getTime() + newService.duration * 60 * 1000),
         type: 'appointment'
     };
     setAllBlocks(prev => [...prev, newEvent]);
