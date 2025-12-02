@@ -115,3 +115,11 @@ export type ServiceProvider = {
     documents?: string[];
     location?: string;
 };
+
+export type TimeBlock = {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  type: 'appointment' | 'unavailable';
+};
