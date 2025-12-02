@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { appointments } from '@/lib/mock-data';
 import type { TimeBlock } from '@/lib/types';
@@ -11,21 +11,24 @@ export default function SchedulePage() {
   const { toast } = useToast();
   // Assuming the specialist is Dr. Amina Nakigudde for mock purposes
   const specialistId = '1';
-  const specialistAppointments = appointments
-    .filter(app => app.doctor.id === specialistId && (app.status === 'upcoming' || app.status === 'past'))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   
-  const [events, setEvents] = useState<TimeBlock[]>(
-    specialistAppointments.map(app => ({
+  const [events, setEvents] = useState<TimeBlock[]>([]);
+  const [unavailableBlocks, setUnavailableBlocks] = useState<TimeBlock[]>([]);
+
+  useEffect(() => {
+    const specialistAppointments = appointments
+      .filter(app => app.doctor.id === specialistId && (app.status === 'upcoming' || app.status === 'past'))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    const initialEvents = specialistAppointments.map(app => ({
       id: app.id,
       title: `Appt: ${app.reason}`,
       start: new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`),
       end: new Date(new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`).getTime() + 60 * 60 * 1000), // Assuming 1hr appointments
-      type: 'appointment'
-    }))
-  );
-
-  const [unavailableBlocks, setUnavailableBlocks] = useState<TimeBlock[]>([]);
+      type: 'appointment' as 'appointment'
+    }));
+    setEvents(initialEvents);
+  }, []);
 
   const handleCreateBlock = (block: Omit<TimeBlock, 'id' | 'type'>) => {
     const newBlock: TimeBlock = {
