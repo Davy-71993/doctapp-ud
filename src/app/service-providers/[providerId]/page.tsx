@@ -2,6 +2,7 @@
 "use client";
 
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { allServiceProviders } from '@/lib/mock-service-providers-data';
@@ -70,7 +71,9 @@ export default function PublicFacilityDetailsPage() {
                                     </div>
                                 </div>
                             </div>
-                            <Button className="self-end sm:self-center">Book Now</Button>
+                            <Link href={`/services/${service.id}`} passHref>
+                                <Button className="self-end sm:self-center">Book Now</Button>
+                            </Link>
                         </div>
                     )) : (
                         <div className="text-center py-8 text-muted-foreground">

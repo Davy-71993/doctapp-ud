@@ -2,6 +2,7 @@
 "use client"
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Clock, DollarSign, Pencil } from 'lucide-react';
@@ -29,10 +30,12 @@ function ServiceCard({ service }: { service: SpecialistService }) {
                 </div>
             </CardContent>
             <CardFooter>
-                <Button variant="outline" className="w-full">
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit Service
-                </Button>
+                <Link href={`/specialist/services/${service.id}`} className="w-full">
+                    <Button variant="outline" className="w-full">
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit Service
+                    </Button>
+                </Link>
             </CardFooter>
         </Card>
     )
