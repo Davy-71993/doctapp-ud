@@ -17,8 +17,7 @@ export default function SchedulePage() {
   // Assuming the specialist is Dr. Amina Nakigudde for mock purposes
   const specialistId = '1';
   
-  const [events, setEvents] = useState<TimeBlock[]>([]);
-  const [unavailableBlocks, setUnavailableBlocks] = useState<TimeBlock[]>([]);
+  const [allBlocks, setAllBlocks] = useState<TimeBlock[]>([]);
 
   useEffect(() => {
     const specialistAppointments = appointments
@@ -32,7 +31,6 @@ export default function SchedulePage() {
       end: new Date(new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`).getTime() + 60 * 60 * 1000), // Assuming 1hr appointments
       type: 'appointment' as 'appointment'
     }));
-    setEvents(initialEvents);
 
     const today = new Date();
     const initialUnavailableBlocks: TimeBlock[] = [
@@ -51,25 +49,24 @@ export default function SchedulePage() {
         type: 'unavailable',
       }
     ];
-    setUnavailableBlocks(initialUnavailableBlocks);
+    setAllBlocks([...initialEvents, ...initialUnavailableBlocks]);
 
   }, [specialistId]);
 
   const handleCreateBlock = (block: Omit<TimeBlock, 'id' | 'type'>) => {
     const newBlock: TimeBlock = {
       id: `unavailable-${Date.now()}`,
-      title: 'Unavailable',
       ...block,
       type: 'unavailable'
     };
-    setUnavailableBlocks(prev => [...prev, newBlock]);
+    setAllBlocks(prev => [...prev, newBlock]);
     toast({
         title: "Availability Updated",
         description: "Your schedule has been blocked for the selected time."
     });
   }
 
-  const handleAddSchedule = (newService: Omit<SpecialistService, 'id'>) => {
+  const handleAddSchedule = (newService: Omit<SpecialistService, 'id'> & { name: string; duration: number }) => {
     const newEvent: TimeBlock = {
         id: `event-${Date.now()}`,
         title: newService.name,
@@ -77,22 +74,12 @@ export default function SchedulePage() {
         end: new Date(new Date().getTime() + newService.duration * 60 * 1000), // This should be from the dialog
         type: 'appointment'
     };
-    setEvents(prev => [...prev, newEvent]);
+    setAllBlocks(prev => [...prev, newEvent]);
   }
 
-  const allBlocks = [...events, ...unavailableBlocks];
 
   return (
     <div className="space-y-8 h-[calc(100vh_-_10rem)] flex flex-col">
-      <div className="flex justify-between items-center">
-        <div>
-            <h1 className="text-3xl font-bold tracking-tight">My Schedule</h1>
-            <p className="text-muted-foreground">
-            View your appointments and manage your availability.
-            </p>
-        </div>
-      </div>
-
       <div className="flex-grow">
           <ScheduleXCalendar 
             events={allBlocks}
@@ -110,4 +97,3 @@ export default function SchedulePage() {
     </div>
   );
 }
-
