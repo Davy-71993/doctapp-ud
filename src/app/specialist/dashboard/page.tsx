@@ -190,10 +190,10 @@ export default function SpecialistDashboardPage() {
                             <span>Check Inbox</span>
                         </Button>
                     </Link>
-                     <Link href="/specialist/partners">
+                     <Link href="/specialist/service-providers">
                         <Button variant="outline" className="w-full h-20 flex-col gap-2">
                             <Network className="h-6 w-6"/>
-                            <span>Partners</span>
+                            <span>Service Providers</span>
                         </Button>
                     </Link>
                 </CardContent>

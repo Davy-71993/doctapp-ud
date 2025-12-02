@@ -40,7 +40,7 @@ const navItems = [
   { href: "/specialist/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/specialist/patients", label: "Patients", icon: Users },
   { href: "/specialist/inbox", label: "Inbox", icon: Inbox },
-  { href: "/specialist/partners", label: "Partners", icon: Network },
+  { href: "/specialist/service-providers", label: "Service Providers", icon: Network },
   { href: "/specialist/services", label: "Services", icon: Briefcase },
 ];
 

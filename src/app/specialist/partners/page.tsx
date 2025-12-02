@@ -1,9 +1,10 @@
+
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Building, Syringe, Plus } from 'lucide-react';
 
-const partners = [
+const serviceProviders = [
     { name: 'Nakasero Hospital', type: 'Hospital', avatar: 'CH' },
     { name: 'Ecopharm Pharmacy', type: 'Pharmacy', avatar: 'EP' },
     { name: 'The Surgery', type: 'Clinic', avatar: 'TS' },
@@ -15,20 +16,20 @@ const requests = [
     { name: 'St. Francis Hospital Nsambya', type: 'Hospital', avatar: 'SF' },
 ]
 
-export default function PartnersPage() {
+export default function ServiceProvidersPage() {
   return (
     <div className="space-y-8">
       <div>
         <div className="flex justify-between items-center">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Partners</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Service Providers</h1>
                 <p className="text-muted-foreground">
                     Manage your professional network of clinics and pharmacies.
                 </p>
             </div>
             <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Add New Partner
+                Add New Service Provider
             </Button>
         </div>
       </div>
@@ -37,10 +38,10 @@ export default function PartnersPage() {
         <Card>
           <CardHeader>
             <CardTitle>My Network</CardTitle>
-            <CardDescription>Your current professional partners.</CardDescription>
+            <CardDescription>Your current professional connections.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {partners.map((conn) => (
+            {serviceProviders.map((conn) => (
               <div key={conn.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-4">
                   <Avatar>
@@ -59,7 +60,7 @@ export default function PartnersPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Partnership Requests</CardTitle>
+            <CardTitle>Connection Requests</CardTitle>
             <CardDescription>New requests to join your network.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

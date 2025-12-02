@@ -37,7 +37,7 @@ export default function AdminDashboardPage() {
 
   const recentActivities = [
     { id: 1, user: 'Dr. Amina Nakigudde', action: 'Joined', timestamp: '2 hours ago' },
-    { id: 2, user: 'Ecopharm Pharmacy', action: 'Added as partner', timestamp: '1 day ago' },
+    { id: 2, user: 'Ecopharm Pharmacy', action: 'Added as service provider', timestamp: '1 day ago' },
     { id: 3, user: 'Alex Mukisa', action: 'Registered', timestamp: '2 days ago' },
   ];
 

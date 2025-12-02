@@ -11,10 +11,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Plus, FileText, Check, X, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import type { Partner } from '@/lib/types';
+import type { ServiceProvider } from '@/lib/types';
 
 
-function PendingItem({ item }: { item: Partner }) {
+function PendingItem({ item }: { item: ServiceProvider }) {
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-muted/50 rounded-lg gap-4">
             <div>
@@ -56,7 +56,7 @@ function PendingItem({ item }: { item: Partner }) {
     )
 }
 
-function VerifiedItem({ item }: { item: Partner }) {
+function VerifiedItem({ item }: { item: ServiceProvider }) {
     return (
          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-muted/30 rounded-lg gap-3">
             <div>
@@ -82,14 +82,14 @@ function VerifiedItem({ item }: { item: Partner }) {
     )
 }
 
-type PartnerListProps = {
+type ServiceProviderListProps = {
     title: string;
     description: string;
-    pendingData: Partner[];
-    verifiedData: Partner[];
+    pendingData: ServiceProvider[];
+    verifiedData: ServiceProvider[];
 }
 
-export default function PartnerListPageTemplate({ title, description, pendingData, verifiedData }: PartnerListProps) {
+export default function ServiceProviderListPageTemplate({ title, description, pendingData, verifiedData }: ServiceProviderListProps) {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -109,11 +109,11 @@ export default function PartnerListPageTemplate({ title, description, pendingDat
         <Card>
             <CardHeader>
                 <CardTitle>Pending {title} Approvals</CardTitle>
-                <CardDescription>These partners are awaiting for their documents and profile to be verified.</CardDescription>
+                <CardDescription>These service providers are awaiting for their documents and profile to be verified.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {pendingData.map(partner => (
-                    <PendingItem key={partner.id} item={partner} />
+                {pendingData.map(serviceProvider => (
+                    <PendingItem key={serviceProvider.id} item={serviceProvider} />
                 ))}
             </CardContent>
         </Card>
@@ -122,11 +122,11 @@ export default function PartnerListPageTemplate({ title, description, pendingDat
       <Card>
         <CardHeader>
           <CardTitle>All {title}</CardTitle>
-          <CardDescription>A list of all verified partners on the platform.</CardDescription>
+          <CardDescription>A list of all verified service providers on the platform.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {verifiedData.length > 0 ? verifiedData.map((partner) => (
-            <VerifiedItem key={partner.id} item={partner} />
+          {verifiedData.length > 0 ? verifiedData.map((serviceProvider) => (
+            <VerifiedItem key={serviceProvider.id} item={serviceProvider} />
           )) : (
             <p className="text-sm text-muted-foreground text-center py-8">No verified {title.toLowerCase()} found.</p>
           )}

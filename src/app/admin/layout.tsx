@@ -52,11 +52,11 @@ const navItems = [
   { href: "/admin/inbox", label: "Inbox", icon: Inbox },
 ];
 
-const partnerSubItems = [
-    { href: "/admin/partners/hospitals", label: "Hospitals", icon: Hospital },
-    { href: "/admin/partners/clinics", label: "Clinics", icon: Activity },
-    { href: "/admin/partners/pharmacies", label: "Pharmacies", icon: Pill },
-    { href: "/admin/partners/drug-shops", label: "Drug Shops", icon: Pill },
+const serviceProviderSubItems = [
+    { href: "/admin/service-providers/hospitals", label: "Hospitals", icon: Hospital },
+    { href: "/admin/service-providers/clinics", label: "Clinics", icon: Activity },
+    { href: "/admin/service-providers/pharmacies", label: "Pharmacies", icon: Pill },
+    { href: "/admin/service-providers/drug-shops", label: "Drug Shops", icon: Pill },
 ];
 
 const servicesSubItems = [
@@ -75,7 +75,7 @@ const AdminSidebar = () => {
     const router = useRouter();
     const { toast } = useToast();
     const { state, setOpen } = useSidebar();
-    const [partnersOpen, setPartnersOpen] = useState(pathname.startsWith('/admin/partners'));
+    const [serviceProvidersOpen, setServiceProvidersOpen] = useState(pathname.startsWith('/admin/service-providers'));
     const [servicesOpen, setServicesOpen] = useState(pathname.startsWith('/admin/services'));
 
 
@@ -126,23 +126,23 @@ const AdminSidebar = () => {
                 </SidebarMenuItem>
                 ))}
 
-                <Collapsible open={partnersOpen} onOpenChange={setPartnersOpen} className="w-full">
+                <Collapsible open={serviceProvidersOpen} onOpenChange={setServiceProvidersOpen} className="w-full">
                     <CollapsibleTrigger asChild>
                          <SidebarMenuButton 
-                            isActive={isTabActive('/admin/partners')}
-                            tooltip={{children: "Partners"}}
+                            isActive={isTabActive('/admin/service-providers')}
+                            tooltip={{children: "Service Providers"}}
                             className="justify-between"
                         >
                             <div className="flex items-center gap-2">
                                 <Network />
-                                <span>Partners</span>
+                                <span>Service Providers</span>
                             </div>
-                            <ChevronDown className={cn("h-4 w-4 transition-transform", partnersOpen && "rotate-180")} />
+                            <ChevronDown className={cn("h-4 w-4 transition-transform", serviceProvidersOpen && "rotate-180")} />
                         </SidebarMenuButton>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                         <SidebarMenuSub className="mt-1">
-                            {partnerSubItems.map(item => (
+                            {serviceProviderSubItems.map(item => (
                                 <SidebarMenuItem key={item.href}>
                                      <Link href={item.href} passHref>
                                         <SidebarMenuSubButton isActive={pathname === item.href}>
@@ -234,11 +234,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const adminUser = users.find(d => d.role === 'admin');
 
   const getPageTitle = () => {
-    const allNavItems = [...navItems, ...partnerSubItems, ...servicesSubItems, ...bottomNavItems];
+    const allNavItems = [...navItems, ...serviceProviderSubItems, ...servicesSubItems, ...bottomNavItems];
     if (pathname === '/admin/dashboard') return "Dashboard";
 
-    if (pathname.startsWith('/admin/partners') && !partnerSubItems.some(item => item.href === pathname)) {
-        return "Partners";
+    if (pathname.startsWith('/admin/service-providers') && !serviceProviderSubItems.some(item => item.href === pathname)) {
+        return "Service Providers";
     }
     
     if (pathname.startsWith('/admin/services') && !servicesSubItems.some(item => item.href === pathname)) {
