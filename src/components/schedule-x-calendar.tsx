@@ -40,10 +40,18 @@ export function ScheduleXCalendar({ events, onCreateBlock }: ScheduleXCalendarPr
                 })
             }));
 
+            const now = new Date();
+            const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
             calendarApp.current = createCalendar({
                 views: [viewWeek, viewDay, viewMonthGrid],
                 firstDayOfWeek: 1, // Monday
                 events: transformedEvents,
+                dayBoundaries: {
+                    start: '06:00',
+                    end: '22:00',
+                },
+                scrollToTime: currentTime,
                 callbacks: {
                     onEventUpdate: (updatedEvent) => {
                         console.log('Event updated', updatedEvent);

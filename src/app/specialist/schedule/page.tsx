@@ -6,6 +6,9 @@ import { useToast } from '@/hooks/use-toast';
 import { appointments } from '@/lib/mock-data';
 import type { TimeBlock } from '@/lib/types';
 import { ScheduleXCalendar } from '@/components/schedule-x-calendar';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 export default function SchedulePage() {
   const { toast } = useToast();
@@ -28,7 +31,7 @@ export default function SchedulePage() {
       type: 'appointment' as 'appointment'
     }));
     setEvents(initialEvents);
-  }, []);
+  }, [specialistId]);
 
   const handleCreateBlock = (block: Omit<TimeBlock, 'id' | 'type'>) => {
     const newBlock: TimeBlock = {
@@ -41,6 +44,13 @@ export default function SchedulePage() {
     toast({
         title: "Availability Updated",
         description: "Your schedule has been blocked for the selected time."
+    });
+  }
+
+  const handleAddSchedule = () => {
+    toast({
+      title: "Add New Schedule",
+      description: "You can implement a dialog here to create a new event."
     });
   }
 
@@ -61,6 +71,25 @@ export default function SchedulePage() {
             onCreateBlock={handleCreateBlock}
         />
       </div>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button 
+              size="icon" 
+              className="rounded-full w-14 h-14 shadow-lg fixed bottom-24 right-6 z-50"
+              onClick={handleAddSchedule}
+            >
+              <Plus className="h-6 w-6" />
+              <span className="sr-only">Add New Schedule</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Add New Schedule</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
     </div>
   );
 }
