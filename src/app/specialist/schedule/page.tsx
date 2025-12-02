@@ -5,9 +5,8 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { appointments } from '@/lib/mock-data';
-import { WeeklySchedule } from '@/components/weekly-schedule';
 import type { TimeBlock } from '@/lib/types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScheduleXCalendar } from '@/components/schedule-x-calendar';
 
 export default function SchedulePage() {
   const { toast } = useToast();
@@ -46,7 +45,7 @@ export default function SchedulePage() {
   const allBlocks = [...events, ...unavailableBlocks];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 h-[calc(100vh_-_10rem)] flex flex-col">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">My Schedule</h1>
         <p className="text-muted-foreground">
@@ -54,38 +53,14 @@ export default function SchedulePage() {
         </p>
       </div>
 
-      <Tabs defaultValue="weekly" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 md:w-1/3">
-          <TabsTrigger value="daily">Daily</TabsTrigger>
-          <TabsTrigger value="weekly">Weekly</TabsTrigger>
-          <TabsTrigger value="monthly">Monthly</TabsTrigger>
-        </TabsList>
-        <TabsContent value="daily">
-            <Card>
-                <CardContent className="pt-6">
-                    <p className="text-center text-muted-foreground">Daily view coming soon!</p>
-                </CardContent>
-            </Card>
-        </TabsContent>
-        <TabsContent value="weekly">
-            <Card>
-                <CardContent className="pt-6">
-                    <p className="text-sm text-muted-foreground mb-4">Click and drag on the calendar to block out time.</p>
-                    <WeeklySchedule 
-                        events={allBlocks}
-                        onCreateBlock={handleCreateBlock}
-                    />
-                </CardContent>
-            </Card>
-        </TabsContent>
-        <TabsContent value="monthly">
-            <Card>
-                <CardContent className="pt-6">
-                    <p className="text-center text-muted-foreground">Monthly view coming soon!</p>
-                </CardContent>
-            </Card>
-        </TabsContent>
-      </Tabs>
+      <Card className="flex-grow">
+          <CardContent className="pt-6 h-full">
+             <ScheduleXCalendar 
+                events={allBlocks}
+                onCreateBlock={handleCreateBlock}
+            />
+          </CardContent>
+      </Card>
     </div>
   );
 }
