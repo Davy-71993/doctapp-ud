@@ -20,7 +20,7 @@ import type { ServiceProvider } from '@/lib/types';
 
 type AddServiceProviderDialogProps = {
     children: React.ReactNode;
-    onAddProvider: (provider: Omit<ServiceProvider, 'id' | 'specialistId'>) => void;
+    onAddProvider: (provider: Omit<ServiceProvider, 'id' | 'specialistId' | 'services'>) => void;
 };
 
 export function AddServiceProviderDialog({ children, onAddProvider }: AddServiceProviderDialogProps) {
@@ -87,6 +87,7 @@ export function AddServiceProviderDialog({ children, onAddProvider }: AddService
                                 <SelectItem value="Clinic">Clinic</SelectItem>
                                 <SelectItem value="Pharmacy">Pharmacy</SelectItem>
                                 <SelectItem value="Drug Shop">Drug Shop</SelectItem>
+                                <SelectItem value="Home-Based Care">Home-Based Care</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

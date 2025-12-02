@@ -35,6 +35,7 @@ import {
   Truck,
   Siren,
   Inbox,
+  Home,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,7 @@ const serviceProviderSubItems = [
     { href: "/admin/service-providers/clinics", label: "Clinics", icon: Activity },
     { href: "/admin/service-providers/pharmacies", label: "Pharmacies", icon: Pill },
     { href: "/admin/service-providers/drug-shops", label: "Drug Shops", icon: Pill },
+    { href: "/admin/service-providers/home-based-care", label: "Home-Based Care", icon: Home },
 ];
 
 const servicesSubItems = [

@@ -1,6 +1,6 @@
 
 import type { ServiceProvider } from "@/lib/types";
-import { Hospital, Activity, Pill } from "lucide-react";
+import { Hospital, Activity, Pill, Home } from "lucide-react";
 import { specialistServices } from "./mock-data";
 
 export const serviceProviderCategories = [
@@ -8,6 +8,7 @@ export const serviceProviderCategories = [
     { name: "Clinics", href: "/admin/service-providers/clinics", icon: Activity, description: "Manage partner clinics." },
     { name: "Pharmacies", href: "/admin/service-providers/pharmacies", icon: Pill, description: "Manage partner pharmacies." },
     { name: "Drug Shops", href: "/admin/service-providers/drug-shops", icon: Pill, description: "Manage partner drug shops." },
+    { name: "Home-Based Care", href: "/admin/service-providers/home-based-care", icon: Home, description: "Manage home-based care providers." },
 ];
 
 export const pendingHospitals: ServiceProvider[] = [
