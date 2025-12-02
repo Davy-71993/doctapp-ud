@@ -8,7 +8,7 @@ export default function AmbulancePage() {
     return (
         <ServiceListPageTemplate
             title="Ambulance Services"
-            description="Add, view, and manage all ambulance service providers."
+            description="Review and manage all ambulance service providers."
             pendingData={pendingAmbulance}
             verifiedData={verifiedAmbulance}
             type="Ambulance"

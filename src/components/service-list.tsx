@@ -1,6 +1,7 @@
 
 "use client";
 
+import Link from 'next/link';
 import {
   Card,
   CardHeader,
@@ -45,7 +46,9 @@ function VerifiedItem({ item }: { item: Service }) {
             </div>
             <div className="flex items-center gap-2">
                 <Badge variant="secondary">Verified</Badge>
-                <Button variant="outline" size="sm">Edit</Button>
+                <Link href={`/services/${item.id}`}>
+                    <Button variant="outline" size="sm">View</Button>
+                </Link>
             </div>
         </div>
     )
@@ -69,10 +72,6 @@ export default function ServiceListPageTemplate({ title, description, pendingDat
             {description}
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New {type}
-        </Button>
       </div>
 
        {pendingData.length > 0 && (

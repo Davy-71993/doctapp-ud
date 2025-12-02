@@ -13,7 +13,7 @@ export default function HomeBasedCarePage() {
     return (
         <ServiceListPageTemplate
             title="Home-Based Care Services"
-            description="Add, view, and manage all home-based care service providers."
+            description="Review and manage all home-based care service providers."
             pendingData={pendingHomeCare}
             verifiedData={verifiedHomeCare}
             type="Service"

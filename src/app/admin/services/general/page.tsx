@@ -8,7 +8,7 @@ export default function GeneralServicesPage() {
     return (
         <ServiceListPageTemplate
             title="General Services"
-            description="Add, view, and manage all general services offered on the platform."
+            description="Review and manage all general services offered on the platform."
             pendingData={pendingServices}
             verifiedData={verifiedServices}
             type="Service"

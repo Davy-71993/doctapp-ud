@@ -8,8 +8,6 @@ import {
   CardContent,
   CardDescription,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import {
     serviceCategories
@@ -22,13 +20,9 @@ export default function AdminServicesPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Manage Services</h1>
           <p className="text-muted-foreground">
-            Add, view, and manage all offered services on the platform.
+            View and manage all offered services on the platform submitted by specialists.
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New Service
-        </Button>
       </div>
 
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
