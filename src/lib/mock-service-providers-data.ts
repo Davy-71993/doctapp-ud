@@ -10,37 +10,37 @@ export const serviceProviderCategories = [
 ];
 
 export const pendingHospitals: ServiceProvider[] = [
-    { id: 'ph1', name: 'St. Francis Hospital Nsambya', type: 'Hospital', documents: ['Registration.pdf', 'License.pdf'], location: 'Kampala' },
+    { id: 'ph1', name: 'St. Francis Hospital Nsambya', type: 'Hospital', documents: ['Registration.pdf', 'License.pdf'], location: 'Kampala', specialistId: '2' },
 ];
 
 export const verifiedHospitals: ServiceProvider[] = [
-    { id: 'vh1', name: 'Nakasero Hospital', type: 'Hospital', location: 'Kampala' },
-    { id: 'vh2', name: 'Mulago National Referral Hospital', type: 'Hospital', location: 'Kampala' },
-    { id: 'vh3', name: 'Mbarara Regional Referral Hospital', type: 'Hospital', location: 'Mbarara' },
+    { id: 'vh1', name: 'Nakasero Hospital', type: 'Hospital', location: 'Kampala', specialistId: '1' },
+    { id: 'vh2', name: 'Mulago National Referral Hospital', type: 'Hospital', location: 'Kampala', specialistId: '1' },
+    { id: 'vh3', name: 'Mbarara Regional Referral Hospital', type: 'Hospital', location: 'Mbarara', specialistId: '6' },
 ];
 
 export const pendingClinics: ServiceProvider[] = [
-    { id: 'pc1', name: 'IMC Clinic', type: 'Clinic', documents: ['Registration.pdf'], location: 'Jinja' },
+    { id: 'pc1', name: 'IMC Clinic', type: 'Clinic', documents: ['Registration.pdf'], location: 'Jinja', specialistId: '17' },
 ];
 
 export const verifiedClinics: ServiceProvider[] = [
-    { id: 'vc1', name: 'The Surgery', type: 'Clinic', location: 'Kampala' },
-    { id: 'vc2', name: 'SAS Clinic', type: 'Clinic', location: 'Kampala' },
-    { id: 'vc3', name: 'Gulu Medical Center', type: 'Clinic', location: 'Gulu' },
+    { id: 'vc1', name: 'The Surgery', type: 'Clinic', location: 'Kampala', specialistId: '10' },
+    { id: 'vc2', name: 'SAS Clinic', type: 'Clinic', location: 'Kampala', specialistId: '18' },
+    { id: 'vc3', name: 'Gulu Medical Center', type: 'Clinic', location: 'Gulu', specialistId: '4' },
 ];
 
 export const pendingPharmacies: ServiceProvider[] = [];
 
 export const verifiedPharmacies: ServiceProvider[] = [
-    { id: 'vp1', name: 'Ecopharm Pharmacy', type: 'Pharmacy', location: 'Kampala' },
-    { id: 'vp2', name: 'C&A Pharmacy', type: 'Pharmacy', location: 'Kampala' },
-    { id: 'vp3', name: 'Goodlife Pharmacy', type: 'Pharmacy', location: 'Jinja' },
+    { id: 'vp1', name: 'Ecopharm Pharmacy', type: 'Pharmacy', location: 'Kampala', specialistId: '21' },
+    { id: 'vp2', name: 'C&A Pharmacy', type: 'Pharmacy', location: 'Kampala', specialistId: '21' },
+    { id: 'vp3', name: 'Goodlife Pharmacy', type: 'Pharmacy', location: 'Jinja', specialistId: '21' },
 ];
 
 export const pendingDrugShops: ServiceProvider[] = [
-    { id: 'pds1', name: 'Central Drug Shop', type: 'Drug Shop', documents: ['License.pdf'], location: 'Mbale' }
+    { id: 'pds1', name: 'Central Drug Shop', type: 'Drug Shop', documents: ['License.pdf'], location: 'Mbale', specialistId: '24' }
 ];
 
 export const verifiedDrugShops: ServiceProvider[] = [
-    { id: 'vds1', name: 'Your Health Drug Shop', type: 'Drug Shop', location: 'Mbarara' }
+    { id: 'vds1', name: 'Your Health Drug Shop', type: 'Drug Shop', location: 'Mbarara', specialistId: '24' }
 ];

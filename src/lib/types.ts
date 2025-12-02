@@ -112,6 +112,7 @@ export type ServiceProvider = {
     id: string;
     name: string;
     type: 'Hospital' | 'Clinic' | 'Pharmacy' | 'Drug Shop';
+    specialistId: string; // The ID of the specialist in charge
     documents?: string[];
     location?: string;
 };

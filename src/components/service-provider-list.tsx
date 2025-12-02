@@ -12,9 +12,11 @@ import { Button } from '@/components/ui/button';
 import { Plus, FileText, Check, X, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { ServiceProvider } from '@/lib/types';
+import { doctors } from '@/lib/mock-data';
 
 
 function PendingItem({ item }: { item: ServiceProvider }) {
+    const specialist = doctors.find(d => d.id === item.specialistId);
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-muted/50 rounded-lg gap-4">
             <div>
@@ -31,6 +33,7 @@ function PendingItem({ item }: { item: ServiceProvider }) {
                         </>
                     )}
                 </div>
+                 {specialist && <p className="text-xs text-muted-foreground mt-1">Submitted by: {specialist.name}</p>}
                 {item.documents && (
                      <div className="flex items-center gap-2 mt-2">
                         {item.documents.map((doc: string) => (
