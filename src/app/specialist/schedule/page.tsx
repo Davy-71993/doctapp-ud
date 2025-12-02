@@ -33,6 +33,26 @@ export default function SchedulePage() {
       type: 'appointment' as 'appointment'
     }));
     setEvents(initialEvents);
+
+    const today = new Date();
+    const initialUnavailableBlocks: TimeBlock[] = [
+      {
+        id: 'lunch-today',
+        title: 'Lunch Break',
+        start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13, 0),
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14, 0),
+        type: 'unavailable',
+      },
+       {
+        id: 'admin-tomorrow',
+        title: 'Admin Work',
+        start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 9, 0),
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 10, 30),
+        type: 'unavailable',
+      }
+    ];
+    setUnavailableBlocks(initialUnavailableBlocks);
+
   }, [specialistId]);
 
   const handleCreateBlock = (block: Omit<TimeBlock, 'id' | 'type'>) => {
