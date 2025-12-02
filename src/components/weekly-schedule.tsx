@@ -32,10 +32,16 @@ export function WeeklySchedule({ events, onCreateBlock }: WeeklyScheduleProps) {
   const start = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = eachDayOfInterval({ start, end: addDays(start, 6) });
   
-  const getEventStyle = (event: TimeBlock) => {
+  const getEventStyle = (event: Omit<TimeBlock, 'id'|'title'|'type'>) => {
     const startRow = getRowIndex(event.start);
     const endRow = getRowIndex(event.end);
-    const dayIndex = weekDays.findIndex(day => isSameDay(day, event.start));
+    
+    let dayIndex;
+    if ('dayIndex' in event && typeof event.dayIndex === 'number') {
+        dayIndex = event.dayIndex;
+    } else {
+        dayIndex = weekDays.findIndex(day => isSameDay(day, event.start));
+    }
 
     if (dayIndex === -1) return {};
 
@@ -160,7 +166,7 @@ export function WeeklySchedule({ events, onCreateBlock }: WeeklyScheduleProps) {
         
         {/* Selection overlay */}
         {selection && (
-             <div className="absolute m-1 p-2 rounded-lg bg-primary/30 pointer-events-none z-30" style={getEventStyle(selection as TimeBlock)}>
+             <div className="absolute m-1 p-2 rounded-lg bg-primary/30 pointer-events-none z-30" style={getEventStyle(selection)}>
              </div>
         )}
       </div>
