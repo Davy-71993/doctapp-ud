@@ -24,7 +24,8 @@ import {
   Network,
   LogOut,
   Stethoscope,
-  Briefcase
+  Briefcase,
+  Calendar,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImagePlaceholder } from "@/components/image-placeholder";
@@ -38,6 +39,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
   { href: "/specialist/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/specialist/schedule", label: "Schedule", icon: Calendar },
   { href: "/specialist/patients", label: "Patients", icon: Users },
   { href: "/specialist/inbox", label: "Inbox", icon: Inbox },
   { href: "/specialist/service-providers", label: "Service Providers", icon: Network },
