@@ -20,13 +20,30 @@ export function ScheduleXCalendar({ appointments, unavailableBlocks, onCreateBlo
     const calendarApp = useRef<CalendarApp | null>(null);
 
     useEffect(() => {
-        const appointmentEvents: TimeBlock[] = appointments.map(app => ({
-            id: app.id,
-            title: `Appt: ${app.reason}`,
-            start: new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`),
-            end: new Date(new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`).getTime() + 60 * 60 * 1000), // Assuming 1hr appointments
-            type: 'appointment'
-        }));
+        const appointmentEvents: TimeBlock[] = appointments.map(app => {
+            const [time, period] = app.time.split(' ');
+            let [hours, minutes] = time.split(':').map(Number);
+            
+            if (period === 'PM' && hours < 12) {
+                hours += 12;
+            }
+            if (period === 'AM' && hours === 12) {
+                hours = 0;
+            }
+
+            const startDate = new Date(app.date);
+            startDate.setHours(hours, minutes, 0, 0);
+
+            const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Assuming 1hr appointments
+
+            return {
+                id: app.id,
+                title: `Appt: ${app.reason}`,
+                start: startDate,
+                end: endDate,
+                type: 'appointment'
+            }
+        });
         
         const allEvents = [...appointmentEvents, ...unavailableBlocks];
 
@@ -35,17 +52,11 @@ export function ScheduleXCalendar({ appointments, unavailableBlocks, onCreateBlo
             title: e.title,
             start: e.start.toISOString(),
             end: e.end.toISOString(),
-            ...(e.type === 'appointment' ? {
-                style: {
-                    backgroundColor: 'hsl(var(--primary))',
-                    color: 'hsl(var(--primary-foreground))',
-                }
-            } : {
-                style: {
-                    backgroundColor: 'hsl(var(--muted))',
-                    color: 'hsl(var(--muted-foreground))',
-                }
-            })
+            style: {
+                backgroundColor: e.type === 'appointment' ? 'hsl(var(--primary))' : 'hsl(var(--muted))',
+                color: e.type === 'appointment' ? 'hsl(var(--primary-foreground))' : 'hsl(var(--muted-foreground))',
+                border: e.type === 'appointment' ? 'hsl(var(--primary))' : 'hsl(var(--muted))',
+            }
         }));
 
         if (calendarRef.current && !calendarApp.current) {

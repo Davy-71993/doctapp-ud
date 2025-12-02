@@ -71,7 +71,7 @@ export default function SchedulePage() {
     <div className="space-y-8 h-[calc(100vh_-_10rem)] flex flex-col">
       <div className="flex-grow">
           <ScheduleXCalendar 
-            appointments={specialistAppointments}
+            appointments={appointments}
             unavailableBlocks={[...unavailableBlocks, ...newBlocks]}
             onCreateBlock={handleCreateBlock}
         />
