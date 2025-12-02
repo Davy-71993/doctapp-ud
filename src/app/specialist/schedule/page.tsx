@@ -15,7 +15,7 @@ import type { SpecialistService } from '@/lib/types';
 export default function SchedulePage() {
   const { toast } = useToast();
   // Assuming the specialist is Dr. Amina Nakigudde for mock purposes
-  const specialistId = '1';
+  const specialistId = '4';
   
   const [allBlocks, setAllBlocks] = useState<TimeBlock[]>([]);
 
@@ -24,12 +24,12 @@ export default function SchedulePage() {
       .filter(app => app.doctor.id === specialistId && (app.status === 'upcoming' || app.status === 'past'))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     
-    const initialEvents = specialistAppointments.map(app => ({
+    const initialEvents: TimeBlock[] = specialistAppointments.map(app => ({
       id: app.id,
       title: `Appt: ${app.reason}`,
       start: new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`),
       end: new Date(new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`).getTime() + 60 * 60 * 1000), // Assuming 1hr appointments
-      type: 'appointment' as 'appointment'
+      type: 'appointment'
     }));
 
     const today = new Date();
@@ -57,7 +57,8 @@ export default function SchedulePage() {
     const newBlock: TimeBlock = {
       id: `unavailable-${Date.now()}`,
       title: 'Unavailable',
-      ...block,
+      start: block.start,
+      end: block.end,
       type: 'unavailable'
     };
     setAllBlocks(prev => [...prev, newBlock]);
@@ -67,7 +68,7 @@ export default function SchedulePage() {
     });
   }
 
-  const handleAddSchedule = (newService: Omit<SpecialistService, 'id'> & { name: string; duration: number }) => {
+  const handleAddSchedule = (newService: Omit<SpecialistService, 'id'>) => {
     const now = new Date();
     const newEvent: TimeBlock = {
         id: `event-${Date.now()}`,
