@@ -46,39 +46,54 @@ export function WeeklySchedule({ events, onCreateBlock }: WeeklyScheduleProps) {
     };
   };
 
-  const handleMouseDown = (e: MouseEvent<HTMLDivElement>, dayIndex: number) => {
-    if (!gridRef.current) return;
-    const rect = gridRef.current.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    const hourHeight = rect.height / 24;
-    const hour = Math.floor(y / hourHeight);
-    const minute = Math.floor(((y % hourHeight) / hourHeight) * 2) * 30;
+  const getCoordinates = (e: MouseEvent<HTMLDivElement>): { y: number, x: number } | null => {
+      if (!gridRef.current) return null;
+      const rect = gridRef.current.getBoundingClientRect();
+      return { y: e.clientY - rect.top, x: e.clientX - rect.left };
+  }
+
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    const coords = getCoordinates(e);
+    if (!coords) return;
+    
+    const dayWidth = gridRef.current!.clientWidth / 7;
+    const dayIndex = Math.floor(coords.x / dayWidth);
+
+    const hourHeight = gridRef.current!.clientHeight / (24 * 2);
+    const rowIndex = Math.floor(coords.y / hourHeight);
+    
+    const hour = Math.floor(rowIndex / 2);
+    const minute = (rowIndex % 2) * 30;
 
     const day = weekDays[dayIndex];
     const startDate = setMinutes(setHours(day, hour), minute);
 
     setSelecting(true);
-    setSelection({ start: startDate, end: addDays(startDate,0), dayIndex });
+    setSelection({ start: startDate, end: new Date(startDate.getTime() + 30 * 60 * 1000), dayIndex });
   };
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!selecting || !selection || !gridRef.current) return;
     
-    const rect = gridRef.current.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    const hourHeight = rect.height / 24;
-    const hour = Math.floor(y / hourHeight);
-    const minute = Math.floor(((y % hourHeight) / hourHeight) * 2) * 30;
+    const coords = getCoordinates(e);
+    if (!coords) return;
+
+    const hourHeight = gridRef.current!.clientHeight / (24 * 2);
+    const rowIndex = Math.floor(coords.y / hourHeight);
+
+    const hour = Math.floor(rowIndex / 2);
+    const minute = (rowIndex % 2) * 30;
 
     const day = weekDays[selection.dayIndex];
     let endDate = setMinutes(setHours(day, hour), minute);
     
     if (endDate < selection.start) {
-        endDate = selection.start;
-    } else {
-        // Snap to next 30min slot
-        endDate = new Date(endDate.getTime() + 30 * 60 * 1000);
+      // Don't allow dragging upwards past the start time
+      endDate = selection.start;
     }
+    
+    // Snap to the end of the 30min slot
+    endDate = new Date(endDate.getTime() + 30 * 60 * 1000);
     
     setSelection({ ...selection, end: endDate });
   };
@@ -94,8 +109,8 @@ export function WeeklySchedule({ events, onCreateBlock }: WeeklyScheduleProps) {
   };
 
   return (
-    <div className="relative">
-      <div className="grid grid-cols-[auto_repeat(7,1fr)] grid-rows-[auto_repeat(48,1fr)] text-xs h-[70vh] bg-background" onMouseUp={handleMouseUp} >
+    <div className="relative" onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+      <div className="grid grid-cols-[auto_repeat(7,1fr)] grid-rows-[auto_repeat(48,1fr)] text-xs h-[70vh] bg-background">
         {/* Time column */}
         <div className="col-start-1 row-start-1 sticky top-0 bg-background z-10 pr-2"></div>
         {timeSlots.map((time, index) => (
@@ -123,20 +138,18 @@ export function WeeklySchedule({ events, onCreateBlock }: WeeklyScheduleProps) {
             )}></div>
         ))}
 
-        {/* Day columns for interaction */}
-        <div className="col-start-2 col-span-7 row-start-2 row-span-48 grid grid-cols-7 grid-rows-1" ref={gridRef}>
-            {weekDays.map((_, dayIndex) => (
-                <div key={dayIndex} className="col-start-[-1] row-start-1 h-full" style={{ gridColumn: dayIndex + 1}}
-                    onMouseDown={(e) => handleMouseDown(e, dayIndex)}
-                    onMouseMove={handleMouseMove}
-                />
-            ))}
-        </div>
+        {/* Interaction Layer */}
+        <div 
+            className="absolute top-0 left-[3rem] right-0 bottom-0 z-20 cursor-crosshair"
+            ref={gridRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+        />
 
         {/* Events */}
         {events.map((event) => (
           <div key={event.id} 
-               className={cn("absolute m-1 p-2 rounded-lg text-white text-xs overflow-hidden", {
+               className={cn("absolute m-1 p-2 rounded-lg text-white text-xs overflow-hidden z-30", {
                    'bg-blue-500': event.type === 'appointment',
                    'bg-gray-400': event.type === 'unavailable'
                })} 
@@ -147,7 +160,7 @@ export function WeeklySchedule({ events, onCreateBlock }: WeeklyScheduleProps) {
         
         {/* Selection overlay */}
         {selection && (
-             <div className="absolute m-1 p-2 rounded-lg bg-primary/30 pointer-events-none" style={getEventStyle(selection as TimeBlock)}>
+             <div className="absolute m-1 p-2 rounded-lg bg-primary/30 pointer-events-none z-30" style={getEventStyle(selection as TimeBlock)}>
              </div>
         )}
       </div>

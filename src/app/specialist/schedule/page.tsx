@@ -2,15 +2,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { appointments } from '@/lib/mock-data';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ImagePlaceholder } from '@/components/image-placeholder';
-import { format } from 'date-fns';
+import { appointments } from '@/lib/mock-data';
 import { WeeklySchedule } from '@/components/weekly-schedule';
-import type { Appointment, TimeBlock } from '@/lib/types';
+import type { TimeBlock } from '@/lib/types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function SchedulePage() {
   const { toast } = useToast();
@@ -53,50 +50,42 @@ export default function SchedulePage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">My Schedule</h1>
         <p className="text-muted-foreground">
-          View your appointments and manage your availability. Click and drag on the calendar to block out time.
+          View your appointments and manage your availability.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-        <Card className="xl:col-span-3">
-            <CardHeader>
-                <CardTitle>Weekly Schedule</CardTitle>
-                <CardDescription>
-                    Your weekly appointments and blocked out time slots.
-                </CardDescription>
-            </CardHeader>
-          <CardContent>
-            <WeeklySchedule 
-                events={allBlocks}
-                onCreateBlock={handleCreateBlock}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Upcoming Appointments</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 max-h-[600px] overflow-y-auto">
-            {specialistAppointments.filter(a => new Date(a.date) >= new Date()).length > 0 ? (
-                specialistAppointments.filter(a => new Date(a.date) >= new Date()).map(app => (
-                    <div key={app.id} className="flex items-center gap-4 p-3 bg-muted/50 rounded-lg">
-                        <Avatar>
-                            <ImagePlaceholder id={app.doctor.image} />
-                            <AvatarFallback>{app.doctor.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <p className="font-semibold">{format(new Date(app.date), 'EEE, MMM dd')} - {app.time}</p>
-                            <p className="text-sm text-muted-foreground">{app.reason}</p>
-                        </div>
-                    </div>
-                ))
-            ) : (
-                <p className="text-sm text-muted-foreground text-center py-8">No upcoming appointments.</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      <Tabs defaultValue="weekly" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 md:w-1/3">
+          <TabsTrigger value="daily">Daily</TabsTrigger>
+          <TabsTrigger value="weekly">Weekly</TabsTrigger>
+          <TabsTrigger value="monthly">Monthly</TabsTrigger>
+        </TabsList>
+        <TabsContent value="daily">
+            <Card>
+                <CardContent className="pt-6">
+                    <p className="text-center text-muted-foreground">Daily view coming soon!</p>
+                </CardContent>
+            </Card>
+        </TabsContent>
+        <TabsContent value="weekly">
+            <Card>
+                <CardContent className="pt-6">
+                    <p className="text-sm text-muted-foreground mb-4">Click and drag on the calendar to block out time.</p>
+                    <WeeklySchedule 
+                        events={allBlocks}
+                        onCreateBlock={handleCreateBlock}
+                    />
+                </CardContent>
+            </Card>
+        </TabsContent>
+        <TabsContent value="monthly">
+            <Card>
+                <CardContent className="pt-6">
+                    <p className="text-center text-muted-foreground">Monthly view coming soon!</p>
+                </CardContent>
+            </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
