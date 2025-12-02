@@ -2,7 +2,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { appointments } from '@/lib/mock-data';
 import type { TimeBlock } from '@/lib/types';
@@ -53,14 +52,12 @@ export default function SchedulePage() {
         </p>
       </div>
 
-      <Card className="flex-grow">
-          <CardContent className="h-full">
-             <ScheduleXCalendar 
-                events={allBlocks}
-                onCreateBlock={handleCreateBlock}
-            />
-          </CardContent>
-      </Card>
+      <div className="flex-grow">
+          <ScheduleXCalendar 
+            events={allBlocks}
+            onCreateBlock={handleCreateBlock}
+        />
+      </div>
     </div>
   );
 }
