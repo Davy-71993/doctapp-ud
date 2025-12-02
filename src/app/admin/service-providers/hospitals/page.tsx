@@ -9,7 +9,7 @@ export default function HospitalsPage() {
     return (
         <ServiceProviderListPageTemplate
             title="Hospitals"
-            description="Add, view, and manage all partner hospitals on the platform."
+            description="Add-view-and-manage-all-partner-hospitals-on-the-platform."
             pendingData={pendingHospitals}
             verifiedData={verifiedHospitals}
         />
