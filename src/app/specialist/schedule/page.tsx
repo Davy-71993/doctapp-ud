@@ -54,7 +54,7 @@ export default function SchedulePage() {
       </div>
 
       <Card className="flex-grow">
-          <CardContent className="pt-6 h-full">
+          <CardContent className="h-full">
              <ScheduleXCalendar 
                 events={allBlocks}
                 onCreateBlock={handleCreateBlock}
