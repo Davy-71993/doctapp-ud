@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,7 +43,9 @@ function ServiceProviderCard({ provider, status }: { provider: ServiceProvider; 
                 </div>
             </div>
             <div className="flex gap-2 self-end sm:self-center">
-                <Button variant="outline" size="sm">View Details</Button>
+                <Link href={`/specialist/my-service-providers/${provider.id}`}>
+                    <Button variant="outline" size="sm">View Details</Button>
+                </Link>
             </div>
         </div>
     );
@@ -60,6 +63,7 @@ export default function MyServiceProvidersPage() {
             id: `new-${Date.now()}`,
             specialistId: SPECIALIST_ID,
             ...newProviderData,
+            services: [],
         };
         setMyProviders(prev => [...prev, newProvider]);
     };

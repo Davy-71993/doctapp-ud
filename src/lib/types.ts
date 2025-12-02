@@ -115,6 +115,7 @@ export type ServiceProvider = {
     specialistId: string; // The ID of the specialist in charge
     documents?: string[];
     location?: string;
+    services: SpecialistService[];
 };
 
 export type TimeBlock = {

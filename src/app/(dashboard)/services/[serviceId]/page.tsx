@@ -1,6 +1,7 @@
 
 "use client";
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Ambulance, Home, Hospital, Stethoscope, Phone, MapPin, Pill } from "lucide-react";
@@ -31,9 +32,9 @@ const servicesData = {
     description: "Find and book appointments at general and specialized clinics near you.",
     icon: Stethoscope,
     providers: [
-      { id: "p5", name: "The Surgery", location: "Kampala", phone: "0312 264 011", avatar: "TS" },
-      { id: "p6", name: "IMC Clinic, Wandegeya", location: "Kampala", phone: "0772 123 789", avatar: "IC" },
-      { id: "p7", name: "SAS Clinic", location: "Kampala", phone: "0414 531 641", avatar: "SC" },
+      { id: "vc1", name: "The Surgery", location: "Kampala", phone: "0312 264 011", avatar: "TS" },
+      { id: "vc2", name: "IMC Clinic, Wandegeya", location: "Kampala", phone: "0772 123 789", avatar: "IC" },
+      { id: "vc3", name: "SAS Clinic", location: "Kampala", phone: "0414 531 641", avatar: "SC" },
     ],
   },
   "hospitals": {
@@ -41,9 +42,9 @@ const servicesData = {
     description: "Access a wide network of partner hospitals for comprehensive medical treatment.",
     icon: Hospital,
     providers: [
-      { id: "p8", name: "Nakasero Hospital", location: "Kampala", phone: "0414 346 150", avatar: "NH" },
-      { id: "p9", name: "Mulago National Referral Hospital", location: "Kampala", phone: "0414 554 001", avatar: "MH" },
-      { id: "p10", name: "Mengo Hospital", location: "Kampala", phone: "0414 270 272", avatar: "MH" },
+      { id: "vh1", name: "Nakasero Hospital", location: "Kampala", phone: "0414 346 150", avatar: "NH" },
+      { id: "vh2", name: "Mulago National Referral Hospital", location: "Kampala", phone: "0414 554 001", avatar: "MH" },
+      { id: "vh3", name: "Mengo Hospital", location: "Kampala", phone: "0414 270 272", avatar: "MH" },
     ],
   },
   "pharmacies": {
@@ -51,8 +52,8 @@ const servicesData = {
     description: "Find licensed pharmacies to get your prescribed medication.",
     icon: Pill,
     providers: [
-      { id: "p11", name: "Ecopharm Pharmacy", location: "Kampala", phone: "0772 111 222", avatar: "EP" },
-      { id: "p12", name: "C&A Pharmacy", location: "Kampala", phone: "0703 333 444", avatar: "CA" },
+      { id: "vp1", name: "Ecopharm Pharmacy", location: "Kampala", phone: "0772 111 222", avatar: "EP" },
+      { id: "vp2", name: "C&A Pharmacy", location: "Kampala", phone: "0703 333 444", avatar: "CA" },
     ],
   },
   "drug-shops": {
@@ -60,7 +61,7 @@ const servicesData = {
     description: "Find licensed drug shops for over-the-counter medication.",
     icon: Pill,
     providers: [
-      { id: "p13", name: "Goodlife Pharmacy", location: "Kampala", phone: "0800 211 011", avatar: "GP" },
+      { id: "vds1", name: "Goodlife Pharmacy", location: "Kampala", phone: "0800 211 011", avatar: "GP" },
     ],
   },
 };
@@ -129,7 +130,9 @@ export default function ServiceDetailPage() {
                   <Phone className="mr-2 h-4 w-4" />
                   Call Now
                 </Button>
-                <Button variant="outline">View Details</Button>
+                <Link href={`/service-providers/${provider.id}`}>
+                    <Button variant="outline">View Details</Button>
+                </Link>
               </div>
             </div>
           ))}
