@@ -54,6 +54,8 @@ export const appointments: Appointment[] = [
   { id: '3', doctor: doctors[0], date: new Date(new Date().setDate(new Date().getDate() - 14)).toISOString(), time: '09:00 AM', status: 'past', reason: 'ECG and blood pressure monitoring.' },
   { id: '4', doctor: doctors[9], date: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(), time: '11:00 AM', status: 'past', reason: 'General flu symptoms.' },
   { id: '5', doctor: doctors[6], date: new Date(new Date().setDate(new Date().getDate() - 45)).toISOString(), time: '03:00 PM', status: 'past', reason: 'Review of scan results.' },
+  { id: '6', doctor: doctors[0], date: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(), time: '11:00 AM', status: 'upcoming', reason: 'Follow-up on ECG results.' },
+  { id: '7', doctor: doctors[0], date: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString(), time: '03:00 PM', status: 'upcoming', reason: 'Consultation for new medication.' },
 ];
 
 export const recentActivities: Activity[] = [
