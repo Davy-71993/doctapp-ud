@@ -70,7 +70,6 @@ export default function SchedulePage() {
   }
 
   const handleAddSchedule = (newService: Omit<SpecialistService, 'id'>) => {
-    // This is a placeholder. You can adapt the dialog or create a new one for schedules.
     const newEvent: TimeBlock = {
         id: `event-${Date.now()}`,
         title: newService.name,
@@ -111,3 +110,4 @@ export default function SchedulePage() {
     </div>
   );
 }
+
