@@ -47,7 +47,7 @@ export function ChatList({ chats, selectedChat, onSelectChat, currentUser, conta
     }
     
     return (
-        <div className="flex h-full flex-col">
+        <div className="flex h-full flex-col overflow-hidden">
             <div className="flex items-center justify-between border-b p-4">
                 <h2 className="text-xl font-bold">Inbox</h2>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

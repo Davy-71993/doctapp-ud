@@ -89,9 +89,9 @@ export function ChatLayout({ currentUser, contacts, messages: initialMessages, d
             className="h-full items-stretch"
         >
             <ResizablePanel
-                defaultSize={25}
+                defaultSize={30}
                 minSize={20}
-                maxSize={30}
+                maxSize={40}
                 className={cn(isMobile && selectedChat ? "hidden" : "block", "sm:block")}
             >
                 <ChatList
@@ -112,7 +112,8 @@ export function ChatLayout({ currentUser, contacts, messages: initialMessages, d
             </ResizablePanel>
             <ResizableHandle withHandle className={cn(isMobile && "hidden", "sm:flex")} />
             <ResizablePanel
-                defaultSize={75}
+                defaultSize={70}
+                minSize={30}
                 className={cn(isMobile && !selectedChat ? "hidden" : "block", "sm:block")}
             >
                 {selectedChat ? (
