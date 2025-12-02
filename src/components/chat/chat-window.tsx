@@ -81,7 +81,7 @@ export function ChatWindow({ chat, currentUser, onSendMessage, isMobile, onBack 
                                     "max-w-xs rounded-lg p-3 text-sm",
                                     isCurrentUser ? 'bg-primary text-primary-foreground' : 'bg-muted'
                                 )}>
-                                    <p>{message.text}</p>
+                                    <p className="break-words">{message.text}</p>
                                      <p className={cn("text-xs mt-1", isCurrentUser ? 'text-primary-foreground/70' : 'text-muted-foreground/70')}>
                                         {format(new Date(message.timestamp), 'p')}
                                     </p>

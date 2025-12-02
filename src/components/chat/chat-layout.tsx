@@ -92,7 +92,11 @@ export function ChatLayout({ currentUser, contacts, messages: initialMessages, d
                 defaultSize={30}
                 minSize={20}
                 maxSize={40}
-                className={cn(isMobile && selectedChat ? "hidden" : "block", "sm:block")}
+                className={cn(
+                    "min-w-[200px]",
+                    isMobile && !selectedChat ? "block" : "hidden",
+                    !isMobile && "block"
+                )}
             >
                 <ChatList
                     chats={chats}
