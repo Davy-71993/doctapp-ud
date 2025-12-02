@@ -1,11 +1,12 @@
 
 import type { Service } from "@/lib/types";
-import { Briefcase, Truck, Siren } from "lucide-react";
+import { Briefcase, Truck, Siren, Home } from "lucide-react";
 
 export const serviceCategories = [
     { name: "General Services", href: "/admin/services/general", icon: Briefcase, description: "Manage general medical and consultation services." },
     { name: "Ambulance", href: "/admin/services/ambulance", icon: Truck, description: "Manage ambulance services." },
     { name: "Emergencies", href: "/admin/services/emergencies", icon: Siren, description: "Manage emergency services." },
+    { name: "Home-Based Care", href: "/admin/services/home-based-care", icon: Home, description: "Manage home-based care services." },
 ];
 
 export const pendingServices: Service[] = [

@@ -58,13 +58,13 @@ const serviceProviderSubItems = [
     { href: "/admin/service-providers/clinics", label: "Clinics", icon: Activity },
     { href: "/admin/service-providers/pharmacies", label: "Pharmacies", icon: Pill },
     { href: "/admin/service-providers/drug-shops", label: "Drug Shops", icon: Pill },
-    { href: "/admin/service-providers/home-based-care", label: "Home-Based Care", icon: Home },
 ];
 
 const servicesSubItems = [
     { href: "/admin/services/general", label: "General", icon: Briefcase },
     { href: "/admin/services/ambulance", label: "Ambulance", icon: Truck },
     { href: "/admin/services/emergencies", label: "Emergencies", icon: Siren },
+    { href: "/admin/services/home-based-care", label: "Home-Based Care", icon: Home },
 ];
 
 
