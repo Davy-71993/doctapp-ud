@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { appointments } from '@/lib/mock-data';
 import type { TimeBlock } from '@/lib/types';
@@ -17,41 +17,28 @@ export default function SchedulePage() {
   // Assuming the specialist is Dr. Amina Nakigudde for mock purposes
   const specialistId = '4';
   
-  const [allBlocks, setAllBlocks] = useState<TimeBlock[]>([]);
+  const [newBlocks, setNewBlocks] = useState<TimeBlock[]>([]);
 
-  useEffect(() => {
-    const specialistAppointments = appointments
-      .filter(app => app.doctor.id === specialistId && (app.status === 'upcoming' || app.status === 'past'))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const specialistAppointments = appointments
+    .filter(app => app.doctor.id === specialistId && (app.status === 'upcoming' || app.status === 'past'))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     
-    const initialEvents: TimeBlock[] = specialistAppointments.map(app => ({
-      id: app.id,
-      title: `Appt: ${app.reason}`,
-      start: new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`),
-      end: new Date(new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`).getTime() + 60 * 60 * 1000), // Assuming 1hr appointments
-      type: 'appointment'
-    }));
-
-    const today = new Date();
-    const initialUnavailableBlocks: TimeBlock[] = [
+  const unavailableBlocks: TimeBlock[] = [
+    {
+      id: 'lunch-today',
+      title: 'Lunch Break',
+      start: new Date(new Date().setHours(13, 0, 0, 0)),
+      end: new Date(new Date().setHours(14, 0, 0, 0)),
+      type: 'unavailable',
+    },
       {
-        id: 'lunch-today',
-        title: 'Lunch Break',
-        start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13, 0),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14, 0),
-        type: 'unavailable',
-      },
-       {
-        id: 'admin-tomorrow',
-        title: 'Admin Work',
-        start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 9, 0),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 10, 30),
-        type: 'unavailable',
-      }
-    ];
-    setAllBlocks([...initialEvents, ...initialUnavailableBlocks]);
-
-  }, [specialistId]);
+      id: 'admin-tomorrow',
+      title: 'Admin Work',
+      start: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).setHours(9, 0, 0, 0)),
+      end: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).setHours(10, 30, 0, 0)),
+      type: 'unavailable',
+    }
+  ];
 
   const handleCreateBlock = (block: { start: Date; end: Date }) => {
     const newBlock: TimeBlock = {
@@ -61,7 +48,7 @@ export default function SchedulePage() {
       end: block.end,
       type: 'unavailable'
     };
-    setAllBlocks(prev => [...prev, newBlock]);
+    setNewBlocks(prev => [...prev, newBlock]);
     toast({
         title: "Availability Updated",
         description: "Your schedule has been blocked for the selected time."
@@ -77,15 +64,15 @@ export default function SchedulePage() {
         end: new Date(now.getTime() + newService.duration * 60 * 1000),
         type: 'appointment'
     };
-    setAllBlocks(prev => [...prev, newEvent]);
+    setNewBlocks(prev => [...prev, newEvent]);
   }
-
 
   return (
     <div className="space-y-8 h-[calc(100vh_-_10rem)] flex flex-col">
       <div className="flex-grow">
           <ScheduleXCalendar 
-            events={allBlocks}
+            appointments={specialistAppointments}
+            unavailableBlocks={[...unavailableBlocks, ...newBlocks]}
             onCreateBlock={handleCreateBlock}
         />
       </div>

@@ -6,20 +6,31 @@ import { createCalendar, viewDay, viewMonthGrid, viewWeek } from '@schedule-x/ca
 import '@schedule-x/theme-default/dist/index.css';
 import { useEffect, useRef } from 'react';
 import type { CalendarApp } from '@schedule-x/calendar';
-import type { TimeBlock } from '@/lib/types';
+import type { Appointment, TimeBlock } from '@/lib/types';
 import { EventImpl } from '@schedule-x/shared/src/classes/event.impl';
 
 interface ScheduleXCalendarProps {
-    events: TimeBlock[];
+    appointments: Appointment[];
+    unavailableBlocks: TimeBlock[];
     onCreateBlock: (block: { start: Date; end: Date }) => void;
 }
 
-export function ScheduleXCalendar({ events, onCreateBlock }: ScheduleXCalendarProps) {
+export function ScheduleXCalendar({ appointments, unavailableBlocks, onCreateBlock }: ScheduleXCalendarProps) {
     const calendarRef = useRef<HTMLElement | null>(null);
     const calendarApp = useRef<CalendarApp | null>(null);
 
     useEffect(() => {
-        const transformedEvents = events.map(e => ({
+        const appointmentEvents: TimeBlock[] = appointments.map(app => ({
+            id: app.id,
+            title: `Appt: ${app.reason}`,
+            start: new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`),
+            end: new Date(new Date(`${app.date.split('T')[0]}T${app.time.split(' ')[0]}:00`).getTime() + 60 * 60 * 1000), // Assuming 1hr appointments
+            type: 'appointment'
+        }));
+        
+        const allEvents = [...appointmentEvents, ...unavailableBlocks];
+
+        const transformedEvents = allEvents.map(e => ({
             id: e.id,
             title: e.title,
             start: e.start.toISOString(),
@@ -76,7 +87,7 @@ export function ScheduleXCalendar({ events, onCreateBlock }: ScheduleXCalendarPr
         } else if (calendarApp.current) {
             calendarApp.current.events.set(transformedEvents);
         }
-    }, [events, onCreateBlock]);
+    }, [appointments, unavailableBlocks, onCreateBlock]);
 
     return <div ref={calendarRef} className="h-full w-full" />;
 }

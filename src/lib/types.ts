@@ -117,7 +117,7 @@ export type ServiceProvider = {
 };
 
 export type TimeBlock = {
-  id: string;
+  id: string | number;
   title: string;
   start: Date;
   end: Date;
