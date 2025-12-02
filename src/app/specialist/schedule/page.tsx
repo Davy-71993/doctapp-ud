@@ -8,7 +8,6 @@ import type { TimeBlock } from '@/lib/types';
 import { ScheduleXCalendar } from '@/components/schedule-x-calendar';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { AddServiceDialog } from '@/components/add-service-dialog';
 import type { SpecialistService } from '@/lib/types';
 
@@ -52,10 +51,14 @@ export default function SchedulePage() {
 
   const handleAddSchedule = (newService: Omit<SpecialistService, 'id'>) => {
     // This is a placeholder. You can adapt the dialog or create a new one for schedules.
-    toast({
-      title: "New Schedule Added (Placeholder)",
-      description: `A new event "${newService.name}" has been created.`,
-    });
+    const newEvent: TimeBlock = {
+        id: `event-${Date.now()}`,
+        title: newService.name,
+        start: new Date(), // This should be from the dialog
+        end: new Date(new Date().getTime() + newService.duration * 60 * 1000), // This should be from the dialog
+        type: 'appointment'
+    };
+    setEvents(prev => [...prev, newEvent]);
   }
 
   const allBlocks = [...events, ...unavailableBlocks];
@@ -69,12 +72,6 @@ export default function SchedulePage() {
             View your appointments and manage your availability.
             </p>
         </div>
-        <AddServiceDialog onAddService={handleAddSchedule}>
-            <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add New Schedule
-            </Button>
-        </AddServiceDialog>
       </div>
 
       <div className="flex-grow">
@@ -83,7 +80,14 @@ export default function SchedulePage() {
             onCreateBlock={handleCreateBlock}
         />
       </div>
-
+       <div className="fixed bottom-24 right-6 z-40">
+        <AddServiceDialog onAddService={handleAddSchedule}>
+             <Button size="icon" className="rounded-full w-14 h-14 shadow-lg bg-purple-600 hover:bg-purple-700">
+                <Plus className="h-6 w-6" />
+                <span className="sr-only">Add New Schedule</span>
+            </Button>
+        </AddServiceDialog>
+       </div>
     </div>
   );
 }

@@ -27,15 +27,15 @@ export function AddServiceDialog({ children, onAddService }: AddServiceDialogPro
     const [open, setOpen] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [duration, setDuration] = useState('');
+    const [duration, setDuration] = useState('60');
     const [price, setPrice] = useState('');
     const { toast } = useToast();
 
     const handleSave = () => {
-        if (!name || !description || !duration || !price) {
+        if (!name || !duration) {
             toast({
                 title: "Missing Information",
-                description: "Please fill out all fields to add a new service.",
+                description: "Please fill out at least the title and duration.",
                 variant: "destructive"
             });
             return;
@@ -45,18 +45,18 @@ export function AddServiceDialog({ children, onAddService }: AddServiceDialogPro
             name,
             description,
             duration: parseInt(duration, 10),
-            price: parseInt(price, 10),
+            price: price ? parseInt(price, 10) : 0,
         });
 
         toast({
-            title: "Service Added",
-            description: `The "${name}" service has been successfully added.`,
+            title: "Schedule Updated",
+            description: `The "${name}" event has been added to your calendar.`,
         });
         
         // Reset form and close dialog
         setName('');
         setDescription('');
-        setDuration('');
+        setDuration('60');
         setPrice('');
         setOpen(false);
     }
@@ -68,34 +68,34 @@ export function AddServiceDialog({ children, onAddService }: AddServiceDialogPro
             </DialogTrigger>
             <DialogContent className="sm:max-w-[480px]">
                 <DialogHeader>
-                    <DialogTitle>Add New Service</DialogTitle>
+                    <DialogTitle>Add to Schedule</DialogTitle>
                     <DialogDescription>
-                        Fill in the details for the new service you want to offer.
+                        Add a new appointment or block out time in your schedule.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="service-name">Service Name</Label>
-                        <Input id="service-name" value={name} onChange={e => setName(e.target.value)} placeholder="e.g., Cardiac Consultation" />
+                        <Label htmlFor="service-name">Title</Label>
+                        <Input id="service-name" value={name} onChange={e => setName(e.target.value)} placeholder="e.g., Team Meeting" />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="service-description">Description</Label>
-                        <Textarea id="service-description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Describe the service..." />
+                        <Label htmlFor="service-description">Description (Optional)</Label>
+                        <Textarea id="service-description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Add a brief description..." />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="service-duration">Duration (minutes)</Label>
                             <Input id="service-duration" type="number" value={duration} onChange={e => setDuration(e.target.value)} placeholder="e.g., 45" />
                         </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="service-price">Price (UGX)</Label>
+                         <div className="grid gap-2">
+                            <Label htmlFor="service-price">Price (UGX, Optional)</Label>
                             <Input id="service-price" type="number" value={price} onChange={e => setPrice(e.target.value)} placeholder="e.g., 150000" />
                         </div>
                     </div>
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSave}>Save Service</Button>
+                    <Button onClick={handleSave}>Save to Schedule</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
