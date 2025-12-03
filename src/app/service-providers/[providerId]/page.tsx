@@ -71,7 +71,7 @@ export default function PublicFacilityDetailsPage() {
                                     </div>
                                 </div>
                             </div>
-                            <Link href={`/services/${service.id}`} passHref>
+                            <Link href={`/service-details/${service.id}`} passHref>
                                 <Button className="self-end sm:self-center">Book Now</Button>
                             </Link>
                         </div>
