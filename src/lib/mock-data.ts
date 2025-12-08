@@ -9,6 +9,7 @@ import type {
   Patient,
   SpecialistService,
   Prescription,
+  Complaint,
 } from '@/lib/types';
 import { Pill, Stethoscope, FileText, Calendar as CalendarIcon } from 'lucide-react';
 
@@ -187,4 +188,13 @@ export const mockPrescriptions: Prescription[] = [
             { name: 'Aspirin', dosage: '81mg', frequency: 'Once a day', duration: 'Ongoing' },
         ] 
     },
+];
+
+export const mockSpecialistComplaints: Complaint[] = [
+  { id: 'sc1', specialistName: 'Dr. Ben Muwonge', reportedBy: 'Alex Mukisa', reason: 'Missed appointment without notification.', date: '2023-10-25', status: 'Pending' },
+  { id: 'sc2', specialistName: 'Dr. Charity Atim', reportedBy: 'Brenda Nansubuga', reason: 'Provided incorrect prescription information.', date: '2023-10-22', status: 'Resolved' },
+];
+
+export const mockPatientComplaints: Complaint[] = [
+  { id: 'pc1', patientName: 'Edward Musisi', reportedBy: 'Dr. Amina Nakigudde', reason: 'Patient has been non-compliant with medication.', date: '2023-10-28', status: 'Pending' },
 ];

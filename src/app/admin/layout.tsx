@@ -37,6 +37,7 @@ import {
   Inbox,
   Home,
   Building,
+  ShieldAlert,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,11 @@ const servicesSubItems = [
     { href: "/admin/services/home-based-care", label: "Home-Based Care", icon: Home },
 ];
 
+const complaintsSubItems = [
+    { href: "/admin/complaints/specialists", label: "Specialists", icon: Stethoscope },
+    { href: "/admin/complaints/patients", label: "Patients", icon: Users },
+]
+
 
 const bottomNavItems = [
   { href: "/admin/users", label: "Users", icon: Users },
@@ -80,6 +86,7 @@ const AdminSidebar = () => {
     const { state, setOpen } = useSidebar();
     const [facilitiesOpen, setFacilitiesOpen] = useState(pathname.startsWith('/admin/service-providers'));
     const [servicesOpen, setServicesOpen] = useState(pathname.startsWith('/admin/services'));
+    const [complaintsOpen, setComplaintsOpen] = useState(pathname.startsWith('/admin/complaints'));
 
 
     const isTabActive = (href: string) => {
@@ -189,6 +196,36 @@ const AdminSidebar = () => {
                     </CollapsibleContent>
                 </Collapsible>
 
+                 <Collapsible open={complaintsOpen} onOpenChange={setComplaintsOpen} className="w-full">
+                    <CollapsibleTrigger asChild>
+                         <SidebarMenuButton 
+                            isActive={isTabActive('/admin/complaints')}
+                            tooltip={{children: "Complaints"}}
+                            className="justify-between"
+                        >
+                            <div className="flex items-center gap-2">
+                                <ShieldAlert />
+                                <span>Complaints</span>
+                            </div>
+                            <ChevronDown className={cn("h-4 w-4 transition-transform", complaintsOpen && "rotate-180")} />
+                        </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <SidebarMenuSub className="mt-1">
+                            {complaintsSubItems.map(item => (
+                                <SidebarMenuItem key={item.href}>
+                                     <Link href={item.href} passHref>
+                                        <SidebarMenuSubButton isActive={pathname === item.href}>
+                                            <item.icon />
+                                            <span>{item.label}</span>
+                                        </SidebarMenuSubButton>
+                                     </Link>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenuSub>
+                    </CollapsibleContent>
+                </Collapsible>
+
 
                 {bottomNavItems.map((item) => (
                     <SidebarMenuItem key={item.href}>
@@ -237,7 +274,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const adminUser = users.find(d => d.role === 'admin');
 
   const getPageTitle = () => {
-    const allNavItems = [...navItems, ...facilitySubItems, ...servicesSubItems, ...bottomNavItems];
+    const allNavItems = [...navItems, ...facilitySubItems, ...servicesSubItems, ...complaintsSubItems, ...bottomNavItems];
     if (pathname === '/admin/dashboard') return "Dashboard";
 
     if (pathname.startsWith('/admin/service-providers') && !facilitySubItems.some(item => item.href === pathname)) {
@@ -246,6 +283,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     
     if (pathname.startsWith('/admin/services') && !servicesSubItems.some(item => item.href === pathname)) {
         return "Services";
+    }
+
+    if (pathname.startsWith('/admin/complaints') && !complaintsSubItems.some(item => item.href === pathname)) {
+        return "Complaints";
     }
 
     const activeItem = allNavItems.find(item => item.href !== '/admin/dashboard' && pathname.startsWith(item.href));

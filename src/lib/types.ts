@@ -154,3 +154,13 @@ export type Prescription = {
     date: Date;
     medicines: Medicine[];
 };
+
+export type Complaint = {
+  id: string;
+  specialistName?: string;
+  patientName?: string;
+  reportedBy: string;
+  reason: string;
+  date: string;
+  status: 'Pending' | 'Resolved';
+}
