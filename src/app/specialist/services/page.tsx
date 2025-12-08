@@ -62,36 +62,43 @@ export default function SpecialistServicesPage() {
             Manage the medical services and prescriptions you offer to patients.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-            <Link href="/specialist/services/prescriptions">
-                 <Button variant="outline">
-                    <FileText className="mr-2 h-4 w-4" />
-                    Manage Prescriptions
-                </Button>
-            </Link>
-            <AddServiceDialog onAddService={handleAddService}>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add New Service
-                </Button>
-            </AddServiceDialog>
-        </div>
+        <AddServiceDialog onAddService={handleAddService}>
+            <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add New Service
+            </Button>
+        </AddServiceDialog>
       </div>
       
-      {services.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map(service => (
-                <ServiceCard key={service.id} service={service} />
-            ))}
-        </div>
-      ) : (
-        <Card className="flex flex-col items-center justify-center p-12 text-center">
-            <CardTitle className="text-xl">No Services Found</CardTitle>
-            <CardDescription className="mt-2">
-                You have not added any services yet. Click the button above to add your first service.
-            </CardDescription>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map(service => (
+            <ServiceCard key={service.id} service={service} />
+        ))}
+         <Card>
+            <CardHeader>
+                <CardTitle className="text-lg">Prescriptions</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <CardDescription>Create and manage all patient prescriptions.</CardDescription>
+            </CardContent>
+            <CardFooter>
+                <Link href={`/specialist/services/prescriptions`} className="w-full">
+                    <Button variant="outline" className="w-full">
+                        <FileText className="mr-2 h-4 w-4" />
+                        Manage Prescriptions
+                    </Button>
+                </Link>
+            </CardFooter>
         </Card>
-      )}
+        {services.length === 0 && (
+            <Card className="flex flex-col items-center justify-center p-12 text-center md:col-span-2 lg:col-span-3">
+                <CardTitle className="text-xl">No Services Found</CardTitle>
+                <CardDescription className="mt-2">
+                    You have not added any services yet. Click the button above to add your first service.
+                </CardDescription>
+            </Card>
+        )}
+      </div>
     </div>
   );
 }
