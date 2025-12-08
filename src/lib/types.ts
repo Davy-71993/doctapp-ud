@@ -11,6 +11,15 @@ export type User = {
   dateJoined: string;
 };
 
+export type DoctorComment = {
+    id: string;
+    author: string;
+    avatar: string;
+    date: string;
+    comment: string;
+    rating: number;
+}
+
 export type Doctor = {
   id: string;
   name: string;
@@ -20,6 +29,7 @@ export type Doctor = {
   reviews: number;
   image: string;
   location: string;
+  comments?: DoctorComment[];
 };
 
 export type Appointment = {
