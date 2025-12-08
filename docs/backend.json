@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Represents any individual who can log in to the system. The `role` attribute determines their access level and portal (Patient, Specialist, or Admin).",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user.",
+          "format": "uuid"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address for login and communication.",
+          "format": "email"
+        },
+        "role": {
+          "type": "string",
+          "description": "Determines user type (`patient`, `specialist`, `admin`).",
+          "enum": ["patient", "specialist", "admin"]
+        },
+        "dateJoined": {
+          "type": "string",
+          "description": "Timestamp when the user registered.",
+          "format": "date-time"
+        },
+        "phone": {
+          "type": "string",
+          "description": "User's phone number."
+        },
+        "avatar": {
+          "type": "string",
+          "description": "URL to the user's profile picture.",
+          "format": "uri"
+        },
+        "bloodGroup": {
+          "type": "string",
+          "description": "User's blood group (e.g., 'O+')."
+        },
+        "district": {
+          "type": "string",
+          "description": "User's district of residence."
+        }
+      },
+      "required": ["id", "firstName", "lastName", "email", "role", "dateJoined"]
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/User"
+      },
+      "description": "Stores public information for each user."
+    }
+  }
+}
