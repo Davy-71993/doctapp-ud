@@ -54,7 +54,6 @@ export default function PrescriptionsPage() {
                             <TableRow>
                                 <TableHead>Patient Name</TableHead>
                                 <TableHead>Date Issued</TableHead>
-                                <TableHead>Medication</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -63,7 +62,6 @@ export default function PrescriptionsPage() {
                                 <TableRow key={p.id}>
                                     <TableCell className="font-medium">{p.patient.name}</TableCell>
                                     <TableCell>{format(p.date, 'MMMM dd, yyyy')}</TableCell>
-                                    <TableCell className="text-muted-foreground">{p.medication}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="outline" size="sm">View</Button>
                                     </TableCell>
