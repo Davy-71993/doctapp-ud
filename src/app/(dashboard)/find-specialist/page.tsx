@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { DoctorCard } from '@/components/doctor-card';
-import { doctors } from '@/lib/mock-data';
 import type { Doctor } from '@/lib/types';
 import { Search as SearchIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -43,7 +42,25 @@ export default function FindSpecialistPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [specialty, setSpecialty] = useState('all');
   const [location, setLocation] = useState('all');
-  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>(doctors);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDoctors() {
+        try {
+            const response = await fetch('/api/doctors');
+            const data = await response.json();
+            setDoctors(data);
+            setFilteredDoctors(data);
+        } catch (error) {
+            console.error("Failed to fetch doctors:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchDoctors();
+  }, []);
 
   const handleFilterChange = () => {
     let result = doctors;
@@ -77,6 +94,11 @@ export default function FindSpecialistPage() {
     }, 300)
   };
 
+  useEffect(() => {
+    handleFilterChange();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [specialty, location, doctors]);
+
   return (
     <div className="space-y-8">
       <div>
@@ -97,7 +119,7 @@ export default function FindSpecialistPage() {
           />
         </div>
         <div className="grid grid-cols-2 md:flex gap-4">
-          <Select onValueChange={(val) => { setSpecialty(val); handleFilterChange(); }} defaultValue="all">
+          <Select onValueChange={(val) => { setSpecialty(val); }} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="All Specialties" />
             </SelectTrigger>
@@ -108,7 +130,7 @@ export default function FindSpecialistPage() {
               ))}
             </SelectContent>
           </Select>
-          <Select onValueChange={(val) => { setLocation(val); handleFilterChange(); }} defaultValue="all">
+          <Select onValueChange={(val) => { setLocation(val); }} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="All Locations" />
             </SelectTrigger>
@@ -122,6 +144,11 @@ export default function FindSpecialistPage() {
         </div>
       </div>
       
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_,i) => <Skeleton key={i} className="h-80 w-full" />)}
+        </div>
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredDoctors.length > 0 ? (
           filteredDoctors.map(doctor => <DoctorCard key={doctor.id} doctor={doctor} />)
@@ -129,6 +156,7 @@ export default function FindSpecialistPage() {
           <p>No specialists found matching your criteria.</p>
         )}
       </div>
+      )}
     </div>
   );
 }

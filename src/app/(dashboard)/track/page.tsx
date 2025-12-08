@@ -1,4 +1,7 @@
-import { healthData } from '@/lib/mock-data';
+"use client";
+
+import { useEffect, useState } from 'react';
+import type { HealthData, UserProfile } from '@/lib/types';
 import { PeriodTracker } from '@/components/track/period-tracker';
 import { ChartTracker } from '@/components/track/chart-tracker';
 import { ListTracker } from '@/components/track/list-tracker';
@@ -6,9 +9,49 @@ import { PregnancyTracker } from '@/components/track/pregnancy-tracker';
 import { BloodPressureTracker } from '@/components/track/blood-pressure-tracker';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Droplets, CircleAlert } from 'lucide-react';
-import { userProfile } from '@/lib/mock-data';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function TrackPage() {
+  const [healthData, setHealthData] = useState<HealthData | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+        try {
+            const [healthRes, profileRes] = await Promise.all([
+                fetch('/api/health-data'),
+                fetch('/api/user-profile')
+            ]);
+            const healthData = await healthRes.json();
+            const profileData = await profileRes.json();
+            setHealthData(healthData);
+            setUserProfile(profileData);
+        } catch (error) {
+            console.error("Failed to fetch tracking data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchData();
+  }, []);
+
+  if (loading || !healthData || !userProfile) {
+    return (
+        <div className="space-y-8">
+             <div>
+                <Skeleton className="h-10 w-1/3" />
+                <Skeleton className="h-4 w-1/2 mt-2" />
+            </div>
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {[...Array(8)].map((_, i) => (
+                    <Skeleton key={i} className="h-80 w-full" />
+                ))}
+            </div>
+        </div>
+    )
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -19,7 +62,7 @@ export default function TrackPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <PeriodTracker />
+        <PeriodTracker initialDates={healthData.period.map(p => new Date(p.date))} />
         
         <BloodPressureTracker
             title="Blood Pressure"
@@ -50,7 +93,7 @@ export default function TrackPage() {
           data={healthData.allergies}
         />
         
-        <PregnancyTracker />
+        <PregnancyTracker isPregnantInitially={healthData.pregnancy.status === 'Pregnant'} />
         
         <Card>
             <CardHeader>

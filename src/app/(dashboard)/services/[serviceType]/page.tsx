@@ -4,18 +4,39 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { allFacilities } from '@/lib/mock-service-providers-data';
 import { serviceTypes } from '@/lib/service-types';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import type { Facility } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ServiceTypePage() {
     const params = useParams();
     const serviceTypeSlug = params.serviceType as string;
 
     const serviceType = serviceTypes.find(st => st.href === `/services/${serviceTypeSlug}`);
+    
+    const [facilities, setFacilities] = useState<Facility[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const facilities = allFacilities.filter(p => p.type === serviceType?.providerType);
+    useEffect(() => {
+        if (!serviceType) return;
+        
+        async function fetchFacilities() {
+            try {
+                const response = await fetch('/api/facilities');
+                const allFacilities: Facility[] = await response.json();
+                const filteredFacilities = allFacilities.filter(p => p.type === serviceType?.providerType);
+                setFacilities(filteredFacilities);
+            } catch (error) {
+                console.error("Failed to fetch facilities:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchFacilities();
+    }, [serviceType]);
 
     if (!serviceType) {
         return (
@@ -46,7 +67,9 @@ export default function ServiceTypePage() {
             </div>
 
              <div className="space-y-4">
-                {facilities.length > 0 ? facilities.map(facility => (
+                {loading ? (
+                     [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
+                ) : facilities.length > 0 ? facilities.map(facility => (
                     <Link href={`/service-providers/${facility.id}`} key={facility.id}>
                         <Card className="hover:bg-muted/50 transition-colors">
                             <CardHeader>

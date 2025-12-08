@@ -1,10 +1,9 @@
 
-
 "use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -43,10 +42,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { users } from "@/lib/mock-data";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import type { User } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 const navItems = [
@@ -271,7 +271,24 @@ const AdminSidebar = () => {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const adminUser = users.find(d => d.role === 'admin');
+  const [adminUser, setAdminUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAdminUser() {
+        try {
+            const response = await fetch('/api/users');
+            const users: User[] = await response.json();
+            const admin = users.find(d => d.role === 'admin');
+            setAdminUser(admin || null);
+        } catch (error) {
+            console.error("Failed to fetch admin user:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchAdminUser();
+  }, []);
 
   const getPageTitle = () => {
     const allNavItems = [...navItems, ...facilitySubItems, ...servicesSubItems, ...complaintsSubItems, ...bottomNavItems];
@@ -302,12 +319,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex-1">
              <h1 className="text-lg font-semibold md:text-2xl capitalize">{getPageTitle()}</h1>
           </div>
+          {loading || !adminUser ? (
+             <div className="flex items-center gap-2">
+                <Skeleton className="h-6 w-24 hidden sm:block" />
+                <Skeleton className="h-9 w-9 rounded-full" />
+            </div>
+          ) : (
           <div className="flex items-center gap-2">
              <p className="text-sm font-medium hidden sm:block">{adminUser?.firstName}</p>
              <Avatar className="h-9 w-9">
                 <AvatarFallback>{adminUser?.firstName.charAt(0)}</AvatarFallback>
              </Avatar>
           </div>
+          )}
         </header>
         <main className="flex-1 p-4 lg:p-6">{children}</main>
       </SidebarInset>

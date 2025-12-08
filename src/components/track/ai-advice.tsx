@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getPersonalizedHealthAdvice } from '@/ai/flows/personalized-health-advice';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -9,10 +9,11 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Chat, ChatMessage as ChatMessageType } from '@/components/chat';
-import { healthData, userProfile } from '@/lib/mock-data';
+import type { HealthData } from '@/lib/types';
 
 export function AiAdvice() {
   const [isLoading, setIsLoading] = useState(false);
+  const [healthData, setHealthData] = useState<HealthData | null>(null);
   const { toast } = useToast();
   const [messages, setMessages] = useState<ChatMessageType[]>([
     {
@@ -22,6 +23,15 @@ export function AiAdvice() {
         timestamp: new Date(),
     }
   ]);
+
+  useEffect(() => {
+    async function fetchHealthData() {
+        const response = await fetch('/api/health-data');
+        const data = await response.json();
+        setHealthData(data);
+    }
+    fetchHealthData();
+  }, []);
 
   const handleGetAdvice = async (userQuery: string) => {
     setIsLoading(true);
@@ -36,11 +46,21 @@ export function AiAdvice() {
     const newMessages: ChatMessageType[] = [...messages, userMessage];
     setMessages(newMessages);
 
+    if (!healthData) {
+        toast({
+            title: "Health Data Not Loaded",
+            description: "Please wait a moment for your health data to load before asking for advice.",
+            variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+    }
+
     try {
       const input = {
         chatHistory: newMessages.map(({sender, content}) => ({sender, content})),
         userQuery: userQuery,
-        periodData: healthData.period.map(p => ({ date: format(p.date, 'yyyy-MM-dd') })),
+        periodData: healthData.period.map(p => ({ date: format(new Date(p.date), 'yyyy-MM-dd') })),
         temperatureData: healthData.temperature.map(t => ({ date: t.date, temperature: t.temperature })),
         bloodSugarData: healthData.bloodSugar.map(bs => ({ date: bs.date, bloodSugar: bs.level })),
         bloodPressureData: healthData.bloodPressure.map(bp => ({ date: bp.date, systolic: bp.systolic, diastolic: bp.diastolic })),

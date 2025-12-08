@@ -46,7 +46,7 @@ export type Activity = {
   title: string;
   description: string;
   time: string;
-  icon: LucideIcon;
+  icon: LucideIcon | string; // Allow string for API transfer
 };
 
 export type UserProfile = {
@@ -164,3 +164,23 @@ export type Complaint = {
   date: string;
   status: 'Pending' | 'Resolved';
 }
+
+export type Contact = {
+    id: string;
+    name: string;
+    avatar: string;
+};
+
+export type Message = {
+    id: string;
+    senderId: string;
+    receiverId: string;
+    text: string;
+    timestamp: string;
+};
+
+export type Chat = {
+    id: string;
+    contact: Contact;
+    messages: Message[];
+};

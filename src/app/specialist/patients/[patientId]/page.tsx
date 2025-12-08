@@ -1,24 +1,23 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { format } from 'date-fns';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { useToast } from '@/hooks/use-toast';
-import { patients, doctors } from '@/lib/mock-data';
-import { allFacilities } from '@/lib/mock-service-providers-data';
+import type { Patient, Doctor, Facility } from '@/lib/types';
 import { ArrowLeft, Send, BarChart, Droplet, Thermometer, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const statusColors: { [key: string]: string } = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -30,6 +29,24 @@ const statusColors: { [key: string]: string } = {
 function ReferPatientDialog({ patientName }: { patientName: string }) {
     const { toast } = useToast();
     const [open, setOpen] = useState(false);
+    const [doctors, setDoctors] = useState<Doctor[]>([]);
+    const [facilities, setFacilities] = useState<Facility[]>([]);
+
+    useEffect(() => {
+        if (open) {
+            async function fetchData() {
+                const [docsRes, facilitiesRes] = await Promise.all([
+                    fetch('/api/doctors'),
+                    fetch('/api/facilities')
+                ]);
+                const docsData = await docsRes.json();
+                const facilitiesData = await facilitiesRes.json();
+                setDoctors(docsData.filter((d: Doctor) => d.name !== 'Dr. Amina Nakigudde'));
+                setFacilities(facilitiesData);
+            }
+            fetchData();
+        }
+    }, [open]);
 
     const handleRefer = () => {
         toast({
@@ -62,7 +79,7 @@ function ReferPatientDialog({ patientName }: { patientName: string }) {
                                 <SelectValue placeholder="Select a specialist" />
                             </SelectTrigger>
                             <SelectContent>
-                                {doctors.filter(d => d.name !== 'Dr. Amina Nakigudde').map(doctor => (
+                                {doctors.map(doctor => (
                                     <SelectItem key={doctor.id} value={doctor.id}>{doctor.name} - {doctor.specialty}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -75,7 +92,7 @@ function ReferPatientDialog({ patientName }: { patientName: string }) {
                                 <SelectValue placeholder="Select a facility" />
                             </SelectTrigger>
                             <SelectContent>
-                                {allFacilities.map(facility => (
+                                {facilities.map(facility => (
                                     <SelectItem key={facility.id} value={facility.id}>{facility.name}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -141,8 +158,52 @@ function ReportPatientDialog({ patientName }: { patientName: string }) {
 
 export default function PatientDetailsPage() {
     const params = useParams();
-    const patientId = params.patientId;
-    const patient = patients.find(p => p.id === patientId);
+    const patientId = params.patientId as string;
+    const [patient, setPatient] = useState<Patient | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!patientId) return;
+        async function fetchPatient() {
+            try {
+                const response = await fetch(`/api/patients/${patientId}`);
+                if (!response.ok) throw new Error("Patient not found");
+                const data = await response.json();
+                setPatient(data);
+            } catch (error) {
+                console.error("Failed to fetch patient:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchPatient();
+    }, [patientId]);
+
+    if (loading) {
+        return (
+             <div className="space-y-8">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                    <div className="flex items-center gap-4">
+                        <Skeleton className="h-20 w-20 rounded-full" />
+                        <div>
+                            <Skeleton className="h-8 w-48" />
+                            <Skeleton className="h-4 w-32 mt-2" />
+                        </div>
+                    </div>
+                    <div className="flex gap-2 self-end sm:self-start">
+                        <Skeleton className="h-10 w-32" />
+                        <Skeleton className="h-10 w-32" />
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-24 w-full" />
+                </div>
+                <Skeleton className="h-48 w-full" />
+            </div>
+        )
+    }
 
     if (!patient) {
         return (

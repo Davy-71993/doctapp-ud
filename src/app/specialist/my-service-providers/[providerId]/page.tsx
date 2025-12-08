@@ -5,8 +5,7 @@ import { useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { allFacilities } from '@/lib/mock-service-providers-data';
-import { Hospital, MapPin, Pencil, Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { Hospital, MapPin, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { Facility } from '@/lib/types';
 import {
   Table,
@@ -16,11 +15,41 @@ import {
   TableBody,
   TableCell,
 } from '@/components/ui/table';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SpecialistFacilityDetailsPage() {
     const params = useParams();
     const providerId = params.providerId as string;
-    const facility: Facility | undefined = allFacilities.find(p => p.id === providerId);
+    const [facility, setFacility] = useState<Facility | undefined>(undefined);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!providerId) return;
+        async function fetchFacility() {
+            try {
+                const response = await fetch('/api/facilities');
+                const facilities: Facility[] = await response.json();
+                const found = facilities.find(p => p.id === providerId);
+                setFacility(found);
+            } catch (error) {
+                console.error("Failed to fetch facility details:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchFacility();
+    }, [providerId]);
+
+    if (loading) {
+        return (
+            <div className="space-y-8">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-64 w-full" />
+            </div>
+        )
+    }
 
     if (!facility) {
         return <div className="text-center py-12">Facility not found.</div>;

@@ -18,10 +18,30 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { mockPatientComplaints } from '@/lib/mock-data';
 import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import type { Complaint } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PatientComplaintsPage() {
+    const [complaints, setComplaints] = useState<Complaint[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchComplaints() {
+            try {
+                const response = await fetch('/api/complaints/patient');
+                const data = await response.json();
+                setComplaints(data);
+            } catch (error) {
+                console.error("Failed to fetch complaints:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchComplaints();
+    }, []);
+
   return (
     <div className="space-y-8">
       <div>
@@ -37,6 +57,11 @@ export default function PatientComplaintsPage() {
           <CardDescription>A list of all patient-related complaints requiring review.</CardDescription>
         </CardHeader>
         <CardContent>
+            {loading ? (
+                <div className="space-y-2">
+                    {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+                </div>
+            ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -49,7 +74,7 @@ export default function PatientComplaintsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockPatientComplaints.map((complaint) => (
+              {complaints.map((complaint) => (
                 <TableRow key={complaint.id}>
                   <TableCell className="font-medium">{complaint.patientName}</TableCell>
                   <TableCell>{complaint.reportedBy}</TableCell>
@@ -67,6 +92,7 @@ export default function PatientComplaintsPage() {
               ))}
             </TableBody>
           </Table>
+          )}
         </CardContent>
       </Card>
     </div>

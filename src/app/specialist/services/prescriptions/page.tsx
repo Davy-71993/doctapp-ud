@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Card,
@@ -19,10 +20,29 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { mockPrescriptions } from '@/lib/mock-data';
 import { format } from 'date-fns';
+import type { Prescription } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PrescriptionsPage() {
+    const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchPrescriptions() {
+            try {
+                const response = await fetch('/api/prescriptions');
+                const data = await response.json();
+                setPrescriptions(data);
+            } catch (error) {
+                console.error("Failed to fetch prescriptions:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchPrescriptions();
+    }, []);
+
     return (
         <div className="space-y-8">
             <div className="flex justify-between items-center">
@@ -44,6 +64,11 @@ export default function PrescriptionsPage() {
                     <CardDescription>A list of recently issued prescriptions.</CardDescription>
                 </CardHeader>
                 <CardContent>
+                    {loading ? (
+                        <div className="space-y-2">
+                            {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+                        </div>
+                    ) : (
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -53,10 +78,10 @@ export default function PrescriptionsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {mockPrescriptions.map(p => (
+                            {prescriptions.map(p => (
                                 <TableRow key={p.id}>
                                     <TableCell className="font-medium">{p.patient.name}</TableCell>
-                                    <TableCell>{format(p.date, 'MMMM dd, yyyy')}</TableCell>
+                                    <TableCell>{format(new Date(p.date), 'MMMM dd, yyyy')}</TableCell>
                                     <TableCell className="text-right">
                                         <Link href={`/specialist/services/prescriptions/${p.id}`}>
                                             <Button variant="outline" size="sm">View</Button>
@@ -66,6 +91,7 @@ export default function PrescriptionsPage() {
                             ))}
                         </TableBody>
                     </Table>
+                    )}
                 </CardContent>
             </Card>
         </div>

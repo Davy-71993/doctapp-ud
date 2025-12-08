@@ -1,10 +1,14 @@
+"use client";
+
+import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { userProfile } from '@/lib/mock-data';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { ChevronRight, User, Bell } from 'lucide-react';
+import type { UserProfile } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 const settingsItems = [
@@ -13,8 +17,29 @@ const settingsItems = [
 ];
 
 export default function ProfilePage() {
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchProfile() {
+            try {
+                const response = await fetch('/api/user-profile');
+                const data = await response.json();
+                setUserProfile(data);
+            } catch (error) {
+                console.error("Failed to fetch user profile:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchProfile();
+    }, []);
+
   return (
     <div className="space-y-8">
+      {loading || !userProfile ? (
+        <Skeleton className="h-32 w-full" />
+      ) : (
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-20 w-20">
@@ -28,6 +53,7 @@ export default function ProfilePage() {
           </div>
         </CardHeader>
       </Card>
+      )}
       
       <Card>
         <CardHeader>

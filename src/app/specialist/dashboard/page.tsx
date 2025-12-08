@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -19,18 +20,13 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ImagePlaceholder } from '@/components/image-placeholder';
-import { patients } from '@/lib/mock-data';
-import { Users, AlertTriangle, CheckCircle2, Inbox, Link as LinkIcon, Building, Syringe, Network } from 'lucide-react';
+import { Users, AlertTriangle, CheckCircle2, Inbox, Building, Syringe } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-
-const statusIcons = {
-  Stable: <CheckCircle2 className="h-4 w-4 text-green-500" />,
-  Critical: <AlertTriangle className="h-4 w-4 text-red-500" />,
-  'Needs Review': <AlertTriangle className="h-4 w-4 text-yellow-500" />,
-};
+import type { Patient } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const statusColors = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -40,6 +36,24 @@ const statusColors = {
 
 
 export default function SpecialistDashboardPage() {
+    const [patients, setPatients] = useState<Patient[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchPatients() {
+            try {
+                const response = await fetch('/api/patients');
+                const data = await response.json();
+                setPatients(data);
+            } catch (error) {
+                console.error("Failed to fetch patients:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchPatients();
+    }, []);
+
   const patientCount = patients.length;
   const criticalCount = patients.filter(p => p.status === 'Critical').length;
   const needsReviewCount = patients.filter(p => p.status === 'Needs Review').length;
@@ -55,6 +69,13 @@ export default function SpecialistDashboardPage() {
 
   return (
     <div className="space-y-8">
+        {loading ? (
+            <div className="grid gap-4 md:grid-cols-3">
+                <Skeleton className="h-28 w-full" />
+                <Skeleton className="h-28 w-full" />
+                <Skeleton className="h-28 w-full" />
+            </div>
+        ) : (
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -93,6 +114,7 @@ export default function SpecialistDashboardPage() {
           </CardContent>
         </Card>
       </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-2">
@@ -101,6 +123,7 @@ export default function SpecialistDashboardPage() {
             <CardDescription>An overview of your patients who need attention.</CardDescription>
           </CardHeader>
           <CardContent>
+            {loading ? <Skeleton className="h-64 w-full" /> : (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -131,6 +154,7 @@ export default function SpecialistDashboardPage() {
                 ))}
               </TableBody>
             </Table>
+            )}
           </CardContent>
         </Card>
         
@@ -142,6 +166,7 @@ export default function SpecialistDashboardPage() {
               </CardHeader>
               <CardContent>
                   <div className="h-52 w-full">
+                    {loading ? <Skeleton className="h-full w-full" /> : (
                       <ResponsiveContainer>
                           <PieChart>
                               <Pie
@@ -167,6 +192,7 @@ export default function SpecialistDashboardPage() {
                               <Legend />
                           </PieChart>
                       </ResponsiveContainer>
+                    )}
                   </div>
               </CardContent>
             </Card>

@@ -1,27 +1,43 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { appointments } from '@/lib/mock-data';
-import type { TimeBlock } from '@/lib/types';
+import type { TimeBlock, Appointment } from '@/lib/types';
 import { ScheduleXCalendar } from '@/components/schedule-x-calendar';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { AddServiceDialog } from '@/components/add-service-dialog';
 import type { SpecialistService } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 export default function SchedulePage() {
   const { toast } = useToast();
   // Assuming the specialist is Dr. Amina Nakigudde for mock purposes
-  const specialistId = '4';
+  const specialistId = '1';
   
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
   const [newBlocks, setNewBlocks] = useState<TimeBlock[]>([]);
 
-  const specialistAppointments = appointments
-    .filter(app => app.doctor.id === specialistId && (app.status === 'upcoming' || app.status === 'past'))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  useEffect(() => {
+    async function fetchAppointments() {
+        try {
+            const response = await fetch('/api/appointments');
+            const allAppointments: Appointment[] = await response.json();
+            const specialistAppointments = allAppointments
+                .filter(app => app.doctor.id === specialistId && (app.status === 'upcoming' || app.status === 'past'))
+                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            setAppointments(specialistAppointments);
+        } catch (error) {
+            console.error("Failed to fetch appointments:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchAppointments();
+  }, [specialistId]);
     
   const unavailableBlocks: TimeBlock[] = [
     {
@@ -70,11 +86,13 @@ export default function SchedulePage() {
   return (
     <div className="space-y-8 h-[calc(100vh_-_10rem)] flex flex-col">
       <div className="flex-grow">
+        {loading ? <Skeleton className="h-full w-full" /> : (
           <ScheduleXCalendar 
             appointments={appointments}
             unavailableBlocks={[...unavailableBlocks, ...newBlocks]}
             onCreateBlock={handleCreateBlock}
         />
+        )}
       </div>
        <div className="fixed bottom-24 right-6 z-40">
         <AddServiceDialog onAddService={handleAddSchedule}>

@@ -10,9 +10,10 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, FileText, Check, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Service } from '@/lib/types';
+import { Skeleton } from './ui/skeleton';
 
 
 function PendingItem({ item }: { item: Service }) {
@@ -60,9 +61,10 @@ type ServiceListProps = {
     pendingData: Service[];
     verifiedData: Service[];
     type: 'Service' | 'Ambulance' | 'Emergency';
+    loading: boolean;
 }
 
-export default function ServiceListPageTemplate({ title, description, pendingData, verifiedData, type }: ServiceListProps) {
+export default function ServiceListPageTemplate({ title, description, pendingData, verifiedData, loading }: ServiceListProps) {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -74,19 +76,20 @@ export default function ServiceListPageTemplate({ title, description, pendingDat
         </div>
       </div>
 
-       {pendingData.length > 0 && (
+       {loading || pendingData.length > 0 ? (
         <Card>
             <CardHeader>
                 <CardTitle>Pending {title} Approvals</CardTitle>
                 <CardDescription>These services are awaiting review before being published.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {pendingData.map(service => (
+                {loading ? <Skeleton className="h-24 w-full" /> : 
+                pendingData.map(service => (
                     <PendingItem key={service.id} item={service} />
                 ))}
             </CardContent>
         </Card>
-       )}
+       ) : null}
       
       <Card>
         <CardHeader>
@@ -94,7 +97,9 @@ export default function ServiceListPageTemplate({ title, description, pendingDat
           <CardDescription>A list of all verified services on the platform.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {verifiedData.length > 0 ? verifiedData.map((service) => (
+          {loading ? (
+             [...Array(2)].map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
+          ) : verifiedData.length > 0 ? verifiedData.map((service) => (
             <VerifiedItem key={service.id} item={service} />
           )) : (
             <p className="text-sm text-muted-foreground text-center py-8">No verified {title.toLowerCase()} found.</p>

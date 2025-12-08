@@ -17,16 +17,18 @@ import {
   CardDescription
 } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
-import { recentActivities, healthData } from '@/lib/mock-data';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend, LineChart, Line } from 'recharts';
+import { useEffect, useState } from 'react';
+import type { HealthData, Activity as ActivityType } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 const actionCards = [
   {
-    title: 'Find a Specialist',
-    description: 'Search by specialty or location',
+    title: 'My Specialists',
+    description: 'View your connected specialists',
     icon: Stethoscope,
-    href: '/search',
+    href: '/my-specialists',
     color: 'bg-emerald-100 dark:bg-emerald-900',
     textColor: 'text-emerald-700 dark:text-emerald-300',
   },
@@ -65,6 +67,30 @@ const actionCards = [
 ];
 
 export default function DashboardPage() {
+    const [healthData, setHealthData] = useState<HealthData | null>(null);
+    const [recentActivities, setRecentActivities] = useState<ActivityType[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const [healthRes, activitiesRes] = await Promise.all([
+                    fetch('/api/health-data'),
+                    fetch('/api/recent-activities')
+                ]);
+                const healthData = await healthRes.json();
+                const recentActivities = await activitiesRes.json();
+                setHealthData(healthData);
+                setRecentActivities(recentActivities);
+            } catch (error) {
+                console.error("Failed to fetch dashboard data:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
+
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -89,6 +115,14 @@ export default function DashboardPage() {
           ))}
       </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {loading || !healthData ? (
+                <>
+                    <Skeleton className="h-96 w-full" />
+                    <Skeleton className="h-96 w-full" />
+                    <Skeleton className="h-96 w-full" />
+                </>
+            ) : (
+             <>
              <Card>
                 <CardHeader>
                     <CardTitle>Blood Pressure</CardTitle>
@@ -172,6 +206,8 @@ export default function DashboardPage() {
                 ))}
                 </CardContent>
             </Card>
+            </>
+            )}
       </div>
     </div>
   );

@@ -4,11 +4,14 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { healthData } from '@/lib/mock-data';
 import { Baby } from 'lucide-react';
 
-export function PregnancyTracker() {
-  const [isPregnant, setIsPregnant] = useState(healthData.pregnancy.status === 'Pregnant');
+type PregnancyTrackerProps = {
+  isPregnantInitially?: boolean;
+}
+
+export function PregnancyTracker({ isPregnantInitially = false }: PregnancyTrackerProps) {
+  const [isPregnant, setIsPregnant] = useState(isPregnantInitially);
 
   return (
     <Card>

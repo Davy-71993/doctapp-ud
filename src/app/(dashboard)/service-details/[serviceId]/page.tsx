@@ -1,24 +1,62 @@
 
 "use client";
 
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
-import { specialistServices } from '@/lib/mock-data';
-import type { SpecialistService } from '@/lib/types';
+import type { SpecialistService, Facility } from '@/lib/types';
 import { Clock, DollarSign, Stethoscope, MapPin } from 'lucide-react';
-import { allFacilities } from '@/lib/mock-service-providers-data';
 import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PublicServiceDetailPage() {
     const params = useParams();
     const serviceId = params.serviceId as string;
-    const service: SpecialistService | undefined = specialistServices.find(s => s.id === serviceId);
+    const [service, setService] = useState<SpecialistService | null>(null);
+    const [providers, setProviders] = useState<Facility[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    // Find facilities who offer this service
-    const providers = allFacilities.filter(provider => 
-        provider.services.some(s => s.id === serviceId)
-    );
+    useEffect(() => {
+        if (!serviceId) return;
+        async function fetchServiceDetails() {
+            try {
+                const [serviceRes, facilitiesRes] = await Promise.all([
+                    fetch(`/api/specialist-services/${serviceId}`),
+                    fetch('/api/facilities')
+                ]);
+
+                if (!serviceRes.ok) {
+                    throw new Error("Service not found");
+                }
+                
+                const serviceData: SpecialistService = await serviceRes.json();
+                const facilitiesData: Facility[] = await facilitiesRes.json();
+
+                setService(serviceData);
+                
+                const serviceProviders = facilitiesData.filter(provider => 
+                    provider.services.some(s => s.id === serviceId)
+                );
+                setProviders(serviceProviders);
+
+            } catch (error) {
+                console.error("Failed to fetch service details:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchServiceDetails();
+    }, [serviceId]);
+
+    if (loading) {
+        return (
+            <div className="space-y-8">
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-64 w-full" />
+            </div>
+        )
+    }
 
     if (!service) {
         return <div className="text-center py-12">Service not found.</div>;

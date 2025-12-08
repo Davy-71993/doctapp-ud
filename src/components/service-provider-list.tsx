@@ -1,6 +1,7 @@
 
 "use client";
 
+import Link from 'next/link';
 import {
   Card,
   CardHeader,
@@ -12,12 +13,21 @@ import { Button } from '@/components/ui/button';
 import { Plus, FileText, Check, X, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { Facility } from '@/lib/types';
-import { doctors } from '@/lib/mock-data';
-import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useState } from 'react';
 
 
 function PendingItem({ item }: { item: Facility }) {
-    const specialist = doctors.find(d => d.id === item.specialistId);
+    const [specialistName, setSpecialistName] = useState('');
+    
+    useEffect(() => {
+        if(item.specialistId) {
+            fetch(`/api/doctors/${item.specialistId}`)
+            .then(res => res.json())
+            .then(data => setSpecialistName(data.name));
+        }
+    }, [item.specialistId]);
+
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-muted/50 rounded-lg gap-4">
             <div>
@@ -34,7 +44,7 @@ function PendingItem({ item }: { item: Facility }) {
                         </>
                     )}
                 </div>
-                 {specialist && <p className="text-xs text-muted-foreground mt-1">Submitted by: {specialist.name}</p>}
+                 {specialistName && <p className="text-xs text-muted-foreground mt-1">Submitted by: {specialistName}</p>}
                 {item.documents && (
                      <div className="flex items-center gap-2 mt-2">
                         {item.documents.map((doc: string) => (
@@ -93,9 +103,10 @@ type FacilityListProps = {
     description: string;
     pendingData: Facility[];
     verifiedData: Facility[];
+    loading: boolean;
 }
 
-export default function FacilityListPageTemplate({ title, description, pendingData, verifiedData }: FacilityListProps) {
+export default function FacilityListPageTemplate({ title, description, pendingData, verifiedData, loading }: FacilityListProps) {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -107,23 +118,27 @@ export default function FacilityListPageTemplate({ title, description, pendingDa
         </div>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          Add New {title}
+          Add New {title.slice(0, -1)}
         </Button>
       </div>
 
-       {pendingData.length > 0 && (
+       {loading || pendingData.length > 0 ? (
         <Card>
             <CardHeader>
                 <CardTitle>Pending {title} Approvals</CardTitle>
                 <CardDescription>These facilities are awaiting for their documents and profile to be verified.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {pendingData.map(facility => (
-                    <PendingItem key={facility.id} item={facility} />
-                ))}
+                {loading ? (
+                    <Skeleton className="h-24 w-full" />
+                ) : (
+                    pendingData.map(facility => (
+                        <PendingItem key={facility.id} item={facility} />
+                    ))
+                )}
             </CardContent>
         </Card>
-       )}
+       ): null}
       
       <Card>
         <CardHeader>
@@ -131,11 +146,15 @@ export default function FacilityListPageTemplate({ title, description, pendingDa
           <CardDescription>A list of all verified facilities on the platform.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {verifiedData.length > 0 ? verifiedData.map((facility) => (
-            <VerifiedItem key={facility.id} item={facility} />
-          )) : (
-            <p className="text-sm text-muted-foreground text-center py-8">No verified {title.toLowerCase()} found.</p>
-          )}
+            {loading ? (
+                [...Array(3)].map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
+            ) : verifiedData.length > 0 ? (
+                verifiedData.map((facility) => (
+                    <VerifiedItem key={facility.id} item={facility} />
+                ))
+            ) : (
+                <p className="text-sm text-muted-foreground text-center py-8">No verified {title.toLowerCase()} found.</p>
+            )}
         </CardContent>
       </Card>
     </div>

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,8 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, MapPin } from 'lucide-react';
 import type { Facility } from '@/lib/types';
 import { AddFacilityDialog } from '@/components/add-service-provider-dialog';
-import { verifiedHospitals, pendingHospitals } from '@/lib/mock-service-providers-data';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Assuming authenticated specialist has id '1' (Dr. Amina Nakigudde)
 const SPECIALIST_ID = '1';
@@ -19,7 +19,6 @@ const statusColors: { [key: string]: string } = {
     pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     verified: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
 };
-
 
 function FacilityCard({ facility, status }: { facility: Facility; status: 'verified' | 'pending' }) {
     return (
@@ -52,12 +51,25 @@ function FacilityCard({ facility, status }: { facility: Facility; status: 'verif
 }
 
 export default function MyFacilitiesPage() {
-    // Combine and filter facilities for the current specialist
-    const [myFacilities, setMyFacilities] = useState([
-        ...verifiedHospitals.filter(p => p.specialistId === SPECIALIST_ID),
-        ...pendingHospitals.filter(p => p.specialistId === SPECIALIST_ID)
-    ]);
+    const [myFacilities, setMyFacilities] = useState<Facility[]>([]);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        async function fetchFacilities() {
+            try {
+                const response = await fetch('/api/facilities');
+                const facilities: Facility[] = await response.json();
+                const specialistFacilities = facilities.filter(p => p.specialistId === SPECIALIST_ID);
+                setMyFacilities(specialistFacilities);
+            } catch (error) {
+                console.error("Failed to fetch facilities:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchFacilities();
+    }, []);
+    
     const handleAddFacility = (newFacilityData: Omit<Facility, 'id' | 'specialistId'>) => {
         const newFacility: Facility = {
             id: `new-${Date.now()}`,
@@ -65,12 +77,12 @@ export default function MyFacilitiesPage() {
             ...newFacilityData,
             services: [],
         };
+        // In a real app, this would be a POST request to an API
         setMyFacilities(prev => [...prev, newFacility]);
     };
 
-    const pending = myFacilities.filter(p => pendingHospitals.some(ph => ph.id === p.id));
-    const verified = myFacilities.filter(p => verifiedHospitals.some(vh => vh.id === p.id) && !pending.some(ph => ph.id === p.id));
-
+    const pending = myFacilities.filter(p => p.documents && p.documents.length > 0); // Mock logic for pending
+    const verified = myFacilities.filter(p => !p.documents || p.documents.length === 0);
 
     return (
         <div className="space-y-8">
@@ -95,7 +107,9 @@ export default function MyFacilitiesPage() {
                     <CardDescription>A list of all facilities you have registered on the platform.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {myFacilities.length > 0 ? (
+                    {loading ? (
+                        [...Array(2)].map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
+                    ) : myFacilities.length > 0 ? (
                         <>
                             {verified.map(facility => (
                                 <FacilityCard key={facility.id} facility={facility} status="verified" />

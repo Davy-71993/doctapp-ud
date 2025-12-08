@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -11,11 +12,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Check, X } from 'lucide-react';
-import {
-  pendingSpecialists,
-  verifiedSpecialists,
-} from '@/lib/mock-data';
+import { Skeleton } from '@/components/ui/skeleton';
 
+interface Specialist {
+    id: string;
+    name: string;
+    specialty: string;
+    documents?: string[];
+}
 
 function PendingItem({ item }: { item: any}) {
     return (
@@ -61,6 +65,30 @@ function VerifiedItem({ item }: { item: any }) {
 }
 
 export default function SpecialistsPage() {
+    const [pendingSpecialists, setPendingSpecialists] = useState<Specialist[]>([]);
+    const [verifiedSpecialists, setVerifiedSpecialists] = useState<Specialist[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchSpecialists() {
+            try {
+                const [pendingRes, verifiedRes] = await Promise.all([
+                    fetch('/api/specialists/pending'),
+                    fetch('/api/specialists/verified')
+                ]);
+                const pendingData = await pendingRes.json();
+                const verifiedData = await verifiedRes.json();
+                setPendingSpecialists(pendingData);
+                setVerifiedSpecialists(verifiedData);
+            } catch (error) {
+                console.error("Failed to fetch specialists:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchSpecialists();
+    }, []);
+
   return (
     <div className="space-y-8">
       <div>
@@ -76,9 +104,13 @@ export default function SpecialistsPage() {
                 <CardDescription>These specialists are awaiting for their documents and profile to be verified.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {pendingSpecialists.map(specialist => (
-                    <PendingItem key={specialist.id} item={specialist} />
-                ))}
+                {loading ? (
+                    <Skeleton className="h-24 w-full" />
+                ) : (
+                    pendingSpecialists.map(specialist => (
+                        <PendingItem key={specialist.id} item={specialist} />
+                    ))
+                )}
             </CardContent>
         </Card>
         <Card>
@@ -86,9 +118,13 @@ export default function SpecialistsPage() {
                 <CardTitle>Verified Specialists</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                {verifiedSpecialists.map(specialist => (
-                    <VerifiedItem key={specialist.id} item={specialist} />
-                ))}
+                {loading ? (
+                    [...Array(2)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
+                ) : (
+                    verifiedSpecialists.map(specialist => (
+                        <VerifiedItem key={specialist.id} item={specialist} />
+                    ))
+                )}
             </CardContent>
         </Card>
     </div>

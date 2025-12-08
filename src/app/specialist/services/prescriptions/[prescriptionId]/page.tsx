@@ -8,16 +8,46 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter }
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Pill } from 'lucide-react';
-import { mockPrescriptions } from '@/lib/mock-data';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { useToast } from '@/hooks/use-toast';
+import { useEffect, useState } from 'react';
+import type { Prescription } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PrescriptionDetailsPage() {
     const params = useParams();
-    const prescriptionId = params.prescriptionId;
-    const prescription = mockPrescriptions.find(p => p.id === prescriptionId);
+    const prescriptionId = params.prescriptionId as string;
+    const [prescription, setPrescription] = useState<Prescription | null>(null);
+    const [loading, setLoading] = useState(true);
     const { toast } = useToast();
+
+    useEffect(() => {
+        if (!prescriptionId) return;
+        async function fetchPrescription() {
+            try {
+                const response = await fetch(`/api/prescriptions/${prescriptionId}`);
+                if (!response.ok) throw new Error('Prescription not found');
+                const data = await response.json();
+                setPrescription(data);
+            } catch (error) {
+                console.error("Failed to fetch prescription:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchPrescription();
+    }, [prescriptionId]);
+
+    if (loading) {
+        return (
+            <div className="space-y-8">
+                <Skeleton className="h-10 w-1/2" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-48 w-full" />
+            </div>
+        )
+    }
 
     if (!prescription) {
         return (
@@ -52,7 +82,7 @@ export default function PrescriptionDetailsPage() {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Prescription Details</h1>
                     <p className="text-muted-foreground">
-                        Issued on {format(prescription.date, 'MMMM dd, yyyy')}
+                        Issued on {format(new Date(prescription.date), 'MMMM dd, yyyy')}
                     </p>
                 </div>
             </div>

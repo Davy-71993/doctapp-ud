@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { users } from "@/lib/mock-data";
+import type { User } from "@/lib/types";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,8 +23,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const response = await fetch('/api/users');
+    const users: User[] = await response.json();
+
     const user = users.find(
       (u) => u.email === email && u.password === password
     );

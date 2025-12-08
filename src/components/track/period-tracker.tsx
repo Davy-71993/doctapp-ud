@@ -3,10 +3,14 @@
 import { useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { healthData } from '@/lib/mock-data';
 
-export function PeriodTracker() {
-  const [dates, setDates] = useState<Date[]>(healthData.period.map(p => new Date(p.date)));
+type PeriodTrackerProps = {
+  initialDates?: Date[];
+};
+
+
+export function PeriodTracker({ initialDates = [] }: PeriodTrackerProps) {
+  const [dates, setDates] = useState<Date[]>(initialDates);
 
   return (
     <Card>

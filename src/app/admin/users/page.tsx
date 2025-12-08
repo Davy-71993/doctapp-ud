@@ -17,12 +17,13 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { users } from '@/lib/mock-data';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import type { User } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const roleColors: { [key: string]: string } = {
     patient: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -31,7 +32,24 @@ const roleColors: { [key: string]: string } = {
 };
 
 export default function UsersPage() {
+    const [users, setUsers] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/api/users');
+                const data = await response.json();
+                setUsers(data);
+            } catch (error) {
+                console.error("Failed to fetch users:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchUsers();
+    }, []);
 
     const filteredUsers = users.filter(user => 
         `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -67,6 +85,11 @@ export default function UsersPage() {
           <CardDescription>A comprehensive list of all users.</CardDescription>
         </CardHeader>
         <CardContent>
+            {loading ? (
+                <div className="space-y-2">
+                    {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+                </div>
+            ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -99,6 +122,7 @@ export default function UsersPage() {
               ))}
             </TableBody>
           </Table>
+            )}
         </CardContent>
       </Card>
     </div>

@@ -1,13 +1,52 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppointmentCard } from '@/components/appointment-card';
-import { appointments as mockAppointments } from '@/lib/mock-data';
 import { CalendarOff } from 'lucide-react';
+import type { Appointment } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AppointmentsPage() {
-  const [appointments] = useState(mockAppointments);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAppointments() {
+      try {
+        const response = await fetch('/api/appointments');
+        const data = await response.json();
+        setAppointments(data);
+      } catch (error) {
+        console.error("Failed to fetch appointments:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAppointments();
+  }, []);
+
+  if (loading) {
+    return (
+       <div className="space-y-8">
+        <div>
+          <Skeleton className="h-10 w-1/4" />
+          <Skeleton className="h-4 w-1/2 mt-2" />
+        </div>
+        <div className="space-y-4">
+            <div className="flex space-x-1 rounded-lg bg-muted p-1.5 w-full md:w-1/3">
+              <Skeleton className="w-full h-8" />
+              <Skeleton className="w-full h-8" />
+            </div>
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-32 w-full rounded-lg" />
+              ))}
+            </div>
+        </div>
+      </div>
+    )
+  }
 
   const upcomingAppointments = appointments.filter(a => a.status === 'upcoming');
   const pastAppointments = appointments.filter(a => a.status !== 'upcoming');

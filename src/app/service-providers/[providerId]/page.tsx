@@ -5,15 +5,43 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
-import { allFacilities } from '@/lib/mock-service-providers-data';
 import { Hospital, MapPin, Clock, DollarSign } from 'lucide-react';
 import type { Facility } from '@/lib/types';
 import { ImagePlaceholder } from '@/components/image-placeholder';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PublicFacilityDetailsPage() {
     const params = useParams();
     const providerId = params.providerId as string;
-    const facility: Facility | undefined = allFacilities.find(p => p.id === providerId);
+    const [facility, setFacility] = useState<Facility | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!providerId) return;
+        async function fetchFacility() {
+            try {
+                const response = await fetch(`/api/facilities`);
+                const facilities: Facility[] = await response.json();
+                const found = facilities.find(p => p.id === providerId);
+                setFacility(found || null);
+            } catch (error) {
+                console.error("Failed to fetch facility:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchFacility();
+    }, [providerId]);
+
+    if (loading) {
+        return (
+             <div className="space-y-8">
+                <Skeleton className="h-80 w-full" />
+                <Skeleton className="h-64 w-full" />
+            </div>
+        )
+    }
 
     if (!facility) {
         return <div className="text-center py-12">Facility not found.</div>;

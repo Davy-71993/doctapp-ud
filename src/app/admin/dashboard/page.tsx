@@ -18,8 +18,10 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { users, doctors } from '@/lib/mock-data';
 import { Users, ShieldCheck, UserCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { User, Doctor } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const userGrowthData = [
   { month: 'Jan', users: 150, specialists: 20 },
@@ -31,6 +33,30 @@ const userGrowthData = [
 ];
 
 export default function AdminDashboardPage() {
+    const [users, setUsers] = useState<User[]>([]);
+    const [doctors, setDoctors] = useState<Doctor[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const [usersRes, doctorsRes] = await Promise.all([
+                    fetch('/api/users'),
+                    fetch('/api/doctors')
+                ]);
+                const usersData = await usersRes.json();
+                const doctorsData = await doctorsRes.json();
+                setUsers(usersData);
+                setDoctors(doctorsData);
+            } catch (error) {
+                console.error("Failed to fetch dashboard data:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
+
   const patientCount = users.filter(u => u.role === 'patient').length;
   const specialistCount = users.filter(u => u.role === 'specialist').length;
   const pendingVerificationCount = 5; // Mock data
@@ -51,6 +77,13 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
+      {loading ? (
+         <div className="grid gap-4 md:grid-cols-3">
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
+         </div>
+      ) : (
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -89,6 +122,7 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div>
+      )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card>
@@ -125,6 +159,7 @@ export default function AdminDashboardPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="h-64 w-full">
+                        {loading ? <Skeleton className="h-full w-full" /> : (
                         <ResponsiveContainer>
                              <BarChart data={specialistDistributionData}>
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -139,6 +174,7 @@ export default function AdminDashboardPage() {
                                 <Bar dataKey="count" fill="hsl(var(--chart-1))" name="Count" />
                             </BarChart>
                         </ResponsiveContainer>
+                        )}
                     </div>
                 </CardContent>
             </Card>

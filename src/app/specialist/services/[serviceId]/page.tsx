@@ -1,26 +1,57 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { specialistServices as initialServices } from '@/lib/mock-data';
 import type { SpecialistService as Service } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SpecialistServiceDetailsPage() {
     const params = useParams();
     const serviceId = params.serviceId as string;
-    const initialService = initialServices.find(s => s.id === serviceId);
-
-    const [service, setService] = useState<Service | undefined>(initialService);
+    const [service, setService] = useState<Service | undefined>(undefined);
+    const [loading, setLoading] = useState(true);
     const { toast } = useToast();
+
+    useEffect(() => {
+        if (!serviceId) return;
+        async function fetchService() {
+            try {
+                const response = await fetch(`/api/specialist-services/${serviceId}`);
+                if (!response.ok) throw new Error('Service not found');
+                const data = await response.json();
+                setService(data);
+            } catch (error) {
+                console.error("Failed to fetch service:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchService();
+    }, [serviceId]);
+
+    if (loading) {
+        return (
+             <div className="space-y-8">
+                <div className="flex items-center gap-4">
+                    <Skeleton className="h-10 w-10" />
+                    <div>
+                        <Skeleton className="h-8 w-48" />
+                        <Skeleton className="h-4 w-64 mt-2" />
+                    </div>
+                </div>
+                <Skeleton className="h-96 w-full" />
+            </div>
+        )
+    }
 
     if (!service) {
         return <div className="text-center py-12">Service not found.</div>;
@@ -37,6 +68,7 @@ export default function SpecialistServiceDetailsPage() {
     }
 
     const handleSaveChanges = () => {
+        // In a real app, this would be a PUT/PATCH request
         toast({
             title: "Service Updated",
             description: `Details for "${service.name}" have been saved.`,
@@ -94,4 +126,3 @@ export default function SpecialistServiceDetailsPage() {
         </div>
     );
 }
-

@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Link from "next/link";
@@ -31,10 +30,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { doctors } from "@/lib/mock-data";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { AiAdvice } from "@/components/track/ai-advice";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
+import type { Doctor } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 const navItems = [
@@ -129,7 +130,24 @@ const SpecialistSidebar = () => {
 
 export default function SpecialistLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const specialist = doctors.find(d => d.name === 'Dr. Amina Nakigudde');
+  const [specialist, setSpecialist] = useState<Doctor | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSpecialist() {
+        try {
+            // Assuming the logged-in specialist is Dr. Amina Nakigudde with id '1'
+            const response = await fetch('/api/doctors/1');
+            const data = await response.json();
+            setSpecialist(data);
+        } catch (error) {
+            console.error("Failed to fetch specialist data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchSpecialist();
+  }, []);
 
   const getPageTitle = () => {
     if (pathname === '/specialist/dashboard') return "Dashboard";
@@ -146,6 +164,12 @@ export default function SpecialistLayout({ children }: { children: React.ReactNo
           <div className="flex-1">
              <h1 className="text-lg font-semibold md:text-2xl capitalize">{getPageTitle()}</h1>
           </div>
+          {loading || !specialist ? (
+            <div className="flex items-center gap-2">
+                <Skeleton className="h-6 w-32 hidden sm:block" />
+                <Skeleton className="h-9 w-9 rounded-full" />
+            </div>
+          ) : (
           <div className="flex items-center gap-2">
              <p className="text-sm font-medium hidden sm:block">{specialist?.name}</p>
              <Avatar className="h-9 w-9">
@@ -153,6 +177,7 @@ export default function SpecialistLayout({ children }: { children: React.ReactNo
                 <AvatarFallback>{specialist?.name.charAt(0)}</AvatarFallback>
              </Avatar>
           </div>
+          )}
         </header>
         <main className="flex-1 p-4 lg:p-6">{children}</main>
         <AiAdvice />

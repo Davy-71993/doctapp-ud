@@ -1,14 +1,14 @@
 
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Clock, DollarSign, Pencil, FileText } from 'lucide-react';
-import { specialistServices as initialServices } from '@/lib/mock-data';
 import type { SpecialistService } from '@/lib/types';
 import { AddServiceDialog } from '@/components/add-service-dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function ServiceCard({ service }: { service: SpecialistService }) {
     return (
@@ -43,13 +43,30 @@ function ServiceCard({ service }: { service: SpecialistService }) {
 
 
 export default function SpecialistServicesPage() {
-  const [services, setServices] = useState<SpecialistService[]>(initialServices);
+  const [services, setServices] = useState<SpecialistService[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchServices() {
+        try {
+            const response = await fetch('/api/specialist-services');
+            const data = await response.json();
+            setServices(data);
+        } catch (error) {
+            console.error("Failed to fetch services:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchServices();
+  }, []);
 
   const handleAddService = (newService: Omit<SpecialistService, 'id'>) => {
     const serviceToAdd: SpecialistService = {
         id: (services.length + 1).toString(),
         ...newService,
     };
+    // This is a mock implementation. In a real app, you'd POST to an API.
     setServices(prev => [...prev, serviceToAdd]);
   }
 
@@ -70,6 +87,11 @@ export default function SpecialistServicesPage() {
         </AddServiceDialog>
       </div>
       
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-64 w-full" />)}
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map(service => (
             <ServiceCard key={service.id} service={service} />
@@ -90,7 +112,7 @@ export default function SpecialistServicesPage() {
                 </Link>
             </CardFooter>
         </Card>
-        {services.length === 0 && (
+        {services.length === 0 && !loading && (
             <Card className="flex flex-col items-center justify-center p-12 text-center md:col-span-2 lg:col-span-3">
                 <CardTitle className="text-xl">No Services Found</CardTitle>
                 <CardDescription className="mt-2">
@@ -99,6 +121,7 @@ export default function SpecialistServicesPage() {
             </Card>
         )}
       </div>
+      )}
     </div>
   );
 }

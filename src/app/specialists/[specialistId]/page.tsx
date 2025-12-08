@@ -1,9 +1,8 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import { doctors, userProfile } from '@/lib/mock-data';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,9 +11,10 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { Star, ThumbsUp, ThumbsDown, MessageSquare, Ban, ShieldX, User, Send, UserX, Flag } from 'lucide-react';
 import { BookingModal } from '@/components/booking-modal';
-import type { Doctor, DoctorComment } from '@/lib/types';
+import type { Doctor, DoctorComment, UserProfile } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function StarRating({ rating, setRating }: { rating: number; setRating?: (rating: number) => void }) {
     const isInteractive = !!setRating;
@@ -35,22 +35,66 @@ export default function SpecialistDetailsPage() {
     const params = useParams();
     const { toast } = useToast();
     const specialistId = params.specialistId as string;
-    const doctor = doctors.find(d => d.id === specialistId);
-
-    // This is a simulation of getting the current user's role.
-    // In a real app, this would come from an authentication context.
-    const currentUserRole = 'patient'; // or 'admin'
+    
+    const [doctor, setDoctor] = useState<Doctor | null>(null);
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const [newComment, setNewComment] = useState('');
     const [newRating, setNewRating] = useState(0);
-    const [comments, setComments] = useState<DoctorComment[]>(doctor?.comments || []);
+    const [comments, setComments] = useState<DoctorComment[]>([]);
+
+    useEffect(() => {
+        if (!specialistId) return;
+
+        async function fetchDetails() {
+            try {
+                const [doctorRes, profileRes] = await Promise.all([
+                    fetch(`/api/doctors/${specialistId}`),
+                    fetch('/api/user-profile')
+                ]);
+
+                if (!doctorRes.ok) {
+                    throw new Error("Doctor not found");
+                }
+
+                const doctorData = await doctorRes.json();
+                const profileData = await profileRes.json();
+
+                setDoctor(doctorData);
+                setComments(doctorData.comments || []);
+                setUserProfile(profileData);
+            } catch (error) {
+                console.error("Failed to fetch details:", error);
+                setDoctor(null);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchDetails();
+
+    }, [specialistId]);
+    
+    // This is a simulation of getting the current user's role.
+    const currentUserRole = 'patient'; // or 'admin'
+
+    if (loading) {
+        return (
+             <div className="container mx-auto max-w-4xl py-8 space-y-8">
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-64 w-full" />
+            </div>
+        )
+    }
 
     if (!doctor) {
         return notFound();
     }
 
     const handleAddComment = () => {
-        if (!newComment.trim() || newRating === 0) {
+        if (!newComment.trim() || newRating === 0 || !userProfile) {
             toast({
                 title: "Incomplete Review",
                 description: "Please provide a rating and a comment.",
@@ -97,7 +141,6 @@ export default function SpecialistDetailsPage() {
     return (
         <div className="container mx-auto max-w-4xl py-8 space-y-8">
             
-            {/* Admin-only action panel */}
             {currentUserRole === 'admin' && (
                  <Card className="border-destructive">
                     <CardHeader>
@@ -147,10 +190,10 @@ export default function SpecialistDetailsPage() {
                 </CardHeader>
                 <CardFooter className="justify-end gap-2">
                     <BookingModal doctor={doctor} />
-                    <Button variant="outline" onClick={() => handlePatientAction('Report')} className="max-w-60">
+                    <Button variant="outline" onClick={() => handlePatientAction('Report')} className="flex-1 max-w-60">
                         <Flag className="mr-2 h-4 w-4" /> Report
                     </Button>
-                    <Button variant="destructive" onClick={() => handlePatientAction('Disconnect')} className="max-w-60">
+                    <Button variant="destructive" onClick={() => handlePatientAction('Disconnect')} className="flex-1 max-w-60">
                         <UserX className="mr-2 h-4 w-4" /> Disconnect
                     </Button>
                 </CardFooter>
@@ -167,7 +210,6 @@ export default function SpecialistDetailsPage() {
                 </CardContent>
             </Card>
 
-            {/* Patient review and comment section */}
             {currentUserRole === 'patient' && (
                 <Card>
                     <CardHeader>
@@ -231,9 +273,6 @@ export default function SpecialistDetailsPage() {
                     )}
                 </CardContent>
             </Card>
-
         </div>
     );
 }
-
-    

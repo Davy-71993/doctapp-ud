@@ -19,20 +19,45 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ImagePlaceholder } from '@/components/image-placeholder';
-import { patients } from '@/lib/mock-data';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import type { Patient } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const statusColors = {
+const statusColors: { [key: string]: string } = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
     Critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
     'Needs Review': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
 };
 
 export default function PatientsPage() {
+    const [patients, setPatients] = useState<Patient[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        async function fetchPatients() {
+            try {
+                const response = await fetch('/api/patients');
+                const data = await response.json();
+                setPatients(data);
+            } catch (error) {
+                console.error("Failed to fetch patients:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchPatients();
+    }, []);
+
+    const filteredPatients = patients.filter(patient =>
+        patient.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
   return (
     <div className="space-y-8">
       <div>
@@ -48,12 +73,22 @@ export default function PatientsPage() {
                 <CardTitle>All Patients</CardTitle>
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input placeholder="Search patients..." className="pl-10" />
+                    <Input 
+                        placeholder="Search patients..." 
+                        className="pl-10"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
             </div>
             <CardDescription>A list of all patients under your care.</CardDescription>
         </CardHeader>
         <CardContent>
+            {loading ? (
+                 <div className="space-y-2">
+                    {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}
+                </div>
+            ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -64,7 +99,7 @@ export default function PatientsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {patients.map((patient) => (
+              {filteredPatients.map((patient) => (
                 <TableRow key={patient.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -90,6 +125,7 @@ export default function PatientsPage() {
               ))}
             </TableBody>
           </Table>
+            )}
         </CardContent>
       </Card>
     </div>
