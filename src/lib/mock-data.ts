@@ -8,6 +8,7 @@ import type {
   HealthData,
   Patient,
   SpecialistService,
+  Prescription,
 } from '@/lib/types';
 import { Pill, Stethoscope, FileText, Calendar as CalendarIcon } from 'lucide-react';
 
@@ -144,4 +145,33 @@ export const pendingSpecialists = [
 export const verifiedSpecialists = [
     { id: 'vs1', name: 'Dr. Amina Nakigudde', specialty: 'Cardiologist' },
     { id: 'vs2', name: 'Dr. David Okello', specialty: 'Neurologist' },
+];
+
+export const mockPrescriptions: Prescription[] = [
+    { 
+        id: 'presc1', 
+        patient: patients[0], 
+        date: new Date(), 
+        medicines: [
+            { name: 'Amoxicillin', dosage: '500mg', frequency: 'Twice a day', duration: '7 days' },
+            { name: 'Ibuprofen', dosage: '200mg', frequency: 'As needed for pain', duration: '5 days' },
+        ] 
+    },
+    { 
+        id: 'presc2', 
+        patient: patients[1], 
+        date: new Date(new Date().setDate(new Date().getDate() - 2)), 
+        medicines: [
+            { name: 'Loratadine', dosage: '10mg', frequency: 'Once a day', duration: '14 days' },
+        ]
+    },
+    { 
+        id: 'presc3', 
+        patient: patients[3], 
+        date: new Date(new Date().setDate(new Date().getDate() - 5)), 
+        medicines: [
+            { name: 'Amlodipine', dosage: '5mg', frequency: 'Once a day', duration: '30 days' },
+            { name: 'Aspirin', dosage: '81mg', frequency: 'Once a day', duration: 'Ongoing' },
+        ] 
+    },
 ];

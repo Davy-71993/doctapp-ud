@@ -1,6 +1,7 @@
 
 'use client';
 
+import Link from 'next/link';
 import {
   Card,
   CardHeader,
@@ -18,14 +19,8 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { patients } from '@/lib/mock-data';
+import { mockPrescriptions } from '@/lib/mock-data';
 import { format } from 'date-fns';
-
-const mockPrescriptions = [
-    { id: 'presc1', patient: patients[0], date: new Date(), medication: 'Amoxicillin 500mg' },
-    { id: 'presc2', patient: patients[1], date: new Date(new Date().setDate(new Date().getDate() - 2)), medication: 'Loratadine 10mg' },
-    { id: 'presc3', patient: patients[3], date: new Date(new Date().setDate(new Date().getDate() - 5)), medication: 'Amlodipine 5mg' },
-];
 
 export default function PrescriptionsPage() {
     return (
@@ -63,7 +58,9 @@ export default function PrescriptionsPage() {
                                     <TableCell className="font-medium">{p.patient.name}</TableCell>
                                     <TableCell>{format(p.date, 'MMMM dd, yyyy')}</TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="outline" size="sm">View</Button>
+                                        <Link href={`/specialist/services/prescriptions/${p.id}`}>
+                                            <Button variant="outline" size="sm">View</Button>
+                                        </Link>
                                     </TableCell>
                                 </TableRow>
                             ))}

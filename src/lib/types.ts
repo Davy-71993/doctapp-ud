@@ -125,3 +125,17 @@ export type TimeBlock = {
   end: Date;
   type: 'appointment' | 'unavailable';
 };
+
+export type Medicine = {
+    name: string;
+    dosage: string;
+    frequency: string;
+    duration: string;
+};
+
+export type Prescription = {
+    id: string;
+    patient: Patient;
+    date: Date;
+    medicines: Medicine[];
+};
