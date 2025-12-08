@@ -14,6 +14,7 @@ import { Star, ThumbsUp, ThumbsDown, MessageSquare, Ban, ShieldX, User, Send } f
 import { BookingModal } from '@/components/booking-modal';
 import type { Doctor, DoctorComment } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
 
 function StarRating({ rating, setRating }: { rating: number; setRating?: (rating: number) => void }) {
     const isInteractive = !!setRating;
