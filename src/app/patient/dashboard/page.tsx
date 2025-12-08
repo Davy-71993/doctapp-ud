@@ -73,7 +73,7 @@ export default function DashboardPage() {
     const db = useFirestore();
     const { user } = useUser();
     
-    const { data: healthData, loading: healthLoading } = useCollection<any>(
+    const { data: healthData, loading: healthLoading } = useCollection<HealthData>(
         user ? query(collection(db, 'healthData'), where('userId', '==', user.uid)) : null
     );
     const { data: activities, loading: activitiesLoading } = useCollection<ActivityType>(

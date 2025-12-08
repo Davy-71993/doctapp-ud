@@ -1,3 +1,4 @@
+
 'use client';
 import {
   FirestoreError,
@@ -9,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 export const useCollection = <T>(
   query: Query | null,
-  options: {
+  options?: {
     parseData?: (data: any) => T;
   }
 ) => {

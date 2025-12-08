@@ -1,10 +1,11 @@
+
 'use client';
 import { DocumentReference, onSnapshot } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 
 export const useDoc = <T>(
   docRef: DocumentReference | null,
-  options: {
+  options?: {
     parseData?: (data: any) => T;
   }
 ) => {
