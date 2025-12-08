@@ -5,22 +5,33 @@ import { useEffect, useState } from 'react';
 import { ChatLayout } from '@/components/chat/chat-layout';
 import type { User, Contact, Message } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useCollection, useFirestore, useUser } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
 
 export default function InboxPage() {
-    const db = useFirestore();
-    const { userProfile, loading: userLoading } = useUser();
-    const adminUser = userProfile as User | null;
+    const [adminUser, setAdminUser] = useState<User | null>(null);
+    const [specialists, setSpecialists] = useState<Contact[] | null>(null);
+    const [messages, setMessages] = useState<Message[] | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    const { data: specialists, loading: specialistsLoading } = useCollection<Contact>(
-        query(collection(db, 'doctors'))
-    );
-    const { data: messages, loading: messagesLoading } = useCollection<Message>(
-        query(collection(db, 'messages'))
-    );
-
-    const loading = userLoading || specialistsLoading || messagesLoading;
+    useEffect(() => {
+        async function fetchChatData() {
+            try {
+                const [userRes, specialistsRes, messagesRes] = await Promise.all([
+                    fetch('/api/user-profile'), // Mocking admin profile
+                    fetch('/api/chat/specialists'),
+                    fetch('/api/chat/messages')
+                ]);
+                const adminData = { ...(await userRes.json()), id: 'admin-user', name: 'Admin' };
+                setAdminUser(adminData);
+                setSpecialists(await specialistsRes.json());
+                setMessages(await messagesRes.json());
+            } catch (error) {
+                console.error("Failed to fetch chat data:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchChatData();
+    }, []);
 
     if (loading || !adminUser || !specialists) {
         return (
@@ -34,7 +45,7 @@ export default function InboxPage() {
     const currentUser = {
         id: adminUser.id,
         name: `${adminUser.firstName} ${adminUser.lastName}`.trim(),
-        avatar: adminUser.firstName.charAt(0) || 'A'
+        avatar: adminUser.firstName?.charAt(0) || 'A'
     }
 
     return (

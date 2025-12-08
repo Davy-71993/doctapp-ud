@@ -12,10 +12,9 @@ import {
 } from '@/components/ui/select';
 import { DoctorCard } from '@/components/doctor-card';
 import type { Doctor } from '@/lib/types';
+import { doctors } from '@/lib/mock-data';
 import { Search as SearchIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useCollection, useFirestore } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
 
 const specialties = [
     "Medical Officer",
@@ -41,17 +40,31 @@ const specialties = [
 const locations = ['Kampala', 'Wakiso', 'Gulu', 'Jinja', 'Mbale', 'Mbarara'];
 
 export default function FindSpecialistPage() {
-  const db = useFirestore();
   const [searchTerm, setSearchTerm] = useState('');
   const [specialty, setSpecialty] = useState('all');
   const [location, setLocation] = useState('all');
-  const { data: doctors, loading } = useCollection<Doctor>(query(collection(db, 'doctors')));
+  const [allDoctors, setAllDoctors] = useState<Doctor[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!doctors) return;
+    async function fetchDoctors() {
+        try {
+            const response = await fetch('/api/doctors');
+            const data = await response.json();
+            setAllDoctors(data);
+            setFilteredDoctors(data);
+        } catch (error) {
+            console.error("Failed to fetch doctors:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchDoctors();
+  }, []);
 
-    let result = doctors;
+  useEffect(() => {
+    let result = allDoctors;
 
     if (searchTerm) {
       result = result.filter(d =>
@@ -69,7 +82,7 @@ export default function FindSpecialistPage() {
     }
 
     setFilteredDoctors(result);
-  }, [searchTerm, specialty, location, doctors]);
+  }, [searchTerm, specialty, location, allDoctors]);
 
   return (
     <div className="space-y-8">
@@ -97,7 +110,7 @@ export default function FindSpecialistPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Specialties</SelectItem>
-              {[...new Set(specialties)].sort().map(s => (
+              {[...new Set(allDoctors.map(d => d.specialty))].sort().map(s => (
                 <SelectItem key={s} value={s}>{s}</SelectItem>
               ))}
             </SelectContent>

@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -26,8 +27,6 @@ import { cn } from '@/lib/utils';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import type { Patient } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useCollection, useFirestore } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
 
 const statusColors = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -37,17 +36,30 @@ const statusColors = {
 
 
 export default function SpecialistDashboardPage() {
-    const db = useFirestore();
-    const { data: patients, loading } = useCollection<Patient>(
-        query(collection(db, 'patients'))
-    );
+    const [patients, setPatients] = useState<Patient[]>([]);
+    const [loading, setLoading] = useState(true);
 
-  const patientCount = patients?.length || 0;
-  const criticalCount = patients?.filter(p => p.status === 'Critical').length || 0;
-  const needsReviewCount = patients?.filter(p => p.status === 'Needs Review').length || 0;
+    useEffect(() => {
+        async function fetchPatients() {
+            try {
+                const response = await fetch('/api/patients');
+                const data = await response.json();
+                setPatients(data);
+            } catch (error) {
+                console.error("Failed to fetch patients:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchPatients();
+    }, []);
+
+  const patientCount = patients.length;
+  const criticalCount = patients.filter(p => p.status === 'Critical').length;
+  const needsReviewCount = patients.filter(p => p.status === 'Needs Review').length;
 
   const patientStatusData = [
-    { name: 'Stable', value: patients?.filter(p => p.status === 'Stable').length || 0 },
+    { name: 'Stable', value: patients.filter(p => p.status === 'Stable').length },
     { name: 'Needs Review', value: needsReviewCount },
     { name: 'Critical', value: criticalCount },
   ];
@@ -121,7 +133,7 @@ export default function SpecialistDashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {patients?.slice(0, 5).map(patient => (
+                {patients.slice(0, 5).map(patient => (
                   <TableRow key={patient.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">

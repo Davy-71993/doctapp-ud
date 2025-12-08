@@ -15,9 +15,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth, useFirestore } from "@/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 import {
   Select,
   SelectContent,
@@ -29,91 +26,23 @@ import {
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const auth = useAuth();
-  const db = useFirestore();
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<'patient' | 'specialist' | ''>('');
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!role) {
-      toast({
-        title: "Role not selected",
-        description: "Please select whether you are a patient or a specialist.",
-        variant: "destructive",
-      });
-      return;
-    }
     setLoading(true);
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const fullName = `${firstName} ${lastName}`;
-
-      // Create base user document
-      await setDoc(doc(db, "users", user.uid), {
-        id: user.uid,
-        firstName,
-        lastName,
-        email,
-        role,
-        dateJoined: new Date().toISOString(),
-      });
-      
-      // Create role-specific document
-      if (role === 'specialist') {
-          await setDoc(doc(db, "doctors", user.uid), {
-              id: user.uid,
-              name: fullName,
-              specialty: "General Practitioner", // Default value
-              hospital: "Not specified",
-              rating: 0,
-              reviews: 0,
-              image: `doctor-${Math.floor(Math.random() * 20) + 1}`, // Random placeholder
-              location: "Kampala",
-              verified: false,
-              comments: []
-          });
-      } else { // patient
-          await setDoc(doc(db, "patients", user.uid), {
-              id: user.uid,
-              name: fullName,
-              avatar: `patient-${Math.floor(Math.random() * 5) + 1}`, // Random placeholder
-              lastCheckup: "Never",
-              status: 'Stable',
-              vitals: {}
-          });
-      }
-
-
+    // Mock registration logic
+    setTimeout(() => {
       toast({
         title: "Account Created",
         description: "You can now log in with your new account.",
       });
-      router.push("/login");
-
-    } catch (error: any) {
-      let errorMessage = "An unexpected error occurred.";
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = "This email is already in use by another account.";
-      } else if (error.code === 'auth/weak-password') {
-        errorMessage = "The password is too weak. Please use at least 6 characters.";
-      }
-      toast({
-        title: "Registration Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
-      console.error("Registration Error: ", error);
-    } finally {
       setLoading(false);
-    }
+      router.push("/login");
+    }, 1500);
   };
 
   return (
@@ -131,25 +60,11 @@ export default function RegisterPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="first-name">First name</Label>
-                  <Input
-                    id="first-name"
-                    placeholder="Alex"
-                    required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    disabled={loading}
-                  />
+                  <Input id="first-name" placeholder="Alex" required disabled={loading}/>
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="last-name">Last name</Label>
-                  <Input
-                    id="last-name"
-                    placeholder="Mukisa"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    disabled={loading}
-                  />
+                  <Input id="last-name" placeholder="Mukisa" required disabled={loading}/>
                 </div>
               </div>
               <div className="grid gap-2">
@@ -177,7 +92,7 @@ export default function RegisterPage() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="role">I am a...</Label>
-                <Select onValueChange={(value) => setRole(value as any)} value={role} disabled={loading}>
+                <Select onValueChange={setRole} value={role} disabled={loading}>
                     <SelectTrigger id="role">
                         <SelectValue placeholder="Select your role" />
                     </SelectTrigger>

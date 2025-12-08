@@ -15,58 +15,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth, useFirestore } from "@/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { users } from "@/lib/mock-data";
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const auth = useAuth();
-  const db = useFirestore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    // This is a mock login. In a real app, you'd make an API call.
+    const user = users.find(u => u.email === email && u.password === password);
 
-      if (user) {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-            const userData = userDoc.data();
+    setTimeout(() => {
+        if (user) {
             toast({
                 title: "Login Successful",
-                description: `Welcome back, ${userData.firstName}!`,
+                description: `Welcome back, ${user.firstName}!`,
             });
-            if (userData.role === 'specialist') {
+            if (user.role === 'specialist') {
                 router.push("/specialist/dashboard");
-            } else if (userData.role === 'admin') {
+            } else if (user.role === 'admin') {
                 router.push("/admin/dashboard");
             } else {
                 router.push("/patient/dashboard");
             }
         } else {
-             throw new Error("User data not found.");
+            toast({
+                title: "Invalid Credentials",
+                description: "Please check your email and password.",
+                variant: "destructive",
+            });
         }
-      }
-    } catch (error: any) {
-         toast({
-            title: "Invalid Credentials",
-            description: "Please check your email and password.",
-            variant: "destructive",
-        });
-        console.error("Login Error: ", error);
-    } finally {
         setLoading(false);
-    }
+    }, 1000);
   };
 
   return (

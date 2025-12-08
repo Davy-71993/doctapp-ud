@@ -16,15 +16,12 @@ import {
   CardContent,
   CardDescription
 } from '@/components/ui/card';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend, LineChart, Line } from 'recharts';
-import { useCollection, useUser } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
 import type { HealthData, Activity as ActivityType } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { recentActivities } from '@/lib/mock-data';
-
+import { useEffect, useState } from 'react';
+import { Stethoscope as StethoscopeIcon, Calendar as CalendarIcon, Pill as PillIcon, FileText } from 'lucide-react';
 
 const actionCards = [
   {
@@ -69,18 +66,41 @@ const actionCards = [
   },
 ];
 
+const iconMap = {
+    Stethoscope: StethoscopeIcon,
+    CalendarIcon: CalendarIcon,
+    Pill: PillIcon,
+    FileText: FileText
+};
+
 export default function DashboardPage() {
-    const db = useFirestore();
-    const { user } = useUser();
-    
-    const { data: healthData, loading: healthLoading } = useCollection<HealthData>(
-        user ? query(collection(db, 'healthData'), where('userId', '==', user.uid)) : null
-    );
-    const { data: activities, loading: activitiesLoading } = useCollection<ActivityType>(
-        user ? query(collection(db, 'activities'), where('userId', '==', user.uid)) : null
-    );
-    const loading = healthLoading || activitiesLoading;
-    const userHealthData = healthData?.[0]; // Assuming one health doc per user
+    const [healthData, setHealthData] = useState<HealthData | null>(null);
+    const [activities, setActivities] = useState<ActivityType[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const [healthRes, activitiesRes] = await Promise.all([
+                    fetch('/api/health-data'),
+                    fetch('/api/recent-activities')
+                ]);
+                const healthDataJson = await healthRes.json();
+                const activitiesJson = await activitiesRes.json();
+                setHealthData(healthDataJson);
+                const activitiesWithIcons = activitiesJson.map((act: any) => ({
+                    ...act,
+                    icon: iconMap[act.icon as keyof typeof iconMap] || Stethoscope,
+                }))
+                setActivities(activitiesWithIcons);
+            } catch (error) {
+                console.error("Failed to fetch dashboard data:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
 
   return (
     <div className="flex flex-col gap-8">
@@ -106,7 +126,7 @@ export default function DashboardPage() {
           ))}
       </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {loading || !userHealthData ? (
+            {loading || !healthData ? (
                 <>
                     <Skeleton className="h-96 w-full" />
                     <Skeleton className="h-96 w-full" />
@@ -122,7 +142,7 @@ export default function DashboardPage() {
                 <CardContent>
                     <div className="h-64 w-full">
                          <ResponsiveContainer>
-                            <BarChart data={userHealthData.bloodPressure.slice(-7)}>
+                            <BarChart data={healthData.bloodPressure.slice(-7)}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis fontSize={12} tickLine={false} axisLine={false} unit=" mmHg" />
@@ -148,7 +168,7 @@ export default function DashboardPage() {
                 <CardContent>
                     <div className="h-64 w-full">
                         <ResponsiveContainer>
-                            <LineChart data={userHealthData.bloodSugar.slice(-7)}>
+                            <LineChart data={healthData.bloodSugar.slice(-7)}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis 
@@ -179,7 +199,7 @@ export default function DashboardPage() {
                 </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                {recentActivities.map((activity: any) => (
+                {activities.map((activity: any) => (
                     <div key={activity.id} className="flex items-center gap-4">
                     <Avatar className="h-10 w-10">
                     <div className="w-full h-full flex items-center justify-center bg-secondary rounded-full">

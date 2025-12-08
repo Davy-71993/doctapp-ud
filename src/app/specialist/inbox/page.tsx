@@ -1,27 +1,38 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
 import { ChatLayout } from '@/components/chat/chat-layout';
-import type { Contact, Message } from '@/lib/types';
+import type { Doctor, Contact, Message } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useUser, useFirestore, useCollection, useDoc } from '@/firebase';
-import { collection, doc, query } from 'firebase/firestore';
 
 export default function InboxPage() {
-    const db = useFirestore();
-    const { user } = useUser();
+    const [currentUser, setCurrentUser] = useState<Doctor | null>(null);
+    const [contacts, setContacts] = useState<Contact[] | null>(null);
+    const [messages, setMessages] = useState<Message[] | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    const currentUserRef = user ? doc(db, 'doctors', user.uid) : null;
-    const { data: currentUser, loading: userLoading } = useDoc<Contact>(currentUserRef);
-    
-    const { data: contacts, loading: contactsLoading } = useCollection<Contact>(
-        query(collection(db, 'patients'))
-    );
-    const { data: messages, loading: messagesLoading } = useCollection<Message>(
-        query(collection(db, 'messages'))
-    );
-
-    const loading = userLoading || contactsLoading || messagesLoading;
+    useEffect(() => {
+        async function fetchChatData() {
+            try {
+                // Mock fetching the current user (specialist)
+                const specialistId = '1'; 
+                const [userRes, contactsRes, messagesRes] = await Promise.all([
+                    fetch(`/api/doctors/${specialistId}`),
+                    fetch('/api/patients'), // Specialists chat with patients
+                    fetch('/api/chat/messages')
+                ]);
+                setCurrentUser(await userRes.json());
+                setContacts(await contactsRes.json());
+                setMessages(await messagesRes.json());
+            } catch (error) {
+                console.error("Failed to fetch chat data:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchChatData();
+    }, []);
 
     if (loading || !currentUser) {
         return (
@@ -31,13 +42,19 @@ export default function InboxPage() {
              </div>
         );
     }
+    
+    const typedProfile = {
+        id: currentUser.id,
+        name: currentUser.name,
+        avatar: currentUser.image
+    }
 
     const defaultContact = contacts?.find(c => c.id === 'patient-1');
 
     return (
         <div className="h-[calc(100vh_-_8rem)]">
             <ChatLayout 
-                currentUser={currentUser}
+                currentUser={typedProfile}
                 contacts={contacts || []}
                 messages={messages || []}
                 defaultSelectedUser={defaultContact}

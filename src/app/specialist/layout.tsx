@@ -35,8 +35,7 @@ import { AiAdvice } from "@/components/track/ai-advice";
 import { useToast } from "@/hooks/use-toast";
 import type { Doctor } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser, useDoc, useFirestore } from "@/firebase";
-import { doc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 
 const navItems = [
@@ -131,12 +130,26 @@ const SpecialistSidebar = () => {
 
 export default function SpecialistLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const db = useFirestore();
-  const { user } = useUser();
+  const [specialist, setSpecialist] = useState<Doctor | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Assuming the logged-in specialist's user ID matches the document ID in the 'doctors' collection
-  const specialistRef = user ? doc(db, 'doctors', user.uid) : null;
-  const { data: specialist, loading } = useDoc<Doctor>(specialistRef);
+  useEffect(() => {
+    async function fetchSpecialist() {
+        try {
+            // Mocking logged in specialist. In real app, get ID from auth context
+            const specialistId = '1'; 
+            const response = await fetch(`/api/doctors/${specialistId}`);
+            const data = await response.json();
+            setSpecialist(data);
+        } catch(e) {
+            console.error(e)
+        } finally {
+            setLoading(false);
+        }
+    }
+    fetchSpecialist();
+  }, [])
+
 
   const getPageTitle = () => {
     if (pathname === '/specialist/dashboard') return "Dashboard";

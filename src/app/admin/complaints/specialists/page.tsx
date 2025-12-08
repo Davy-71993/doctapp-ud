@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardHeader,
@@ -21,14 +22,25 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import type { Complaint } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useCollection, useFirestore } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
 
 export default function SpecialistComplaintsPage() {
-    const db = useFirestore();
-    const { data: complaints, loading } = useCollection<Complaint>(
-        query(collection(db, 'complaints'), where('targetType', '==', 'specialist'))
-    );
+    const [complaints, setComplaints] = useState<Complaint[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchComplaints() {
+            try {
+                const response = await fetch('/api/complaints/specialist');
+                const data = await response.json();
+                setComplaints(data);
+            } catch (error) {
+                console.error("Failed to fetch specialist complaints:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchComplaints();
+    }, []);
 
   return (
     <div className="space-y-8">
@@ -62,7 +74,7 @@ export default function SpecialistComplaintsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {complaints?.map((complaint) => (
+              {complaints.map((complaint) => (
                 <TableRow key={complaint.id}>
                   <TableCell className="font-medium">{complaint.specialistName}</TableCell>
                   <TableCell>{complaint.reportedBy}</TableCell>

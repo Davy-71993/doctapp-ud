@@ -8,31 +8,33 @@ import { DoctorCard } from '@/components/doctor-card';
 import { Search } from 'lucide-react';
 import type { Doctor, Appointment } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useCollection, useFirestore, useUser } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
 
 export default function MySpecialistsPage() {
-    const db = useFirestore();
-    const { user } = useUser();
     const [connectedSpecialists, setConnectedSpecialists] = useState<Doctor[]>([]);
-    
-    const { data: appointments, loading: appointmentsLoading } = useCollection<Appointment>(
-        user ? query(collection(db, 'appointments'), where('patientId', '==', user.uid)) : null
-    );
-
-    const { data: doctors, loading: doctorsLoading } = useCollection<Doctor>(
-        query(collection(db, 'doctors'))
-    );
-
-    const loading = appointmentsLoading || doctorsLoading;
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (appointments && doctors) {
-            const connectedDoctorIds = [...new Set(appointments.map(a => a.doctor.id))];
-            const filteredSpecialists = doctors.filter(d => connectedDoctorIds.includes(d.id));
-            setConnectedSpecialists(filteredSpecialists);
+        async function fetchConnectedSpecialists() {
+            try {
+                const [appointmentsRes, doctorsRes] = await Promise.all([
+                    fetch('/api/appointments'),
+                    fetch('/api/doctors')
+                ]);
+                const appointments: Appointment[] = await appointmentsRes.json();
+                const allDoctors: Doctor[] = await doctorsRes.json();
+
+                const connectedDoctorIds = [...new Set(appointments.map(a => a.doctor.id))];
+                const filteredSpecialists = allDoctors.filter(d => connectedDoctorIds.includes(d.id));
+                
+                setConnectedSpecialists(filteredSpecialists);
+            } catch (error) {
+                console.error("Failed to fetch connected specialists:", error);
+            } finally {
+                setLoading(false);
+            }
         }
-    }, [appointments, doctors]);
+        fetchConnectedSpecialists();
+    }, []);
 
   return (
     <div className="space-y-8">

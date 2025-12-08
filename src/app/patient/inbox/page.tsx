@@ -1,26 +1,38 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
 import { ChatLayout } from '@/components/chat/chat-layout';
-import type { Contact, Message } from '@/lib/types';
+import type { UserProfile, Contact, Message } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useUser, useFirestore, useCollection } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
 
 export default function InboxPage() {
-    const db = useFirestore();
-    const { userProfile, loading: userLoading } = useUser();
-    
-    const { data: contacts, loading: contactsLoading } = useCollection<Contact>(
-        query(collection(db, 'doctors'))
-    );
-    const { data: messages, loading: messagesLoading } = useCollection<Message>(
-        query(collection(db, 'messages'))
-    );
+    const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+    const [contacts, setContacts] = useState<Contact[] | null>(null);
+    const [messages, setMessages] = useState<Message[] | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    const loading = userLoading || contactsLoading || messagesLoading;
+    useEffect(() => {
+        async function fetchChatData() {
+            try {
+                const [userRes, contactsRes, messagesRes] = await Promise.all([
+                    fetch('/api/user-profile'),
+                    fetch('/api/chat/specialists'),
+                    fetch('/api/chat/messages')
+                ]);
+                setCurrentUser(await userRes.json());
+                setContacts(await contactsRes.json());
+                setMessages(await messagesRes.json());
+            } catch (error) {
+                console.error("Failed to fetch chat data:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchChatData();
+    }, []);
 
-    if (loading || !userProfile) {
+    if (loading || !currentUser) {
         return (
              <div className="h-[calc(100vh_-_8rem)] flex">
                 <Skeleton className="w-1/4 h-full" />
@@ -29,7 +41,11 @@ export default function InboxPage() {
         );
     }
     
-    const typedProfile = userProfile as Contact;
+    const typedProfile = {
+        id: currentUser.avatar, // mock id
+        name: currentUser.name,
+        avatar: currentUser.avatar
+    }
 
     return (
         <div className="h-[calc(100vh_-_8rem)]">

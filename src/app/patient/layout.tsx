@@ -35,9 +35,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AiAdvice } from "@/components/track/ai-advice";
 import { useToast } from "@/hooks/use-toast";
-import type { Patient } from "@/lib/types";
+import type { UserProfile } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@/firebase";
+import { useEffect, useState } from "react";
 
 
 const navItems = [
@@ -134,8 +134,23 @@ const AppSidebar = () => {
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { userProfile, loading } = useUser();
-  const typedProfile = userProfile as Patient | null;
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const response = await fetch('/api/user-profile');
+        const data = await response.json();
+        setUserProfile(data);
+      } catch (error) {
+        console.error("Failed to fetch user profile", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProfile();
+  }, []);
 
   const getPageTitle = () => {
     if (pathname === '/patient/dashboard') return "Dashboard";
@@ -152,17 +167,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1">
              <h1 className="text-lg font-semibold md:text-2xl capitalize">{getPageTitle()}</h1>
           </div>
-          {loading || !typedProfile ? (
+          {loading || !userProfile ? (
             <div className="flex items-center gap-2">
                 <Skeleton className="h-6 w-24 hidden sm:block" />
                 <Skeleton className="h-9 w-9 rounded-full" />
             </div>
           ) : (
             <div className="flex items-center gap-2">
-                <p className="text-sm font-medium hidden sm:block">{typedProfile.name}</p>
+                <p className="text-sm font-medium hidden sm:block">{userProfile.name}</p>
                 <Avatar className="h-9 w-9">
-                    <ImagePlaceholder id={typedProfile.avatar} />
-                    <AvatarFallback>{typedProfile.name.charAt(0)}</AvatarFallback>
+                    <ImagePlaceholder id={userProfile.avatar} />
+                    <AvatarFallback>{userProfile.name.charAt(0)}</AvatarFallback>
                 </Avatar>
             </div>
           )}
