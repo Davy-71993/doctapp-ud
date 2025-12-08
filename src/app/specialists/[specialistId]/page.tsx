@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, ThumbsUp, ThumbsDown, MessageSquare, Ban, ShieldX, User, Send } from 'lucide-react';
+import { Star, ThumbsUp, ThumbsDown, MessageSquare, Ban, ShieldX, User, Send, UserX, Flag } from 'lucide-react';
 import { BookingModal } from '@/components/booking-modal';
 import type { Doctor, DoctorComment } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -85,6 +85,15 @@ export default function SpecialistDetailsPage() {
         });
     }
 
+    const handlePatientAction = (action: 'Report' | 'Disconnect') => {
+        toast({
+            title: `Action: ${action}`,
+            description: `You have successfully ${action.toLowerCase()}ed ${doctor.name}.`,
+            variant: action === 'Report' ? 'destructive' : 'default',
+        });
+    }
+
+
     return (
         <div className="container mx-auto max-w-4xl py-8 space-y-8">
             
@@ -136,8 +145,14 @@ export default function SpecialistDetailsPage() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardFooter>
+                <CardFooter className="gap-2">
                     <BookingModal doctor={doctor} />
+                    <Button variant="outline" onClick={() => handlePatientAction('Report')}>
+                        <Flag className="mr-2 h-4 w-4" /> Report
+                    </Button>
+                    <Button variant="destructive" onClick={() => handlePatientAction('Disconnect')}>
+                        <UserX className="mr-2 h-4 w-4" /> Disconnect
+                    </Button>
                 </CardFooter>
             </Card>
 
@@ -220,3 +235,5 @@ export default function SpecialistDetailsPage() {
         </div>
     );
 }
+
+    

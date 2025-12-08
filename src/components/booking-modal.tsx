@@ -161,7 +161,7 @@ export function BookingModal({ doctor }: { doctor: Doctor }) {
         }
     }}>
       <DialogTrigger asChild>
-        <Button className="w-full mt-4">Book Now</Button>
+        <Button className="flex-1">Book Now</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         {renderStepContent()}
@@ -169,3 +169,5 @@ export function BookingModal({ doctor }: { doctor: Doctor }) {
     </Dialog>
   );
 }
+
+    
