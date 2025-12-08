@@ -2,7 +2,7 @@
 import type { Doctor } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Star, MapPin } from 'lucide-react';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { BookingModal } from '@/components/booking-modal';
 import Link from 'next/link';
@@ -34,14 +34,6 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
                 <MapPin className="w-4 h-4" />
                 <span>{doctor.location}</span>
               </div>
-            </div>
-             <div className="flex items-center gap-2 pt-2">
-                <Button variant="outline" size="sm" className="h-8">
-                    <ThumbsUp className="mr-2 h-4 w-4" /> Like
-                </Button>
-                <Button variant="outline" size="sm" className="h-8">
-                    <ThumbsDown className="mr-2 h-4 w-4" /> Dislike
-                </Button>
             </div>
           </div>
           <div
