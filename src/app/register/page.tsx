@@ -54,7 +54,9 @@ export default function RegisterPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      const fullName = `${firstName} ${lastName}`;
 
+      // Create base user document
       await setDoc(doc(db, "users", user.uid), {
         id: user.uid,
         firstName,
@@ -63,6 +65,32 @@ export default function RegisterPage() {
         role,
         dateJoined: new Date().toISOString(),
       });
+      
+      // Create role-specific document
+      if (role === 'specialist') {
+          await setDoc(doc(db, "doctors", user.uid), {
+              id: user.uid,
+              name: fullName,
+              specialty: "General Practitioner", // Default value
+              hospital: "Not specified",
+              rating: 0,
+              reviews: 0,
+              image: `doctor-${Math.floor(Math.random() * 20) + 1}`, // Random placeholder
+              location: "Kampala",
+              verified: false,
+              comments: []
+          });
+      } else { // patient
+          await setDoc(doc(db, "patients", user.uid), {
+              id: user.uid,
+              name: fullName,
+              avatar: `patient-${Math.floor(Math.random() * 5) + 1}`, // Random placeholder
+              lastCheckup: "Never",
+              status: 'Stable',
+              vitals: {}
+          });
+      }
+
 
       toast({
         title: "Account Created",
