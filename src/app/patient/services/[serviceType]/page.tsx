@@ -15,7 +15,7 @@ export default function ServiceTypePage() {
     const params = useParams();
     const serviceTypeSlug = params.serviceType as string;
 
-    const serviceType = serviceTypes.find(st => st.href === `/services/${serviceTypeSlug}`);
+    const serviceType = serviceTypes.find(st => st.href === `/patient/services/${serviceTypeSlug}`);
     
     const [facilities, setFacilities] = useState<Facility[]>([]);
     const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ export default function ServiceTypePage() {
             <div className="text-center py-12">
                 <h2 className="text-2xl font-bold">Service Type Not Found</h2>
                 <p className="text-muted-foreground">The requested service category does not exist.</p>
-                <Link href="/services">
+                <Link href="/patient/services">
                     <Button variant="outline" className="mt-4">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Services
@@ -56,7 +56,7 @@ export default function ServiceTypePage() {
     return (
         <div className="space-y-8">
             <div>
-                <Link href="/services" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
+                <Link href="/patient/services" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
                      <ArrowLeft className="mr-2 h-4 w-4" />
                      Back to All Services
                 </Link>
@@ -70,7 +70,7 @@ export default function ServiceTypePage() {
                 {loading ? (
                      [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
                 ) : facilities.length > 0 ? facilities.map(facility => (
-                    <Link href={`/service-providers/${facility.id}`} key={facility.id}>
+                    <Link href={`/patient/service-providers/${facility.id}`} key={facility.id}>
                         <Card className="hover:bg-muted/50 transition-colors">
                             <CardHeader>
                                 <CardTitle className="text-base">{facility.name}</CardTitle>

@@ -4,7 +4,7 @@ import { Ambulance, Home, Hospital, Stethoscope, Pill } from "lucide-react";
 export const serviceTypes = [
   {
     title: "Ambulance Services",
-    href: "/services/ambulance",
+    href: "/patient/services/ambulance",
     description: "24/7 emergency ambulance services to get you to the nearest medical facility.",
     icon: Ambulance,
     color: "bg-red-100 dark:bg-red-900",
@@ -13,7 +13,7 @@ export const serviceTypes = [
   },
   {
     title: "Home-Based Care",
-    href: "/services/home-based-care",
+    href: "/patient/services/home-based-care",
     description: "Professional medical care and assistance in the comfort of your own home.",
     icon: Home,
     color: "bg-blue-100 dark:bg-blue-900",
@@ -22,7 +22,7 @@ export const serviceTypes = [
   },
   {
     title: "Clinics",
-    href: "/services/clinics",
+    href: "/patient/services/clinics",
     description: "Find and book appointments at general and specialized clinics near you.",
     icon: Stethoscope,
     color: "bg-green-100 dark:bg-green-900",
@@ -31,7 +31,7 @@ export const serviceTypes = [
   },
   {
     title: "Hospitals",
-    href: "/services/hospitals",
+    href: "/patient/services/hospitals",
     description: "Access a wide network of partner hospitals for comprehensive medical treatment.",
     icon: Hospital,
     color: "bg-purple-100 dark:bg-purple-900",
@@ -40,7 +40,7 @@ export const serviceTypes = [
   },
   {
     title: "Pharmacies",
-    href: "/services/pharmacies",
+    href: "/patient/services/pharmacies",
     description: "Find licensed pharmacies to get your prescribed medication.",
     icon: Pill,
     color: "bg-orange-100 dark:bg-orange-900",
@@ -49,7 +49,7 @@ export const serviceTypes = [
   },
   {
     title: "Drug Shops",
-    href: "/services/drug-shops",
+    href: "/patient/services/drug-shops",
     description: "Find licensed drug shops for over-the-counter medication.",
     icon: Pill,
     color: "bg-yellow-100 dark:bg-yellow-900",

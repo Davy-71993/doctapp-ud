@@ -41,14 +41,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/my-specialists", label: "My Specialists", icon: Users },
-  { href: "/appointments", label: "Appointments", icon: Calendar },
-  { href: "/track", label: "Health Trackers", icon: Activity },
-  { href: "/inbox", label: "Inbox", icon: Inbox },
-  { href: "/order-medicine", label: "Order Medicine", icon: Pill },
-  { href: "/services", label: "Services", icon: LayoutGrid },
-  { href: "/profile", label: "My Profile", icon: User },
+  { href: "/patient/dashboard", label: "Dashboard", icon: Home },
+  { href: "/patient/my-specialists", label: "My Specialists", icon: Users },
+  { href: "/patient/appointments", label: "Appointments", icon: Calendar },
+  { href: "/patient/track", label: "Health Trackers", icon: Activity },
+  { href: "/patient/inbox", label: "Inbox", icon: Inbox },
+  { href: "/patient/order-medicine", label: "Order Medicine", icon: Pill },
+  { href: "/patient/services", label: "Services", icon: LayoutGrid },
+  { href: "/patient/profile", label: "My Profile", icon: User },
 ];
 
 const AppSidebar = () => {
@@ -58,7 +58,7 @@ const AppSidebar = () => {
     const { state, setOpen } = useSidebar();
 
     const isTabActive = (href: string) => {
-        if (href === '/dashboard') {
+        if (href === '/patient/dashboard') {
             return pathname === href;
         }
         return pathname.startsWith(href);
@@ -153,8 +153,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   const getPageTitle = () => {
-    if (pathname === '/dashboard') return "Dashboard";
-    const activeItem = navItems.find(item => item.href !== '/dashboard' && pathname.startsWith(item.href));
+    if (pathname === '/patient/dashboard') return "Dashboard";
+    const activeItem = navItems.find(item => item.href !== '/patient/dashboard' && pathname.startsWith(item.href));
     return activeItem ? activeItem.label : "Dashboard";
   }
 

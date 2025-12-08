@@ -108,7 +108,7 @@ export default function PublicServiceDetailPage() {
                                     <span>{provider.location}</span>
                                 </div>
                             </div>
-                            <Link href={`/service-providers/${provider.id}`}>
+                            <Link href={`/patient/service-providers/${provider.id}`}>
                                 <Button variant="outline" className="self-end sm:self-center">
                                     View Facility
                                 </Button>

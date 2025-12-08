@@ -45,7 +45,7 @@ export default function MySpecialistsPage() {
             A list of specialists you are connected with.
           </p>
         </div>
-        <Link href="/find-specialist">
+        <Link href="/patient/find-specialist">
             <Button>
                 <Search className="mr-2 h-4 w-4" />
                 Find a New Specialist
