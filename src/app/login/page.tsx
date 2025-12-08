@@ -15,42 +15,57 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import type { User } from "@/lib/types";
+import { useAuth, useFirestore } from "@/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const auth = useAuth();
+  const db = useFirestore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    const response = await fetch('/api/users');
-    const users: User[] = await response.json();
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
 
-    if (user) {
-      toast({
-        title: "Login Successful",
-        description: `Welcome back, ${user.firstName}!`,
-      });
-      if (user.role === 'specialist') {
-        router.push("/specialist/dashboard");
-      } else if (user.role === 'admin') {
-        router.push("/admin/dashboard");
-      } else {
-        router.push("/patient/dashboard");
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            toast({
+                title: "Login Successful",
+                description: `Welcome back, ${userData.firstName}!`,
+            });
+            if (userData.role === 'specialist') {
+                router.push("/specialist/dashboard");
+            } else if (userData.role === 'admin') {
+                router.push("/admin/dashboard");
+            } else {
+                router.push("/patient/dashboard");
+            }
+        } else {
+             throw new Error("User data not found.");
+        }
       }
-    } else {
-      toast({
-        title: "Invalid Credentials",
-        description: "Please check your email and password.",
-        variant: "destructive",
-      });
+    } catch (error: any) {
+         toast({
+            title: "Invalid Credentials",
+            description: "Please check your email and password.",
+            variant: "destructive",
+        });
+        console.error("Login Error: ", error);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -75,6 +90,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                 />
               </div>
               <div className="grid gap-2">
@@ -93,10 +109,11 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
               </Button>
             </div>
           </form>

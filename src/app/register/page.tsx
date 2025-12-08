@@ -15,24 +15,77 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth, useFirestore } from "@/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const auth = useAuth();
+  const db = useFirestore();
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<'patient' | 'specialist' | ''>('');
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd add the user to the database.
-    // Here, we'll just show a success message and redirect.
-    toast({
-      title: "Account Created",
-      description: "You can now log in with your new account.",
-    });
-    router.push("/login");
+    if (!role) {
+      toast({
+        title: "Role not selected",
+        description: "Please select whether you are a patient or a specialist.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        id: user.uid,
+        firstName,
+        lastName,
+        email,
+        role,
+        dateJoined: new Date().toISOString(),
+      });
+
+      toast({
+        title: "Account Created",
+        description: "You can now log in with your new account.",
+      });
+      router.push("/login");
+
+    } catch (error: any) {
+      let errorMessage = "An unexpected error occurred.";
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "This email is already in use by another account.";
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = "The password is too weak. Please use at least 6 characters.";
+      }
+      toast({
+        title: "Registration Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      console.error("Registration Error: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,6 +109,7 @@ export default function RegisterPage() {
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    disabled={loading}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -66,6 +120,7 @@ export default function RegisterPage() {
                     required
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -78,6 +133,7 @@ export default function RegisterPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                 />
               </div>
               <div className="grid gap-2">
@@ -88,10 +144,23 @@ export default function RegisterPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Create an account
+              <div className="grid gap-2">
+                <Label htmlFor="role">I am a...</Label>
+                <Select onValueChange={(value) => setRole(value as any)} value={role} disabled={loading}>
+                    <SelectTrigger id="role">
+                        <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="patient">Patient</SelectItem>
+                        <SelectItem value="specialist">Specialist</SelectItem>
+                    </SelectContent>
+                </Select>
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Creating Account...' : 'Create an account'}
               </Button>
             </div>
           </form>
