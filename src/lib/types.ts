@@ -108,7 +108,7 @@ export type Specialist =
   | 'Ophthalmologist'
   | 'Radiologist';
 
-export type ServiceProvider = {
+export type Facility = {
     id: string;
     name: string;
     type: 'Hospital' | 'Clinic' | 'Pharmacy' | 'Drug Shop' | 'Home-Based Care';

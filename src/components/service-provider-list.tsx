@@ -11,12 +11,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Plus, FileText, Check, X, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import type { ServiceProvider } from '@/lib/types';
+import type { Facility } from '@/lib/types';
 import { doctors } from '@/lib/mock-data';
 import Link from 'next/link';
 
 
-function PendingItem({ item }: { item: ServiceProvider }) {
+function PendingItem({ item }: { item: Facility }) {
     const specialist = doctors.find(d => d.id === item.specialistId);
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-muted/50 rounded-lg gap-4">
@@ -60,7 +60,7 @@ function PendingItem({ item }: { item: ServiceProvider }) {
     )
 }
 
-function VerifiedItem({ item }: { item: ServiceProvider }) {
+function VerifiedItem({ item }: { item: Facility }) {
     return (
          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-muted/30 rounded-lg gap-3">
             <div>
@@ -88,14 +88,14 @@ function VerifiedItem({ item }: { item: ServiceProvider }) {
     )
 }
 
-type ServiceProviderListProps = {
+type FacilityListProps = {
     title: string;
     description: string;
-    pendingData: ServiceProvider[];
-    verifiedData: ServiceProvider[];
+    pendingData: Facility[];
+    verifiedData: Facility[];
 }
 
-export default function ServiceProviderListPageTemplate({ title, description, pendingData, verifiedData }: ServiceProviderListProps) {
+export default function FacilityListPageTemplate({ title, description, pendingData, verifiedData }: FacilityListProps) {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -115,11 +115,11 @@ export default function ServiceProviderListPageTemplate({ title, description, pe
         <Card>
             <CardHeader>
                 <CardTitle>Pending {title} Approvals</CardTitle>
-                <CardDescription>These service providers are awaiting for their documents and profile to be verified.</CardDescription>
+                <CardDescription>These facilities are awaiting for their documents and profile to be verified.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {pendingData.map(serviceProvider => (
-                    <PendingItem key={serviceProvider.id} item={serviceProvider} />
+                {pendingData.map(facility => (
+                    <PendingItem key={facility.id} item={facility} />
                 ))}
             </CardContent>
         </Card>
@@ -128,11 +128,11 @@ export default function ServiceProviderListPageTemplate({ title, description, pe
       <Card>
         <CardHeader>
           <CardTitle>All {title}</CardTitle>
-          <CardDescription>A list of all verified service providers on the platform.</CardDescription>
+          <CardDescription>A list of all verified facilities on the platform.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {verifiedData.length > 0 ? verifiedData.map((serviceProvider) => (
-            <VerifiedItem key={serviceProvider.id} item={serviceProvider} />
+          {verifiedData.length > 0 ? verifiedData.map((facility) => (
+            <VerifiedItem key={facility.id} item={facility} />
           )) : (
             <p className="text-sm text-muted-foreground text-center py-8">No verified {title.toLowerCase()} found.</p>
           )}

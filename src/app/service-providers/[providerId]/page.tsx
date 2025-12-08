@@ -5,18 +5,18 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
-import { allServiceProviders } from '@/lib/mock-service-providers-data';
+import { allFacilities } from '@/lib/mock-service-providers-data';
 import { Hospital, MapPin, Clock, DollarSign } from 'lucide-react';
-import type { ServiceProvider } from '@/lib/types';
+import type { Facility } from '@/lib/types';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 
 export default function PublicFacilityDetailsPage() {
     const params = useParams();
     const providerId = params.providerId as string;
-    const provider: ServiceProvider | undefined = allServiceProviders.find(p => p.id === providerId);
+    const facility: Facility | undefined = allFacilities.find(p => p.id === providerId);
 
-    if (!provider) {
-        return <div className="text-center py-12">Service provider not found.</div>;
+    if (!facility) {
+        return <div className="text-center py-12">Facility not found.</div>;
     }
 
     return (
@@ -31,17 +31,17 @@ export default function PublicFacilityDetailsPage() {
                            <Hospital className="w-8 h-8 text-primary" />
                         </div>
                         <div>
-                            <CardTitle className="text-2xl">{provider.name}</CardTitle>
+                            <CardTitle className="text-2xl">{facility.name}</CardTitle>
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <MapPin className="h-5 w-5" />
-                                <span>{provider.location}</span>
+                                <span>{facility.location}</span>
                             </div>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent className="pt-6">
                     <p className="text-muted-foreground">
-                        {`Welcome to ${provider.name}, a leading ${provider.type} in ${provider.location}. We are committed to providing excellent healthcare services to our community.`}
+                        {`Welcome to ${facility.name}, a leading ${facility.type} in ${facility.location}. We are committed to providing excellent healthcare services to our community.`}
                     </p>
                 </CardContent>
             </Card>
@@ -55,7 +55,7 @@ export default function PublicFacilityDetailsPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                     {provider.services.length > 0 ? provider.services.map(service => (
+                     {facility.services.length > 0 ? facility.services.map(service => (
                         <div key={service.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-muted/50 rounded-lg gap-4">
                             <div>
                                 <h3 className="font-semibold">{service.name}</h3>

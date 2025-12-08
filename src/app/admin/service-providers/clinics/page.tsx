@@ -2,12 +2,12 @@
 
 "use client";
 
-import ServiceProviderListPageTemplate from "@/components/service-provider-list";
+import FacilityListPageTemplate from "@/components/service-provider-list";
 import { pendingClinics, verifiedClinics } from "@/lib/mock-service-providers-data";
 
 export default function ClinicsPage() {
     return (
-        <ServiceProviderListPageTemplate
+        <FacilityListPageTemplate
             title="Clinics"
             description="Add, view, and manage all partner clinics on the platform."
             pendingData={pendingClinics}

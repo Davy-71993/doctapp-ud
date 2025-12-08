@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { specialistServices } from '@/lib/mock-data';
 import type { SpecialistService } from '@/lib/types';
 import { Clock, DollarSign, Stethoscope, MapPin } from 'lucide-react';
-import { allServiceProviders } from '@/lib/mock-service-providers-data';
+import { allFacilities } from '@/lib/mock-service-providers-data';
 import Link from 'next/link';
 
 export default function PublicServiceDetailPage() {
@@ -15,8 +15,8 @@ export default function PublicServiceDetailPage() {
     const serviceId = params.serviceId as string;
     const service: SpecialistService | undefined = specialistServices.find(s => s.id === serviceId);
 
-    // Find providers who offer this service
-    const providers = allServiceProviders.filter(provider => 
+    // Find facilities who offer this service
+    const providers = allFacilities.filter(provider => 
         provider.services.some(s => s.id === serviceId)
     );
 

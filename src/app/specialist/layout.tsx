@@ -21,7 +21,6 @@ import {
   LayoutDashboard,
   Users,
   Inbox,
-  Network,
   LogOut,
   Stethoscope,
   Briefcase,
@@ -43,7 +42,7 @@ const navItems = [
   { href: "/specialist/schedule", label: "Schedule", icon: Calendar },
   { href: "/specialist/patients", label: "Patients", icon: Users },
   { href: "/specialist/inbox", label: "Inbox", icon: Inbox },
-  { href: "/specialist/my-service-providers", label: "My Service Providers", icon: Building },
+  { href: "/specialist/my-service-providers", label: "My Facilities", icon: Building },
   { href: "/specialist/services", label: "Services", icon: Briefcase },
 ];
 

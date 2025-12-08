@@ -16,17 +16,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import type { ServiceProvider } from '@/lib/types';
+import type { Facility } from '@/lib/types';
 
-type AddServiceProviderDialogProps = {
+type AddFacilityDialogProps = {
     children: React.ReactNode;
-    onAddProvider: (provider: Omit<ServiceProvider, 'id' | 'specialistId' | 'services'>) => void;
+    onAddFacility: (facility: Omit<Facility, 'id' | 'specialistId' | 'services'>) => void;
 };
 
-export function AddServiceProviderDialog({ children, onAddProvider }: AddServiceProviderDialogProps) {
+export function AddFacilityDialog({ children, onAddFacility }: AddFacilityDialogProps) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState('');
-    const [type, setType] = useState<ServiceProvider['type'] | ''>('');
+    const [type, setType] = useState<Facility['type'] | ''>('');
     const [location, setLocation] = useState('');
     const { toast } = useToast();
 
@@ -34,21 +34,21 @@ export function AddServiceProviderDialog({ children, onAddProvider }: AddService
         if (!name || !type || !location) {
             toast({
                 title: "Missing Information",
-                description: "Please fill out all fields to register a provider.",
+                description: "Please fill out all fields to register a facility.",
                 variant: "destructive"
             });
             return;
         }
 
-        onAddProvider({
+        onAddFacility({
             name,
-            type: type as ServiceProvider['type'],
+            type: type as Facility['type'],
             location,
             documents: ['License.pdf', 'Registration.pdf'] // Mock documents
         });
 
         toast({
-            title: "Provider Submitted",
+            title: "Facility Submitted",
             description: `"${name}" has been submitted for verification.`,
         });
         
@@ -66,7 +66,7 @@ export function AddServiceProviderDialog({ children, onAddProvider }: AddService
             </DialogTrigger>
             <DialogContent className="sm:max-w-[480px]">
                 <DialogHeader>
-                    <DialogTitle>Register a New Service Provider</DialogTitle>
+                    <DialogTitle>Register a New Facility</DialogTitle>
                     <DialogDescription>
                         Fill in the details of the facility you manage. It will be submitted for admin verification.
                     </DialogDescription>
@@ -78,7 +78,7 @@ export function AddServiceProviderDialog({ children, onAddProvider }: AddService
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="provider-type">Facility Type</Label>
-                        <Select onValueChange={(value) => setType(value as ServiceProvider['type'])} value={type}>
+                        <Select onValueChange={(value) => setType(value as Facility['type'])} value={type}>
                             <SelectTrigger id="provider-type">
                                 <SelectValue placeholder="Select a type" />
                             </SelectTrigger>

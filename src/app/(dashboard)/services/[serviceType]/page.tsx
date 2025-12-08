@@ -4,7 +4,7 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { allServiceProviders } from '@/lib/mock-service-providers-data';
+import { allFacilities } from '@/lib/mock-service-providers-data';
 import { serviceTypes } from '@/lib/service-types';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ export default function ServiceTypePage() {
 
     const serviceType = serviceTypes.find(st => st.href === `/services/${serviceTypeSlug}`);
 
-    const providers = allServiceProviders.filter(p => p.type === serviceType?.providerType);
+    const facilities = allFacilities.filter(p => p.type === serviceType?.providerType);
 
     if (!serviceType) {
         return (
@@ -46,19 +46,19 @@ export default function ServiceTypePage() {
             </div>
 
              <div className="space-y-4">
-                {providers.length > 0 ? providers.map(provider => (
-                    <Link href={`/service-providers/${provider.id}`} key={provider.id}>
+                {facilities.length > 0 ? facilities.map(facility => (
+                    <Link href={`/service-providers/${facility.id}`} key={facility.id}>
                         <Card className="hover:bg-muted/50 transition-colors">
                             <CardHeader>
-                                <CardTitle className="text-base">{provider.name}</CardTitle>
-                                <CardDescription>{provider.location}</CardDescription>
+                                <CardTitle className="text-base">{facility.name}</CardTitle>
+                                <CardDescription>{facility.location}</CardDescription>
                             </CardHeader>
                         </Card>
                     </Link>
                 )) : (
                     <div className="text-center py-16 text-muted-foreground rounded-lg bg-muted/30">
-                        <p className="font-semibold">No Providers Found</p>
-                        <p className="text-sm mt-1">There are currently no verified providers for this service type.</p>
+                        <p className="font-semibold">No Facilities Found</p>
+                        <p className="text-sm mt-1">There are currently no verified facilities for this service type.</p>
                     </div>
                 )}
             </div>

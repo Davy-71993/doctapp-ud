@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { allServiceProviders } from '@/lib/mock-service-providers-data';
+import { allFacilities } from '@/lib/mock-service-providers-data';
 import { Hospital, MapPin, Pencil, Plus, Trash2, CheckCircle2 } from 'lucide-react';
-import type { ServiceProvider } from '@/lib/types';
+import type { Facility } from '@/lib/types';
 import {
   Table,
   TableHeader,
@@ -20,10 +20,10 @@ import {
 export default function SpecialistFacilityDetailsPage() {
     const params = useParams();
     const providerId = params.providerId as string;
-    const provider: ServiceProvider | undefined = allServiceProviders.find(p => p.id === providerId);
+    const facility: Facility | undefined = allFacilities.find(p => p.id === providerId);
 
-    if (!provider) {
-        return <div className="text-center py-12">Service provider not found.</div>;
+    if (!facility) {
+        return <div className="text-center py-12">Facility not found.</div>;
     }
 
     return (
@@ -33,10 +33,10 @@ export default function SpecialistFacilityDetailsPage() {
                     <div className="flex items-center gap-4">
                         <Hospital className="w-10 h-10 text-primary" />
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">{provider.name}</h1>
+                            <h1 className="text-3xl font-bold tracking-tight">{facility.name}</h1>
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <MapPin className="h-5 w-5" />
-                                <span>{provider.location}</span>
+                                <span>{facility.location}</span>
                             </div>
                         </div>
                     </div>
@@ -57,18 +57,18 @@ export default function SpecialistFacilityDetailsPage() {
                 <CardHeader>
                     <CardTitle>Facility Details</CardTitle>
                     <CardDescription>
-                        Internal management view of your service provider.
+                        Internal management view of your facility.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                    <div className="flex items-center gap-4">
-                     <p><strong>Type:</strong> {provider.type}</p>
+                     <p><strong>Type:</strong> {facility.type}</p>
                      <Badge variant="secondary">Status: Verified</Badge>
                    </div>
                    <div className="space-y-2">
                        <p><strong>Verification Documents:</strong></p>
                        <ul className="list-disc list-inside text-muted-foreground">
-                           {provider.documents?.map(doc => <li key={doc}>{doc}</li>)}
+                           {facility.documents?.map(doc => <li key={doc}>{doc}</li>)}
                        </ul>
                    </div>
                 </CardContent>
@@ -98,7 +98,7 @@ export default function SpecialistFacilityDetailsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {provider.services.length > 0 ? provider.services.map(service => (
+                            {facility.services.length > 0 ? facility.services.map(service => (
                                 <TableRow key={service.id}>
                                     <TableCell className="font-medium">{service.name}</TableCell>
                                     <TableCell>{service.duration}</TableCell>

@@ -34,7 +34,7 @@ const features = [
   },
 ];
 
-const serviceProviders = [
+const facilities = [
     { 
       id: 'partner-1',
       name: 'Nakasero Hospital',
@@ -190,30 +190,30 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="service-providers" className="w-full py-12 bg-muted">
+        <section id="facilities" className="w-full py-12 bg-muted">
           <div className="container max-w-7xl mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-                  Our Trusted Service Providers
+                  Our Trusted Facilities
                 </h2>
                 <p className="max-w-[900px] mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  We collaborate with a network of trusted healthcare providers to ensure you receive the best care.
+                  We collaborate with a network of trusted healthcare facilities to ensure you receive the best care.
                 </p>
               </div>
             </div>
             <div className="mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {serviceProviders.map((provider) => (
-                <Card key={provider.id} className="group relative overflow-hidden transition-shadow hover:shadow-lg">
+              {facilities.map((facility) => (
+                <Card key={facility.id} className="group relative overflow-hidden transition-shadow hover:shadow-lg">
                   <CardHeader className="flex-row items-center gap-4">
-                    <ImagePlaceholder id={provider.id} className="h-16 w-16 rounded-lg" imageClassName='object-contain'/>
+                    <ImagePlaceholder id={facility.id} className="h-16 w-16 rounded-lg" imageClassName='object-contain'/>
                     <div>
-                      <CardTitle className='text-lg'>{provider.name}</CardTitle>
-                      <p className="text-sm font-medium text-primary">{provider.title}</p>
+                      <CardTitle className='text-lg'>{facility.name}</CardTitle>
+                      <p className="text-sm font-medium text-primary">{facility.title}</p>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">{provider.description}</p>
+                    <p className="text-sm text-muted-foreground">{facility.description}</p>
                   </CardContent>
                   <CardFooter className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Button className="w-full">View Details</Button>
@@ -223,7 +223,7 @@ export default function LandingPage() {
             </div>
             <div className="flex justify-center md:justify-end mt-8">
               <Button variant="outline">
-                Become a Service Provider
+                Register a Facility
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
