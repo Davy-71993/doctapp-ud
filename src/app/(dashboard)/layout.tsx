@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
   Home,
-  Search,
+  Users,
   Calendar,
   Activity,
   User,
@@ -41,7 +41,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/search", label: "Find a Specialist", icon: Search },
+  { href: "/my-specialists", label: "My Specialists", icon: Users },
   { href: "/appointments", label: "Appointments", icon: Calendar },
   { href: "/track", label: "Health Trackers", icon: Activity },
   { href: "/inbox", label: "Inbox", icon: Inbox },
