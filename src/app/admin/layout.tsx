@@ -83,7 +83,7 @@ const AdminSidebar = () => {
     const pathname = usePathname();
     const router = useRouter();
     const { toast } = useToast();
-    const { state, setOpen } = useSidebar();
+    const { state, setOpen, isMobile, setOpenMobile } = useSidebar();
     const [facilitiesOpen, setFacilitiesOpen] = useState(pathname.startsWith('/admin/service-providers'));
     const [servicesOpen, setServicesOpen] = useState(pathname.startsWith('/admin/services'));
     const [complaintsOpen, setComplaintsOpen] = useState(pathname.startsWith('/admin/complaints'));
@@ -102,6 +102,12 @@ const AdminSidebar = () => {
             description: "You have been successfully signed out.",
         });
         router.push("/login");
+    }
+
+    const handleLinkClick = () => {
+        if (isMobile) {
+            setOpenMobile(false);
+        }
     }
 
     return (
@@ -128,6 +134,7 @@ const AdminSidebar = () => {
                     <SidebarMenuButton
                         isActive={isTabActive(item.href)}
                         tooltip={{ children: item.label }}
+                        onClick={handleLinkClick}
                     >
                         <item.icon />
                         <span>{item.label}</span>
@@ -155,7 +162,7 @@ const AdminSidebar = () => {
                             {facilitySubItems.map(item => (
                                 <SidebarMenuItem key={item.href}>
                                      <Link href={item.href} passHref>
-                                        <SidebarMenuSubButton isActive={pathname === item.href}>
+                                        <SidebarMenuSubButton isActive={pathname === item.href} onClick={handleLinkClick}>
                                             <item.icon />
                                             <span>{item.label}</span>
                                         </SidebarMenuSubButton>
@@ -185,7 +192,7 @@ const AdminSidebar = () => {
                             {servicesSubItems.map(item => (
                                 <SidebarMenuItem key={item.href}>
                                      <Link href={item.href} passHref>
-                                        <SidebarMenuSubButton isActive={pathname === item.href}>
+                                        <SidebarMenuSubButton isActive={pathname === item.href} onClick={handleLinkClick}>
                                             <item.icon />
                                             <span>{item.label}</span>
                                         </SidebarMenuSubButton>
@@ -215,7 +222,7 @@ const AdminSidebar = () => {
                             {complaintsSubItems.map(item => (
                                 <SidebarMenuItem key={item.href}>
                                      <Link href={item.href} passHref>
-                                        <SidebarMenuSubButton isActive={pathname === item.href}>
+                                        <SidebarMenuSubButton isActive={pathname === item.href} onClick={handleLinkClick}>
                                             <item.icon />
                                             <span>{item.label}</span>
                                         </SidebarMenuSubButton>
@@ -233,6 +240,7 @@ const AdminSidebar = () => {
                         <SidebarMenuButton
                             isActive={isTabActive(item.href)}
                             tooltip={{ children: item.label }}
+                            onClick={handleLinkClick}
                         >
                             <item.icon />
                             <span>{item.label}</span>

@@ -51,7 +51,7 @@ const SpecialistSidebar = () => {
     const pathname = usePathname();
     const router = useRouter();
     const { toast } = useToast();
-    const { state, setOpen } = useSidebar();
+    const { state, setOpen, isMobile, setOpenMobile } = useSidebar();
 
     const isTabActive = (href: string) => {
         if (href === '/specialist/dashboard') {
@@ -66,6 +66,12 @@ const SpecialistSidebar = () => {
         description: "You have been successfully signed out.",
       });
       router.push("/login");
+    }
+
+    const handleLinkClick = () => {
+        if (isMobile) {
+            setOpenMobile(false);
+        }
     }
 
     return (
@@ -92,6 +98,7 @@ const SpecialistSidebar = () => {
                     <SidebarMenuButton
                         isActive={isTabActive(item.href)}
                         tooltip={{ children: item.label }}
+                        onClick={handleLinkClick}
                     >
                         <item.icon />
                         <span>{item.label}</span>
