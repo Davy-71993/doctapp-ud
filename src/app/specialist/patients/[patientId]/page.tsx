@@ -13,7 +13,7 @@ import { ImagePlaceholder } from '@/components/image-placeholder';
 import { useToast } from '@/hooks/use-toast';
 import { patients, doctors } from '@/lib/mock-data';
 import { allFacilities } from '@/lib/mock-service-providers-data';
-import { ArrowLeft, Send, BarChart, Droplet, Thermometer } from 'lucide-react';
+import { ArrowLeft, Send, BarChart, Droplet, Thermometer, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -95,6 +95,50 @@ function ReferPatientDialog({ patientName }: { patientName: string }) {
     )
 }
 
+function ReportPatientDialog({ patientName }: { patientName: string }) {
+    const { toast } = useToast();
+    const [open, setOpen] = useState(false);
+
+    const handleReport = () => {
+        toast({
+            title: "Report Submitted",
+            description: `Your report concerning ${patientName} has been submitted for review.`,
+            variant: "destructive"
+        });
+        setOpen(false);
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                 <Button variant="outline">
+                    <ShieldAlert className="mr-2 h-4 w-4" />
+                    Report Patient
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Report Patient</DialogTitle>
+                    <DialogDescription>
+                        Submit a report for {patientName}. This will be reviewed by an administrator.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                     <div className="grid gap-2">
+                        <Label htmlFor="report-reason">Reason for Report</Label>
+                        <Textarea id="report-reason" placeholder="Describe the issue or reason for this report..." />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button variant="destructive" onClick={handleReport}>Submit Report</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+
 export default function PatientDetailsPage() {
     const params = useParams();
     const patientId = params.patientId;
@@ -141,6 +185,7 @@ export default function PatientDetailsPage() {
                     </div>
                 </div>
                 <div className="flex gap-2 self-end sm:self-start">
+                    <ReportPatientDialog patientName={patient.name} />
                     <ReferPatientDialog patientName={patient.name} />
                 </div>
             </div>
