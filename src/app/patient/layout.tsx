@@ -83,7 +83,7 @@ const AppSidebar = () => {
                         onClick={() => { if(state === 'collapsed') setOpen(true)} }
                     >
                         <Stethoscope className="h-7 w-7 text-primary" />
-                        <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden line-clamp-1">DoctApp UG</span>
+                        <span className="text-xl font-semibold group-data-[collapsible=icon]:hidden line-clamp-1">DocApp UG</span>
                     </div>
                     <SidebarTrigger className="hidden md:flex group-data-[collapsible=icon]:hidden" />
                 </div>

@@ -108,7 +108,7 @@ export default function LandingPage() {
         <div className="container max-w-7xl mx-auto flex items-center">
             <Link href="/" className="flex items-center justify-center">
                 <Stethoscope className="h-6 w-6 text-primary" />
-                <span className="ml-2 text-lg font-semibold">DoctApp UG</span>
+                <span className="ml-2 text-lg font-semibold">DocApp UG</span>
             </Link>
             <nav className="ml-auto flex items-center gap-4 sm:gap-6">
                 <Link
@@ -142,7 +142,7 @@ export default function LandingPage() {
                         Your Health, One Tap Away
                         </h1>
                         <p className="max-w-[600px] mx-auto text-gray-200 md:text-xl">
-                        DoctApp UG is the all-in-one health super-app for Uganda. Find doctors, manage appointments, track your health, and order medicine seamlessly.
+                        DocApp UG is the all-in-one health super-app for Uganda. Find doctors, manage appointments, track your health, and order medicine seamlessly.
                         </p>
                     </div>
                     <div className="flex justify-center">
@@ -270,7 +270,7 @@ export default function LandingPage() {
       <footer className="border-t">
         <div className="container max-w-7xl mx-auto flex flex-col gap-2 sm:flex-row py-6 shrink-0 items-center px-4 md:px-6">
             <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} DoctApp UG. All rights reserved.
+            &copy; {new Date().getFullYear()} DocApp UG. All rights reserved.
             </p>
             <nav className="sm:ml-auto flex gap-4 sm:gap-6">
             <Link href="#" className="text-xs hover:underline underline-offset-4">

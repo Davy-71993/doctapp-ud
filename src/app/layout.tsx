@@ -1,10 +1,11 @@
+
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'DoctApp UG',
+  title: 'DocApp UG',
   description: 'Your Health, One Tap Away. A Ugandan health super-app.',
   manifest: '/manifest.json',
 };

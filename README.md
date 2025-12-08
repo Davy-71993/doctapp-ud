@@ -1,6 +1,7 @@
-# DoctApp UG - Health Super-App
 
-DoctApp UG is a modern, full-stack web application designed to be an all-in-one health super-app for Uganda. It connects patients, specialists, and administrators through a unified platform, streamlining healthcare management from appointment booking to health data tracking.
+# DocApp UG - Health Super-App
+
+DocApp UG is a modern, full-stack web application designed to be an all-in-one health super-app for Uganda. It connects patients, specialists, and administrators through a unified platform, streamlining healthcare management from appointment booking to health data tracking.
 
 ## ✨ Features
 
