@@ -35,7 +35,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AiAdvice } from "@/components/track/ai-advice";
 import { useToast } from "@/hooks/use-toast";
-import type { UserProfile } from "@/lib/types";
+import type { Patient } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/firebase";
 
@@ -135,7 +135,7 @@ const AppSidebar = () => {
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { userProfile, loading } = useUser();
-  const typedProfile = userProfile as UserProfile | null;
+  const typedProfile = userProfile as Patient | null;
 
   const getPageTitle = () => {
     if (pathname === '/patient/dashboard') return "Dashboard";

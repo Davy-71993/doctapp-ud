@@ -9,6 +9,10 @@ export type User = {
   lastName: string;
   role: 'patient' | 'specialist' | 'admin';
   dateJoined: string;
+  phone?: string;
+  avatar?: string;
+  bloodGroup?: string;
+  district?: string;
 };
 
 export type DoctorComment = {
@@ -30,6 +34,7 @@ export type Doctor = {
   image: string;
   location: string;
   comments?: DoctorComment[];
+  verified: boolean;
 };
 
 export type Appointment = {
@@ -39,6 +44,7 @@ export type Appointment = {
   time: string;
   status: 'upcoming' | 'past' | 'cancelled';
   reason?: string;
+  patientId?: string;
 };
 
 export type Activity = {
@@ -49,20 +55,15 @@ export type Activity = {
   icon: LucideIcon | string; // Allow string for API transfer
 };
 
-export type UserProfile = {
-  name: string;
-  phone: string;
-  district: string;
-  bloodGroup: string;
-  avatar: string;
-};
-
 export type Patient = {
     id: string;
     name: string;
     avatar: string;
     lastCheckup: string;
     status: 'Stable' | 'Critical' | 'Needs Review';
+    phone?: string;
+    district?: string;
+    bloodGroup?: string;
     vitals?: {
         bloodPressure: string;
         bloodSugar: string;
@@ -131,6 +132,7 @@ export type Facility = {
     documents?: string[];
     location?: string;
     services: SpecialistService[];
+    verified: boolean;
 };
 
 export type TimeBlock = {
@@ -163,6 +165,7 @@ export type Complaint = {
   reason: string;
   date: string;
   status: 'Pending' | 'Resolved';
+  targetType: 'patient' | 'specialist';
 }
 
 export type Contact = {

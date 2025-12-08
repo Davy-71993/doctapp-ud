@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { ChevronRight, User, Bell } from 'lucide-react';
-import type { UserProfile } from '@/lib/types';
+import type { Patient } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@/firebase';
 
@@ -19,7 +19,7 @@ const settingsItems = [
 
 export default function ProfilePage() {
     const { userProfile, loading } = useUser();
-    const typedProfile = userProfile as UserProfile | null;
+    const typedProfile = userProfile as Patient | null;
 
   return (
     <div className="space-y-8">
