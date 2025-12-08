@@ -216,7 +216,7 @@ export default function SpecialistDashboardPage() {
                             <span>Check Inbox</span>
                         </Button>
                     </Link>
-                     <Link href="/specialist/my-service-providers">
+                     <Link href="/specialist/my-facilities">
                         <Button variant="outline" className="w-full h-20 flex-col gap-2">
                             <Building className="h-6 w-6"/>
                             <span>My Facilities</span>
