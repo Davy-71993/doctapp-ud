@@ -7,11 +7,7 @@ import {
   useContext,
   ReactNode,
   useMemo,
-  memo,
-  useEffect,
-  useState,
 } from 'react';
-import { set } from 'react-hook-form';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 export interface FirebaseContextValue {
