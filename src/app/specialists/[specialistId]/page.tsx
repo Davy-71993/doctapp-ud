@@ -145,12 +145,12 @@ export default function SpecialistDetailsPage() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardFooter className="gap-2">
+                <CardFooter className="justify-end gap-2">
                     <BookingModal doctor={doctor} />
-                    <Button variant="outline" onClick={() => handlePatientAction('Report')} className="flex-1 max-w-60">
+                    <Button variant="outline" onClick={() => handlePatientAction('Report')} className="max-w-60">
                         <Flag className="mr-2 h-4 w-4" /> Report
                     </Button>
-                    <Button variant="destructive" onClick={() => handlePatientAction('Disconnect')} className="flex-1 max-w-60">
+                    <Button variant="destructive" onClick={() => handlePatientAction('Disconnect')} className="max-w-60">
                         <UserX className="mr-2 h-4 w-4" /> Disconnect
                     </Button>
                 </CardFooter>
