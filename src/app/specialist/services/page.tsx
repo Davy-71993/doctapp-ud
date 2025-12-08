@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Clock, DollarSign, Pencil } from 'lucide-react';
+import { Plus, Clock, DollarSign, Pencil, FileText } from 'lucide-react';
 import { specialistServices as initialServices } from '@/lib/mock-data';
 import type { SpecialistService } from '@/lib/types';
 import { AddServiceDialog } from '@/components/add-service-dialog';
@@ -59,15 +59,23 @@ export default function SpecialistServicesPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">My Services</h1>
           <p className="text-muted-foreground">
-            Manage the medical services you offer to patients.
+            Manage the medical services and prescriptions you offer to patients.
           </p>
         </div>
-        <AddServiceDialog onAddService={handleAddService}>
-            <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add New Service
-            </Button>
-        </AddServiceDialog>
+        <div className="flex items-center gap-2">
+            <Link href="/specialist/services/prescriptions">
+                 <Button variant="outline">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Manage Prescriptions
+                </Button>
+            </Link>
+            <AddServiceDialog onAddService={handleAddService}>
+                <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add New Service
+                </Button>
+            </AddServiceDialog>
+        </div>
       </div>
       
       {services.length > 0 ? (
