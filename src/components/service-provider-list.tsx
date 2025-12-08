@@ -90,7 +90,7 @@ function VerifiedItem({ item }: { item: Facility }) {
             </div>
             <div className="flex items-center gap-2 self-end sm:self-center">
                 <Badge variant="secondary">Verified</Badge>
-                <Link href={`/patient/service-providers/${item.id}`}>
+                <Link href={`/service-providers/${item.id}`}>
                     <Button variant="outline" size="sm">View Details</Button>
                 </Link>
             </div>
