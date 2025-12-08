@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { useToast } from '@/hooks/use-toast';
 import { patients, doctors } from '@/lib/mock-data';
+import { allFacilities } from '@/lib/mock-service-providers-data';
 import { ArrowLeft, Send, BarChart, Droplet, Thermometer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
@@ -63,6 +64,19 @@ function ReferPatientDialog({ patientName }: { patientName: string }) {
                             <SelectContent>
                                 {doctors.filter(d => d.name !== 'Dr. Amina Nakigudde').map(doctor => (
                                     <SelectItem key={doctor.id} value={doctor.id}>{doctor.name} - {doctor.specialty}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                     <div className="grid gap-2">
+                        <Label htmlFor="referral-facility">Facility</Label>
+                        <Select>
+                            <SelectTrigger id="referral-facility">
+                                <SelectValue placeholder="Select a facility" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {allFacilities.map(facility => (
+                                    <SelectItem key={facility.id} value={facility.id}>{facility.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
