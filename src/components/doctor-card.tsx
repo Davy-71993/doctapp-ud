@@ -2,10 +2,11 @@
 import type { Doctor } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin } from 'lucide-react';
+import { Star, MapPin, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { BookingModal } from '@/components/booking-modal';
 import Link from 'next/link';
+import { Button } from './ui/button';
 
 type DoctorCardProps = {
   doctor: Doctor;
@@ -13,12 +14,12 @@ type DoctorCardProps = {
 
 export function DoctorCard({ doctor }: DoctorCardProps) {
   return (
-    <Link href={`/specialists/${doctor.id}`} className="block">
-      <Card className="overflow-hidden transition-all hover:shadow-lg h-full">
+    <Link href={`/specialists/${doctor.id}`} className="block group">
+      <Card className="overflow-hidden transition-all hover:shadow-lg h-full flex flex-col">
         <div className="relative h-40 w-full">
           <ImagePlaceholder id={doctor.image} fill imageClassName="object-cover" />
         </div>
-        <CardContent className="p-4 flex flex-col">
+        <CardContent className="p-4 flex flex-col flex-grow">
           <div className="flex-grow">
             <h3 className="font-semibold text-lg">{doctor.name}</h3>
             <p className="text-sm text-muted-foreground">{doctor.specialty}</p>
@@ -34,8 +35,17 @@ export function DoctorCard({ doctor }: DoctorCardProps) {
                 <span>{doctor.location}</span>
               </div>
             </div>
+             <div className="flex items-center gap-2 pt-2">
+                <Button variant="outline" size="sm" className="h-8">
+                    <ThumbsUp className="mr-2 h-4 w-4" /> Like
+                </Button>
+                <Button variant="outline" size="sm" className="h-8">
+                    <ThumbsDown className="mr-2 h-4 w-4" /> Dislike
+                </Button>
+            </div>
           </div>
           <div
+            className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
