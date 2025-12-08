@@ -19,9 +19,10 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Users, ShieldCheck, UserCheck } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import type { User, Doctor } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 const userGrowthData = [
   { month: 'Jan', users: 150, specialists: 20 },
@@ -33,33 +34,18 @@ const userGrowthData = [
 ];
 
 export default function AdminDashboardPage() {
-    const [users, setUsers] = useState<User[]>([]);
-    const [doctors, setDoctors] = useState<Doctor[]>([]);
-    const [loading, setLoading] = useState(true);
+    const db = useFirestore();
+    const { data: users, loading: usersLoading } = useCollection<User>(
+        query(collection(db, 'users'))
+    );
+    const { data: doctors, loading: doctorsLoading } = useCollection<Doctor>(
+        query(collection(db, 'doctors'))
+    );
+    const loading = usersLoading || doctorsLoading;
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const [usersRes, doctorsRes] = await Promise.all([
-                    fetch('/api/users'),
-                    fetch('/api/doctors')
-                ]);
-                const usersData = await usersRes.json();
-                const doctorsData = await doctorsRes.json();
-                setUsers(usersData);
-                setDoctors(doctorsData);
-            } catch (error) {
-                console.error("Failed to fetch dashboard data:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchData();
-    }, []);
-
-  const patientCount = users.filter(u => u.role === 'patient').length;
-  const specialistCount = users.filter(u => u.role === 'specialist').length;
-  const pendingVerificationCount = 5; // Mock data
+  const patientCount = users?.filter(u => u.role === 'patient').length || 0;
+  const specialistCount = users?.filter(u => u.role === 'specialist').length || 0;
+  const pendingVerificationCount = 5; // This will need a 'status' field in the doctors collection
 
   const recentActivities = [
     { id: 1, user: 'Dr. Amina Nakigudde', action: 'Joined', timestamp: '2 hours ago' },
@@ -67,10 +53,10 @@ export default function AdminDashboardPage() {
     { id: 3, user: 'Alex Mukisa', action: 'Registered', timestamp: '2 days ago' },
   ];
 
-  const specialistDistribution = doctors.reduce((acc, doctor) => {
+  const specialistDistribution = doctors?.reduce((acc, doctor) => {
     acc[doctor.specialty] = (acc[doctor.specialty] || 0) + 1;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<string, number>) || {};
 
   const specialistDistributionData = Object.entries(specialistDistribution).map(([name, count]) => ({ name, count }));
 

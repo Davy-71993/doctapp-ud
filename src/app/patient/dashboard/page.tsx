@@ -18,9 +18,12 @@ import {
 } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend, LineChart, Line } from 'recharts';
-import { useEffect, useState } from 'react';
+import { useCollection, useUser } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+import { useFirestore } from '@/firebase';
 import type { HealthData, Activity as ActivityType } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { recentActivities } from '@/lib/mock-data';
 
 
 const actionCards = [
@@ -67,29 +70,17 @@ const actionCards = [
 ];
 
 export default function DashboardPage() {
-    const [healthData, setHealthData] = useState<HealthData | null>(null);
-    const [recentActivities, setRecentActivities] = useState<ActivityType[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const [healthRes, activitiesRes] = await Promise.all([
-                    fetch('/api/health-data'),
-                    fetch('/api/recent-activities')
-                ]);
-                const healthData = await healthRes.json();
-                const recentActivities = await activitiesRes.json();
-                setHealthData(healthData);
-                setRecentActivities(recentActivities);
-            } catch (error) {
-                console.error("Failed to fetch dashboard data:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchData();
-    }, []);
+    const db = useFirestore();
+    const { user } = useUser();
+    
+    const { data: healthData, loading: healthLoading } = useCollection<any>(
+        user ? query(collection(db, 'healthData'), where('userId', '==', user.uid)) : null
+    );
+    const { data: activities, loading: activitiesLoading } = useCollection<ActivityType>(
+        user ? query(collection(db, 'activities'), where('userId', '==', user.uid)) : null
+    );
+    const loading = healthLoading || activitiesLoading;
+    const userHealthData = healthData?.[0]; // Assuming one health doc per user
 
   return (
     <div className="flex flex-col gap-8">
@@ -115,7 +106,7 @@ export default function DashboardPage() {
           ))}
       </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {loading || !healthData ? (
+            {loading || !userHealthData ? (
                 <>
                     <Skeleton className="h-96 w-full" />
                     <Skeleton className="h-96 w-full" />
@@ -131,7 +122,7 @@ export default function DashboardPage() {
                 <CardContent>
                     <div className="h-64 w-full">
                          <ResponsiveContainer>
-                            <BarChart data={healthData.bloodPressure.slice(-7)}>
+                            <BarChart data={userHealthData.bloodPressure.slice(-7)}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis fontSize={12} tickLine={false} axisLine={false} unit=" mmHg" />
@@ -157,7 +148,7 @@ export default function DashboardPage() {
                 <CardContent>
                     <div className="h-64 w-full">
                         <ResponsiveContainer>
-                            <LineChart data={healthData.bloodSugar.slice(-7)}>
+                            <LineChart data={userHealthData.bloodSugar.slice(-7)}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis 
@@ -188,7 +179,7 @@ export default function DashboardPage() {
                 </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                {recentActivities.map((activity) => (
+                {recentActivities.map((activity: any) => (
                     <div key={activity.id} className="flex items-center gap-4">
                     <Avatar className="h-10 w-10">
                     <div className="w-full h-full flex items-center justify-center bg-secondary rounded-full">

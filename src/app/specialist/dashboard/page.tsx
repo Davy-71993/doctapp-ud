@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -20,13 +19,15 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ImagePlaceholder } from '@/components/image-placeholder';
-import { Users, AlertTriangle, CheckCircle2, Inbox, Building, Syringe } from 'lucide-react';
+import { Users, AlertTriangle, Inbox, Building } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import type { Patient } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 const statusColors = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -36,30 +37,17 @@ const statusColors = {
 
 
 export default function SpecialistDashboardPage() {
-    const [patients, setPatients] = useState<Patient[]>([]);
-    const [loading, setLoading] = useState(true);
+    const db = useFirestore();
+    const { data: patients, loading } = useCollection<Patient>(
+        query(collection(db, 'patients'))
+    );
 
-    useEffect(() => {
-        async function fetchPatients() {
-            try {
-                const response = await fetch('/api/patients');
-                const data = await response.json();
-                setPatients(data);
-            } catch (error) {
-                console.error("Failed to fetch patients:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchPatients();
-    }, []);
-
-  const patientCount = patients.length;
-  const criticalCount = patients.filter(p => p.status === 'Critical').length;
-  const needsReviewCount = patients.filter(p => p.status === 'Needs Review').length;
+  const patientCount = patients?.length || 0;
+  const criticalCount = patients?.filter(p => p.status === 'Critical').length || 0;
+  const needsReviewCount = patients?.filter(p => p.status === 'Needs Review').length || 0;
 
   const patientStatusData = [
-    { name: 'Stable', value: patients.filter(p => p.status === 'Stable').length },
+    { name: 'Stable', value: patients?.filter(p => p.status === 'Stable').length || 0 },
     { name: 'Needs Review', value: needsReviewCount },
     { name: 'Critical', value: criticalCount },
   ];
@@ -133,7 +121,7 @@ export default function SpecialistDashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {patients.slice(0, 5).map(patient => (
+                {patients?.slice(0, 5).map(patient => (
                   <TableRow key={patient.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -239,7 +227,7 @@ export default function SpecialistDashboardPage() {
                         </div>
                     </div>
                      <div className="flex items-center gap-4 p-3 bg-muted/50 rounded-lg">
-                        <Syringe className="h-6 w-6 text-muted-foreground"/>
+                        <Building className="h-6 w-6 text-muted-foreground"/>
                         <div>
                             <p className="font-semibold">Ecopharm Pharmacy</p>
                             <p className="text-sm text-muted-foreground">Partner Pharmacy</p>
