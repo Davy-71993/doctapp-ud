@@ -53,6 +53,11 @@ export type Patient = {
     avatar: string;
     lastCheckup: string;
     status: 'Stable' | 'Critical' | 'Needs Review';
+    vitals?: {
+        bloodPressure: string;
+        bloodSugar: string;
+        temperature: string;
+    }
 };
 
 export type PeriodData = { date: Date };

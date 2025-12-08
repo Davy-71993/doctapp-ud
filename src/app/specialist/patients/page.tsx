@@ -1,3 +1,6 @@
+
+'use client';
+
 import {
   Card,
   CardHeader,
@@ -17,9 +20,11 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { ImagePlaceholder } from '@/components/image-placeholder';
 import { patients } from '@/lib/mock-data';
-import { AlertTriangle, CheckCircle2, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 const statusColors = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -77,9 +82,9 @@ export default function PatientsPage() {
                   </TableCell>
                   <TableCell className="text-muted-foreground">{patient.lastCheckup}</TableCell>
                   <TableCell className="text-right">
-                    <a href="#" className="text-primary hover:underline">
-                      View Details
-                    </a>
+                    <Link href={`/specialist/patients/${patient.id}`}>
+                       <Button variant="outline" size="sm">View Details</Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}

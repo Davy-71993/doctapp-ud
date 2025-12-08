@@ -123,11 +123,11 @@ export const healthData: HealthData = {
 
 
 export const patients: Patient[] = [
-    { id: '1', name: 'Brenda Nansubuga', avatar: 'patient-1', lastCheckup: '2 weeks ago', status: 'Stable' },
-    { id: '2', name: 'Charles Oboth', avatar: 'patient-2', lastCheckup: '1 month ago', status: 'Needs Review' },
-    { id: '3', name: 'Doreen Abenakyo', avatar: 'patient-3', lastCheckup: '3 days ago', status: 'Stable' },
-    { id: '4', name: 'Edward Musisi', avatar: 'patient-4', lastCheckup: '1 week ago', status: 'Critical' },
-    { id: '5', name: 'Fiona Katushabe', avatar: 'patient-5', lastCheckup: '5 days ago', status: 'Stable' },
+    { id: '1', name: 'Brenda Nansubuga', avatar: 'patient-1', lastCheckup: '2 weeks ago', status: 'Stable', vitals: { bloodPressure: '120/80', bloodSugar: '95 mg/dL', temperature: '36.8°C' } },
+    { id: '2', name: 'Charles Oboth', avatar: 'patient-2', lastCheckup: '1 month ago', status: 'Needs Review', vitals: { bloodPressure: '130/85', bloodSugar: '105 mg/dL', temperature: '37.0°C' } },
+    { id: '3', name: 'Doreen Abenakyo', avatar: 'patient-3', lastCheckup: '3 days ago', status: 'Stable', vitals: { bloodPressure: '118/78', bloodSugar: '92 mg/dL', temperature: '36.9°C' } },
+    { id: '4', name: 'Edward Musisi', avatar: 'patient-4', lastCheckup: '1 week ago', status: 'Critical', vitals: { bloodPressure: '160/100', bloodSugar: '180 mg/dL', temperature: '38.5°C' } },
+    { id: '5', name: 'Fiona Katushabe', avatar: 'patient-5', lastCheckup: '5 days ago', status: 'Stable', vitals: { bloodPressure: '122/82', bloodSugar: '100 mg/dL', temperature: '37.1°C' } },
 ];
 
 export const specialistServices: SpecialistService[] = [
