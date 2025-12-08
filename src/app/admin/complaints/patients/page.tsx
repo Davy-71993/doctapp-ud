@@ -19,28 +19,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
 import type { Complaint } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 export default function PatientComplaintsPage() {
-    const [complaints, setComplaints] = useState<Complaint[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchComplaints() {
-            try {
-                const response = await fetch('/api/complaints/patient');
-                const data = await response.json();
-                setComplaints(data);
-            } catch (error) {
-                console.error("Failed to fetch complaints:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchComplaints();
-    }, []);
+    const db = useFirestore();
+    const { data: complaints, loading } = useCollection<Complaint>(
+        query(collection(db, 'complaints'), where('targetType', '==', 'patient'))
+    );
 
   return (
     <div className="space-y-8">
@@ -74,7 +62,7 @@ export default function PatientComplaintsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {complaints.map((complaint) => (
+              {complaints?.map((complaint) => (
                 <TableRow key={complaint.id}>
                   <TableCell className="font-medium">{complaint.patientName}</TableCell>
                   <TableCell>{complaint.reportedBy}</TableCell>

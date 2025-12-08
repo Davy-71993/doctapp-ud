@@ -30,12 +30,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AiAdvice } from "@/components/track/ai-advice";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
 import type { Doctor } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser, useDoc, useFirestore } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 
 const navItems = [
@@ -130,24 +131,12 @@ const SpecialistSidebar = () => {
 
 export default function SpecialistLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [specialist, setSpecialist] = useState<Doctor | null>(null);
-  const [loading, setLoading] = useState(true);
+  const db = useFirestore();
+  const { user } = useUser();
 
-  useEffect(() => {
-    async function fetchSpecialist() {
-        try {
-            // Assuming the logged-in specialist is Dr. Amina Nakigudde with id '1'
-            const response = await fetch('/api/doctors/1');
-            const data = await response.json();
-            setSpecialist(data);
-        } catch (error) {
-            console.error("Failed to fetch specialist data:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
-    fetchSpecialist();
-  }, []);
+  // Assuming the logged-in specialist's user ID matches the document ID in the 'doctors' collection
+  const specialistRef = user ? doc(db, 'doctors', user.uid) : null;
+  const { data: specialist, loading } = useDoc<Doctor>(specialistRef);
 
   const getPageTitle = () => {
     if (pathname === '/specialist/dashboard') return "Dashboard";

@@ -1,45 +1,27 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
 import { ChatLayout } from '@/components/chat/chat-layout';
 import type { Contact, Message } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useUser, useFirestore, useCollection, useDoc } from '@/firebase';
+import { collection, doc, query } from 'firebase/firestore';
 
 export default function InboxPage() {
-    const [currentUser, setCurrentUser] = useState<Contact | null>(null);
-    const [contacts, setContacts] = useState<Contact[]>([]);
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [loading, setLoading] = useState(true);
+    const db = useFirestore();
+    const { user } = useUser();
 
-    useEffect(() => {
-        async function fetchChatData() {
-            try {
-                const [specialistRes, patientsRes, messagesRes] = await Promise.all([
-                    fetch('/api/doctors/1'), // Assuming current specialist is Dr. Amina with id '1'
-                    fetch('/api/patients'),
-                    fetch('/api/chat/messages')
-                ]);
-                const specialistData = await specialistRes.json();
-                const patientsData = await patientsRes.json();
-                const messagesData = await messagesRes.json();
+    const currentUserRef = user ? doc(db, 'doctors', user.uid) : null;
+    const { data: currentUser, loading: userLoading } = useDoc<Contact>(currentUserRef);
+    
+    const { data: contacts, loading: contactsLoading } = useCollection<Contact>(
+        query(collection(db, 'patients'))
+    );
+    const { data: messages, loading: messagesLoading } = useCollection<Message>(
+        query(collection(db, 'messages'))
+    );
 
-                setCurrentUser({
-                    id: specialistData.id,
-                    name: specialistData.name,
-                    avatar: specialistData.image
-                });
-
-                setContacts(patientsData.map((p: any) => ({ id: p.id, name: p.name, avatar: p.avatar })));
-                setMessages(messagesData);
-            } catch (error) {
-                console.error("Failed to fetch chat data:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchChatData();
-    }, []);
+    const loading = userLoading || contactsLoading || messagesLoading;
 
     if (loading || !currentUser) {
         return (
@@ -50,14 +32,14 @@ export default function InboxPage() {
         );
     }
 
-    const defaultContact = contacts.find(c => c.id === 'patient-1');
+    const defaultContact = contacts?.find(c => c.id === 'patient-1');
 
     return (
         <div className="h-[calc(100vh_-_8rem)]">
             <ChatLayout 
                 currentUser={currentUser}
-                contacts={contacts}
-                messages={messages}
+                contacts={contacts || []}
+                messages={messages || []}
                 defaultSelectedUser={defaultContact}
             />
         </div>

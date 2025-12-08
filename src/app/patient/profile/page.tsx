@@ -1,7 +1,6 @@
 
 "use client";
 
-import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -10,6 +9,7 @@ import { ImagePlaceholder } from '@/components/image-placeholder';
 import { ChevronRight, User, Bell } from 'lucide-react';
 import type { UserProfile } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useUser } from '@/firebase';
 
 
 const settingsItems = [
@@ -18,39 +18,24 @@ const settingsItems = [
 ];
 
 export default function ProfilePage() {
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchProfile() {
-            try {
-                const response = await fetch('/api/user-profile');
-                const data = await response.json();
-                setUserProfile(data);
-            } catch (error) {
-                console.error("Failed to fetch user profile:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchProfile();
-    }, []);
+    const { userProfile, loading } = useUser();
+    const typedProfile = userProfile as UserProfile | null;
 
   return (
     <div className="space-y-8">
-      {loading || !userProfile ? (
+      {loading || !typedProfile ? (
         <Skeleton className="h-32 w-full" />
       ) : (
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-20 w-20">
-            <ImagePlaceholder id={userProfile.avatar} />
-            <AvatarFallback>{userProfile.name.charAt(0)}</AvatarFallback>
+            <ImagePlaceholder id={typedProfile.avatar} />
+            <AvatarFallback>{typedProfile.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-2xl font-semibold">{userProfile.name}</h2>
-            <p className="text-muted-foreground">{userProfile.phone}</p>
-            <p className="text-muted-foreground">{userProfile.district} | Blood Group: {userProfile.bloodGroup}</p>
+            <h2 className="text-2xl font-semibold">{typedProfile.name}</h2>
+            <p className="text-muted-foreground">{typedProfile.phone}</p>
+            <p className="text-muted-foreground">{typedProfile.district} | Blood Group: {typedProfile.bloodGroup}</p>
           </div>
         </CardHeader>
       </Card>

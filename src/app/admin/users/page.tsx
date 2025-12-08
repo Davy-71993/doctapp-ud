@@ -24,6 +24,8 @@ import { Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { User } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
 
 const roleColors: { [key: string]: string } = {
     patient: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -32,30 +34,17 @@ const roleColors: { [key: string]: string } = {
 };
 
 export default function UsersPage() {
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
+    const db = useFirestore();
+    const { data: users, loading } = useCollection<User>(
+        query(collection(db, 'users'))
+    );
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        async function fetchUsers() {
-            try {
-                const response = await fetch('/api/users');
-                const data = await response.json();
-                setUsers(data);
-            } catch (error) {
-                console.error("Failed to fetch users:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchUsers();
-    }, []);
-
-    const filteredUsers = users.filter(user => 
+    const filteredUsers = users?.filter(user => 
         `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.role.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ) || [];
 
   return (
     <div className="space-y-8">

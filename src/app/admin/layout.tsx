@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -47,6 +47,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/firebase";
 
 
 const navItems = [
@@ -271,24 +272,8 @@ const AdminSidebar = () => {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [adminUser, setAdminUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchAdminUser() {
-        try {
-            const response = await fetch('/api/users');
-            const users: User[] = await response.json();
-            const admin = users.find(d => d.role === 'admin');
-            setAdminUser(admin || null);
-        } catch (error) {
-            console.error("Failed to fetch admin user:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
-    fetchAdminUser();
-  }, []);
+  const { userProfile, loading } = useUser();
+  const adminUser = userProfile as User | null;
 
   const getPageTitle = () => {
     const allNavItems = [...navItems, ...facilitySubItems, ...servicesSubItems, ...complaintsSubItems, ...bottomNavItems];

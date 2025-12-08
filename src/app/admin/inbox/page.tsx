@@ -5,39 +5,24 @@ import { useEffect, useState } from 'react';
 import { ChatLayout } from '@/components/chat/chat-layout';
 import type { User, Contact, Message } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore, useUser } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
 
 export default function InboxPage() {
-    const [adminUser, setAdminUser] = useState<User | null>(null);
-    const [contacts, setContacts] = useState<Contact[]>([]);
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [loading, setLoading] = useState(true);
+    const db = useFirestore();
+    const { userProfile, loading: userLoading } = useUser();
+    const adminUser = userProfile as User | null;
 
-    useEffect(() => {
-        async function fetchChatData() {
-            try {
-                const [usersRes, specialistsRes, messagesRes] = await Promise.all([
-                    fetch('/api/users'),
-                    fetch('/api/specialists'),
-                    fetch('/api/chat/messages')
-                ]);
-                const usersData: User[] = await usersRes.json();
-                const specialistsData: Contact[] = await specialistsRes.json();
-                const messagesData: Message[] = await messagesRes.json();
-                
-                const admin = usersData.find(u => u.role === 'admin');
-                setAdminUser(admin || null);
-                setContacts(specialistsData);
-                setMessages(messagesData);
-            } catch (error) {
-                console.error("Failed to fetch chat data:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchChatData();
-    }, []);
+    const { data: specialists, loading: specialistsLoading } = useCollection<Contact>(
+        query(collection(db, 'doctors'))
+    );
+    const { data: messages, loading: messagesLoading } = useCollection<Message>(
+        query(collection(db, 'messages'))
+    );
 
-    if (loading || !adminUser || contacts.length === 0) {
+    const loading = userLoading || specialistsLoading || messagesLoading;
+
+    if (loading || !adminUser || !specialists) {
         return (
              <div className="h-[calc(100vh_-_8rem)] flex">
                 <Skeleton className="w-1/4 h-full" />
@@ -47,7 +32,7 @@ export default function InboxPage() {
     }
     
     const currentUser = {
-        id: 'admin',
+        id: adminUser.id,
         name: `${adminUser.firstName} ${adminUser.lastName}`.trim(),
         avatar: adminUser.firstName.charAt(0) || 'A'
     }
@@ -56,9 +41,9 @@ export default function InboxPage() {
         <div className="h-[calc(100vh_-_8rem)]">
             <ChatLayout 
                 currentUser={currentUser}
-                contacts={contacts}
-                messages={messages}
-                defaultSelectedUser={contacts[0]}
+                contacts={specialists}
+                messages={messages || []}
+                defaultSelectedUser={specialists[0]}
             />
         </div>
     )

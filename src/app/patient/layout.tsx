@@ -32,12 +32,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AiAdvice } from "@/components/track/ai-advice";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
 import type { UserProfile } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/firebase";
 
 
 const navItems = [
@@ -134,23 +134,8 @@ const AppSidebar = () => {
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const response = await fetch('/api/user-profile');
-        const data = await response.json();
-        setUserProfile(data);
-      } catch (error) {
-        console.error("Failed to fetch user profile", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProfile();
-  }, []);
+  const { userProfile, loading } = useUser();
+  const typedProfile = userProfile as UserProfile | null;
 
   const getPageTitle = () => {
     if (pathname === '/patient/dashboard') return "Dashboard";
@@ -167,17 +152,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1">
              <h1 className="text-lg font-semibold md:text-2xl capitalize">{getPageTitle()}</h1>
           </div>
-          {loading || !userProfile ? (
+          {loading || !typedProfile ? (
             <div className="flex items-center gap-2">
                 <Skeleton className="h-6 w-24 hidden sm:block" />
                 <Skeleton className="h-9 w-9 rounded-full" />
             </div>
           ) : (
             <div className="flex items-center gap-2">
-                <p className="text-sm font-medium hidden sm:block">{userProfile.name}</p>
+                <p className="text-sm font-medium hidden sm:block">{typedProfile.name}</p>
                 <Avatar className="h-9 w-9">
-                    <ImagePlaceholder id={userProfile.avatar} />
-                    <AvatarFallback>{userProfile.name.charAt(0)}</AvatarFallback>
+                    <ImagePlaceholder id={typedProfile.avatar} />
+                    <AvatarFallback>{typedProfile.name.charAt(0)}</AvatarFallback>
                 </Avatar>
             </div>
           )}

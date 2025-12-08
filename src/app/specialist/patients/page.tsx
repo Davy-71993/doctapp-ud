@@ -24,9 +24,11 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { Patient } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
 
 const statusColors: { [key: string]: string } = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -35,28 +37,15 @@ const statusColors: { [key: string]: string } = {
 };
 
 export default function PatientsPage() {
-    const [patients, setPatients] = useState<Patient[]>([]);
-    const [loading, setLoading] = useState(true);
+    const db = useFirestore();
+    const { data: patients, loading } = useCollection<Patient>(
+        query(collection(db, 'patients'))
+    );
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        async function fetchPatients() {
-            try {
-                const response = await fetch('/api/patients');
-                const data = await response.json();
-                setPatients(data);
-            } catch (error) {
-                console.error("Failed to fetch patients:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchPatients();
-    }, []);
-
-    const filteredPatients = patients.filter(patient =>
+    const filteredPatients = patients?.filter(patient =>
         patient.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ) || [];
 
   return (
     <div className="space-y-8">

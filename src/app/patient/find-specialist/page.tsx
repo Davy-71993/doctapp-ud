@@ -14,6 +14,8 @@ import { DoctorCard } from '@/components/doctor-card';
 import type { Doctor } from '@/lib/types';
 import { Search as SearchIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
 
 const specialties = [
     "Medical Officer",
@@ -39,30 +41,16 @@ const specialties = [
 const locations = ['Kampala', 'Wakiso', 'Gulu', 'Jinja', 'Mbale', 'Mbarara'];
 
 export default function FindSpecialistPage() {
+  const db = useFirestore();
   const [searchTerm, setSearchTerm] = useState('');
   const [specialty, setSpecialty] = useState('all');
   const [location, setLocation] = useState('all');
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const { data: doctors, loading } = useCollection<Doctor>(query(collection(db, 'doctors')));
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchDoctors() {
-        try {
-            const response = await fetch('/api/doctors');
-            const data = await response.json();
-            setDoctors(data);
-            setFilteredDoctors(data);
-        } catch (error) {
-            console.error("Failed to fetch doctors:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
-    fetchDoctors();
-  }, []);
+    if (!doctors) return;
 
-  const handleFilterChange = () => {
     let result = doctors;
 
     if (searchTerm) {
@@ -81,23 +69,7 @@ export default function FindSpecialistPage() {
     }
 
     setFilteredDoctors(result);
-  };
-  
-  // A simple debounce
-  let timeoutId: NodeJS.Timeout;
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-        handleFilterChange();
-    }, 300)
-  };
-
-  useEffect(() => {
-    handleFilterChange();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [specialty, location, doctors]);
+  }, [searchTerm, specialty, location, doctors]);
 
   return (
     <div className="space-y-8">
@@ -115,7 +87,7 @@ export default function FindSpecialistPage() {
             placeholder="Search by name or specialty..."
             className="pl-10"
             value={searchTerm}
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="grid grid-cols-2 md:flex gap-4">

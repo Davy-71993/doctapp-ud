@@ -8,33 +8,31 @@ import { DoctorCard } from '@/components/doctor-card';
 import { Search } from 'lucide-react';
 import type { Doctor, Appointment } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore, useUser } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 export default function MySpecialistsPage() {
+    const db = useFirestore();
+    const { user } = useUser();
     const [connectedSpecialists, setConnectedSpecialists] = useState<Doctor[]>([]);
-    const [loading, setLoading] = useState(true);
+    
+    const { data: appointments, loading: appointmentsLoading } = useCollection<Appointment>(
+        user ? query(collection(db, 'appointments'), where('patientId', '==', user.uid)) : null
+    );
+
+    const { data: doctors, loading: doctorsLoading } = useCollection<Doctor>(
+        query(collection(db, 'doctors'))
+    );
+
+    const loading = appointmentsLoading || doctorsLoading;
 
     useEffect(() => {
-        async function fetchConnectedSpecialists() {
-            try {
-                const [doctorsRes, appointmentsRes] = await Promise.all([
-                    fetch('/api/doctors'),
-                    fetch('/api/appointments')
-                ]);
-                const doctors: Doctor[] = await doctorsRes.json();
-                const appointments: Appointment[] = await appointmentsRes.json();
-                
-                const connectedDoctorIds = [...new Set(appointments.map(a => a.doctor.id))];
-                const filteredSpecialists = doctors.filter(d => connectedDoctorIds.includes(d.id));
-
-                setConnectedSpecialists(filteredSpecialists);
-            } catch (error) {
-                console.error("Failed to fetch connected specialists:", error);
-            } finally {
-                setLoading(false);
-            }
+        if (appointments && doctors) {
+            const connectedDoctorIds = [...new Set(appointments.map(a => a.doctor.id))];
+            const filteredSpecialists = doctors.filter(d => connectedDoctorIds.includes(d.id));
+            setConnectedSpecialists(filteredSpecialists);
         }
-        fetchConnectedSpecialists();
-    }, []);
+    }, [appointments, doctors]);
 
   return (
     <div className="space-y-8">

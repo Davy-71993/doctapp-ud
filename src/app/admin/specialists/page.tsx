@@ -13,13 +13,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Check, X } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore } from '@/firebase';
+import type { Doctor } from '@/lib/types';
+import { collection, query, where } from 'firebase/firestore';
 
-interface Specialist {
-    id: string;
-    name: string;
-    specialty: string;
-    documents?: string[];
-}
 
 function PendingItem({ item }: { item: any}) {
     return (
@@ -65,29 +62,14 @@ function VerifiedItem({ item }: { item: any }) {
 }
 
 export default function SpecialistsPage() {
-    const [pendingSpecialists, setPendingSpecialists] = useState<Specialist[]>([]);
-    const [verifiedSpecialists, setVerifiedSpecialists] = useState<Specialist[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchSpecialists() {
-            try {
-                const [pendingRes, verifiedRes] = await Promise.all([
-                    fetch('/api/specialists/pending'),
-                    fetch('/api/specialists/verified')
-                ]);
-                const pendingData = await pendingRes.json();
-                const verifiedData = await verifiedRes.json();
-                setPendingSpecialists(pendingData);
-                setVerifiedSpecialists(verifiedData);
-            } catch (error) {
-                console.error("Failed to fetch specialists:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchSpecialists();
-    }, []);
+    const db = useFirestore();
+    const { data: pendingSpecialists, loading: pendingLoading } = useCollection<Doctor>(
+        query(collection(db, 'doctors'), where('verified', '==', false))
+    );
+    const { data: verifiedSpecialists, loading: verifiedLoading } = useCollection<Doctor>(
+        query(collection(db, 'doctors'), where('verified', '==', true))
+    );
+    const loading = pendingLoading || verifiedLoading;
 
   return (
     <div className="space-y-8">
@@ -107,7 +89,7 @@ export default function SpecialistsPage() {
                 {loading ? (
                     <Skeleton className="h-24 w-full" />
                 ) : (
-                    pendingSpecialists.map(specialist => (
+                    pendingSpecialists?.map(specialist => (
                         <PendingItem key={specialist.id} item={specialist} />
                     ))
                 )}
@@ -121,7 +103,7 @@ export default function SpecialistsPage() {
                 {loading ? (
                     [...Array(2)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)
                 ) : (
-                    verifiedSpecialists.map(specialist => (
+                    verifiedSpecialists?.map(specialist => (
                         <VerifiedItem key={specialist.id} item={specialist} />
                     ))
                 )}

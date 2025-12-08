@@ -1,31 +1,21 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppointmentCard } from '@/components/appointment-card';
 import { CalendarOff } from 'lucide-react';
 import type { Appointment } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCollection, useFirestore, useUser } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 export default function AppointmentsPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchAppointments() {
-      try {
-        const response = await fetch('/api/appointments');
-        const data = await response.json();
-        setAppointments(data);
-      } catch (error) {
-        console.error("Failed to fetch appointments:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchAppointments();
-  }, []);
+  const db = useFirestore();
+  const { user } = useUser();
+  const { data: appointments, loading } = useCollection<Appointment>(
+    user ? query(collection(db, 'appointments'), where('patientId', '==', user.uid)) : null
+  );
 
   if (loading) {
     return (
@@ -49,8 +39,8 @@ export default function AppointmentsPage() {
     )
   }
 
-  const upcomingAppointments = appointments.filter(a => a.status === 'upcoming');
-  const pastAppointments = appointments.filter(a => a.status !== 'upcoming');
+  const upcomingAppointments = appointments?.filter(a => a.status === 'upcoming') || [];
+  const pastAppointments = appointments?.filter(a => a.status !== 'upcoming') || [];
 
   return (
     <div className="space-y-8">

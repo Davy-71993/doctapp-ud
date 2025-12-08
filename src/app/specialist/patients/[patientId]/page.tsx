@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -18,6 +17,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDoc, useFirestore, useCollection, useUser } from '@/firebase';
+import { doc, collection, query } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 const statusColors: { [key: string]: string } = {
     Stable: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
@@ -29,24 +31,13 @@ const statusColors: { [key: string]: string } = {
 function ReferPatientDialog({ patientName }: { patientName: string }) {
     const { toast } = useToast();
     const [open, setOpen] = useState(false);
-    const [doctors, setDoctors] = useState<Doctor[]>([]);
-    const [facilities, setFacilities] = useState<Facility[]>([]);
-
-    useEffect(() => {
-        if (open) {
-            async function fetchData() {
-                const [docsRes, facilitiesRes] = await Promise.all([
-                    fetch('/api/doctors'),
-                    fetch('/api/facilities')
-                ]);
-                const docsData = await docsRes.json();
-                const facilitiesData = await facilitiesRes.json();
-                setDoctors(docsData.filter((d: Doctor) => d.name !== 'Dr. Amina Nakigudde'));
-                setFacilities(facilitiesData);
-            }
-            fetchData();
-        }
-    }, [open]);
+    const db = useFirestore();
+    const { user } = useUser();
+    
+    const { data: doctors, loading: doctorsLoading } = useCollection<Doctor>(query(collection(db, 'doctors')));
+    const { data: facilities, loading: facilitiesLoading } = useCollection<Facility>(query(collection(db, 'facilities')));
+    
+    const availableDoctors = doctors?.filter(d => d.id !== user?.uid);
 
     const handleRefer = () => {
         toast({
@@ -79,7 +70,8 @@ function ReferPatientDialog({ patientName }: { patientName: string }) {
                                 <SelectValue placeholder="Select a specialist" />
                             </SelectTrigger>
                             <SelectContent>
-                                {doctors.map(doctor => (
+                                {doctorsLoading ? <SelectItem value="loading" disabled>Loading...</SelectItem> :
+                                availableDoctors?.map(doctor => (
                                     <SelectItem key={doctor.id} value={doctor.id}>{doctor.name} - {doctor.specialty}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -92,7 +84,8 @@ function ReferPatientDialog({ patientName }: { patientName: string }) {
                                 <SelectValue placeholder="Select a facility" />
                             </SelectTrigger>
                             <SelectContent>
-                                {facilities.map(facility => (
+                                {facilitiesLoading ? <SelectItem value="loading" disabled>Loading...</SelectItem> :
+                                facilities?.map(facility => (
                                     <SelectItem key={facility.id} value={facility.id}>{facility.name}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -159,25 +152,10 @@ function ReportPatientDialog({ patientName }: { patientName: string }) {
 export default function PatientDetailsPage() {
     const params = useParams();
     const patientId = params.patientId as string;
-    const [patient, setPatient] = useState<Patient | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (!patientId) return;
-        async function fetchPatient() {
-            try {
-                const response = await fetch(`/api/patients/${patientId}`);
-                if (!response.ok) throw new Error("Patient not found");
-                const data = await response.json();
-                setPatient(data);
-            } catch (error) {
-                console.error("Failed to fetch patient:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchPatient();
-    }, [patientId]);
+    const db = useFirestore();
+    
+    const patientRef = doc(db, 'patients', patientId);
+    const { data: patient, loading } = useDoc<Patient>(patientRef);
 
     if (loading) {
         return (
