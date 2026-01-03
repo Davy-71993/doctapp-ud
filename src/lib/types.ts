@@ -158,6 +158,7 @@ export type Facility = {
   image?: {
     url: string;
   };
+  incharge?: User;
   documents?: string[];
   location?: string;
   services: SpecialistService[];

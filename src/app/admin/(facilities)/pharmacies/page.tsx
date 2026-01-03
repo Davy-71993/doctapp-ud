@@ -12,8 +12,9 @@ export default function PharmaciesPage() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function fetchData() {
-      const { data } = await getFacilities({ kind: "Pharmacy" });
+      const { data, error } = await getFacilities({ kind: "Pharmacy" });
       if (!data) {
+        console.log(error);
         toast({
           title: "Error",
           description: "Failed to fetch facilities.",

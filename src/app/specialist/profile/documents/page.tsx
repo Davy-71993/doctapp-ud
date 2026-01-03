@@ -13,6 +13,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { useAppStore } from "@/lib/store";
+import { User } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { getProfile } from "@/server-actions/auth";
 import {
   fetchDocuments,
@@ -21,18 +23,25 @@ import {
 } from "@/server-actions/fetch";
 import { Description } from "@radix-ui/react-dialog";
 import { LoaderCircle, UploadCloud } from "lucide-react";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 
-export const UploadDocumentDialog = ({
+export const UploadDocumentsDialog = ({
   onNewDocumenst,
+  folder,
+  className,
+  profile,
 }: {
   onNewDocumenst: (urls: string[]) => void;
+  folder?: "specialists" | "facilities";
+  className?: string;
+  profile: User;
 }) => {
   const [newDocuments, setNewDocuments] = useState<File[]>([]);
   const [open, setOpen] = useState<boolean>();
   const [uploading, setUploading] = useState(false);
-  const { profile } = useAppStore();
+  const facilitId = useParams().facilitId;
 
   const handleUpload = async () => {
     setUploading(true);
@@ -57,7 +66,19 @@ export const UploadDocumentDialog = ({
       return;
     }
 
-    const res = await uploadFiles(newDocuments, "documents", profile.id);
+    if (!folder || !["specialists", "facilities"].includes(folder)) {
+      setUploading(false);
+      toast({
+        title: "Error.",
+        description: "Please specify the folder to upload the documents.",
+        variant: "destructive",
+      });
+
+      return;
+    }
+
+    const folderPath = `${folder}/${facilitId ? facilitId : profile.id}`;
+    const res = await uploadFiles(newDocuments, "documents", folderPath);
 
     const newUrls = res
       .filter((r) => typeof r.url === "string")
@@ -74,7 +95,7 @@ export const UploadDocumentDialog = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button className="absolute right-6">Upload documents</Button>
+        <Button className={cn("", className)}>Upload documents</Button>
       </DialogTrigger>
       <Description />
       <DialogContent>
@@ -155,14 +176,24 @@ export default function DocumentsPage() {
 
   const handleNewDocuments = (newUrls: string[]) => {
     setDocuments([...documents, ...newUrls]);
-    uploadDocuments([...documents, ...newUrls], profile?.doctor?.id ?? "");
+    uploadDocuments({
+      urls: [...documents, ...newUrls],
+      doctor_id: profile?.doctor?.id,
+    });
   };
 
   return (
     <div className="space-y-4 w-full">
       <div className="flex justify-between items-center w-full">
         <h1 className="font-bold text-2xl">Professional documents</h1>
-        <UploadDocumentDialog onNewDocumenst={handleNewDocuments} />
+        {profile && (
+          <UploadDocumentsDialog
+            className="absolute right-6"
+            onNewDocumenst={handleNewDocuments}
+            folder="specialists"
+            profile={profile}
+          />
+        )}
       </div>
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (

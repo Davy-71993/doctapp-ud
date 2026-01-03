@@ -9,27 +9,58 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Check, X, MapPin } from "lucide-react";
+import {
+  Plus,
+  FileText,
+  Check,
+  X,
+  MapPin,
+  File,
+  LoaderCircle,
+  Verified,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Facility } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Description } from "@radix-ui/react-dialog";
+import { ImagePlaceholder } from "./image-placeholder";
+import { verifyFacility } from "@/server-actions/fetch";
+import { toast } from "@/hooks/use-toast";
 
-function PendingItem({ item }: { item: Facility }) {
+function PendingItem({
+  item,
+  onVerify,
+}: {
+  item: Facility;
+  onVerify: (id: string) => void;
+}) {
   const pathname = usePathname();
-  const [specialistName, setSpecialistName] = useState("");
-
-  useEffect(() => {
-    if (item.specialistId) {
-      fetch(`/api/doctors/${item.specialistId}`)
-        .then((res) => res.json())
-        .then((data) => setSpecialistName(data.name));
+  const [loading, setLoading] = useState(false);
+  const handleVerification = async () => {
+    setLoading(true);
+    const { error } = await verifyFacility(item.id);
+    if (error) {
+      toast({
+        title: "Error.",
+        description: "Failed to verify the facility.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
     }
-  }, [item.specialistId]);
 
+    toast({
+      title: "Verified.",
+      description: "The facility has been verified successifully.",
+    });
+    onVerify(item.id);
+    setLoading(false);
+  };
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-muted/50 rounded-lg gap-4">
+    <div className="flex flex-col sm:flex-row items-start justify-between p-4 bg-muted/50 rounded-lg gap-4">
       <div>
         <p className="font-semibold">{item.name}</p>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -44,36 +75,53 @@ function PendingItem({ item }: { item: Facility }) {
             </>
           )}
         </div>
-        {specialistName && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Submitted by: {specialistName}
+        {item.incharge && (
+          <p className="text-xs text-muted-foreground mt-5">
+            Submitted by: {item.incharge?.first_name} {item.incharge?.last_name}
           </p>
         )}
         {item.documents && (
-          <div className="flex items-center gap-2 mt-2">
-            {item.documents.map((doc: string) => (
-              <Button key={doc} variant="outline" size="sm" className="gap-2">
-                <FileText className="h-4 w-4" />
-                {doc}
-              </Button>
+          <div className="flex flex-wrap items-center gap-3 mt-2">
+            {item.documents.map((doc: string, i: number) => (
+              <Dialog key={i}>
+                <DialogTrigger asChild>
+                  <Button size={"sm"} variant={"secondary"} key={doc}>
+                    <File />
+                    {doc.split("/").pop()}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle />
+                  <Description />
+                  <ImagePlaceholder image={{ url: doc }} id={i.toString()} />
+                </DialogContent>
+              </Dialog>
             ))}
           </div>
         )}
       </div>
-      <div className="flex gap-2 self-end sm:self-center">
-        <Button variant="outline" size="sm" className="gap-1">
-          <X className="h-4 w-4" />
-          Reject
-        </Button>
-        <Button size="sm" className="gap-1">
-          <Check className="h-4 w-4" />
-          Approve
-        </Button>
+      <div className="flex gap-2 self-start">
         <Link href={`${pathname}/${item.id}`}>
           <Button variant="outline" size="sm">
             View Details
           </Button>
         </Link>
+        <Button variant="outline" size="sm" className="gap-1">
+          <X className="h-4 w-4" />
+          Reject
+        </Button>
+        <Button onClick={handleVerification} size="sm" className="gap-1">
+          {loading ? (
+            <>
+              <LoaderCircle className="h-4 w-4 animate-spin" /> Loading ...
+            </>
+          ) : (
+            <>
+              <Check className="h-4 w-4" />
+              Approve
+            </>
+          )}
+        </Button>
       </div>
     </div>
   );
@@ -98,7 +146,7 @@ function VerifiedItem({ item }: { item: Facility }) {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2 self-end sm:self-center">
+      <div className="flex items-center gap-2 self-start">
         <Badge variant="secondary">Verified</Badge>
         <Link href={`${pathname}/${item.id}`}>
           <Button variant="outline" size="sm">
@@ -125,6 +173,21 @@ export default function FacilityListPageTemplate({
   verifiedData,
   loading,
 }: FacilityListProps) {
+  const [pending, setPending] = useState<Facility[]>([]);
+  const [verified, setVerified] = useState<Facility[]>([]);
+  useEffect(() => {
+    setVerified(verifiedData);
+    setPending(pendingData);
+  }, [pendingData, verifiedData]);
+
+  const onVerify = (id: string) => {
+    const v = pending.find((p) => p.id === id);
+    if (!v) {
+      return;
+    }
+    setPending(pending.filter((p) => p.id !== id));
+    setVerified([...verified, v]);
+  };
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -138,7 +201,7 @@ export default function FacilityListPageTemplate({
         </Button>
       </div>
 
-      {loading || pendingData.length > 0 ? (
+      {loading || pending.length > 0 ? (
         <Card>
           <CardHeader>
             <CardTitle>Pending {title} Approvals</CardTitle>
@@ -151,8 +214,12 @@ export default function FacilityListPageTemplate({
             {loading ? (
               <Skeleton className="h-24 w-full" />
             ) : (
-              pendingData.map((facility) => (
-                <PendingItem key={facility.id} item={facility} />
+              pending.map((facility) => (
+                <PendingItem
+                  key={facility.id}
+                  item={facility}
+                  onVerify={onVerify}
+                />
               ))
             )}
           </CardContent>
@@ -171,8 +238,8 @@ export default function FacilityListPageTemplate({
             [...Array(3)].map((_, i) => (
               <Skeleton key={i} className="h-20 w-full" />
             ))
-          ) : verifiedData.length > 0 ? (
-            verifiedData.map((facility) => (
+          ) : verified.length > 0 ? (
+            verified.map((facility) => (
               <VerifiedItem key={facility.id} item={facility} />
             ))
           ) : (

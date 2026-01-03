@@ -11,7 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Hospital, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  File,
+  Hospital,
+  MapPin,
+  Pencil,
+  Plus,
+  Trash2,
+  Upload,
+  UploadCloud,
+} from "lucide-react";
 import type { Facility } from "@/lib/types";
 import {
   Table,
@@ -23,14 +32,27 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getFacilities } from "@/server-actions/fetch";
+import { getFacilities, uploadDocuments } from "@/server-actions/fetch";
 import { toast } from "@/hooks/use-toast";
+import { UploadDocumentsDialog } from "../../profile/documents/page";
+import { useAppStore } from "@/lib/store";
+import { getProfile } from "@/server-actions/auth";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ImagePlaceholder } from "@/components/image-placeholder";
+import { Description } from "@radix-ui/react-dialog";
 
 export default function SpecialistFacilityDetailsPage() {
   const params = useParams();
   const facilityId = params.facilityId as string;
   const [facility, setFacility] = useState<Facility | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [documents, setDocuments] = useState<string[]>([]);
+  const { profile, setProfile } = useAppStore();
 
   useEffect(() => {
     if (!facilityId) {
@@ -38,6 +60,10 @@ export default function SpecialistFacilityDetailsPage() {
       return;
     }
     async function fetchFacility() {
+      if (!profile) {
+        const { data } = await getProfile();
+        setProfile(data ?? null);
+      }
       const { data, error } = await getFacilities({ id: facilityId });
 
       if (error) {
@@ -50,10 +76,19 @@ export default function SpecialistFacilityDetailsPage() {
         return;
       }
       setFacility(data);
+      setDocuments(data.documents ?? []);
       setLoading(false);
     }
     fetchFacility();
   }, [facilityId]);
+
+  const handleNewDocuments = (newUrls: string[]) => {
+    setDocuments([...documents, ...newUrls]);
+    uploadDocuments({
+      urls: [...documents, ...newUrls],
+      facility_id: facilityId,
+    });
+  };
 
   if (loading) {
     return (
@@ -115,14 +150,45 @@ export default function SpecialistFacilityDetailsPage() {
             </Badge>
           </div>
           <div className="space-y-2">
-            <p>
-              <strong>Verification Documents:</strong>
-            </p>
-            <ul className="list-disc list-inside text-muted-foreground">
-              {facility.documents?.map((doc) => (
-                <li key={doc}>{doc}</li>
-              ))}
-            </ul>
+            <div className="relative border-b">
+              <p className="">
+                <strong>Verification Documents:</strong>
+              </p>
+              {profile && (
+                <UploadDocumentsDialog
+                  className="absolute right-0 bottom-1"
+                  onNewDocumenst={handleNewDocuments}
+                  folder="facilities"
+                  profile={profile}
+                />
+              )}
+            </div>
+            <div className="text-muted-foreground flex flex-wrap gap-2">
+              {(documents?.length ?? 0) > 0 ? (
+                documents?.map((doc, i) => (
+                  <Dialog key={i}>
+                    <DialogTrigger asChild>
+                      <Button size={"sm"} variant={"secondary"} key={doc}>
+                        <File />
+                        {doc.split("/").pop()}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogTitle />
+                      <Description />
+                      <ImagePlaceholder
+                        image={{ url: doc }}
+                        id={i.toString()}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                ))
+              ) : (
+                <p className="w-full text-center p-5 ">
+                  Oops! no verification documents found.
+                </p>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

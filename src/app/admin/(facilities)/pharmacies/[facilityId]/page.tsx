@@ -11,7 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Hospital, MapPin, Pencil, Plus, Trash2, X } from "lucide-react";
+import {
+  Check,
+  File,
+  Hospital,
+  MapPin,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
 import type { Facility } from "@/lib/types";
 import {
   Table,
@@ -25,6 +34,14 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getFacilities } from "@/server-actions/fetch";
 import { toast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Description } from "@radix-ui/react-dialog";
+import { ImagePlaceholder } from "@/components/image-placeholder";
 
 export default function SpecialistFacilityDetailsPage() {
   const params = useParams();
@@ -129,11 +146,23 @@ export default function SpecialistFacilityDetailsPage() {
             <p>
               <strong>Verification Documents:</strong>
             </p>
-            <ul className="list-disc list-inside text-muted-foreground">
-              {facility.documents?.map((doc) => (
-                <li key={doc}>{doc}</li>
+            <div className="flex flex-wrap gap-3">
+              {facility.documents?.map((doc, i) => (
+                <Dialog key={i}>
+                  <DialogTrigger asChild>
+                    <Button size={"sm"} variant={"secondary"} key={doc}>
+                      <File />
+                      {doc.split("/").pop()}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogTitle />
+                    <Description />
+                    <ImagePlaceholder image={{ url: doc }} id={i.toString()} />
+                  </DialogContent>
+                </Dialog>
               ))}
-            </ul>
+            </div>
           </div>
         </CardContent>
       </Card>

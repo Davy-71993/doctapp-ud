@@ -4,6 +4,7 @@ import { Facility, Message } from "@/lib/types";
 import { createClient } from "@/supabase/server";
 import { getProfile } from "./auth";
 import { error } from "console";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export const getHealthData = async () => {
   const supabase = await createClient();
@@ -161,31 +162,44 @@ export const getFacilities = async (filters?: {
   if (filters?.type) {
     return await supabase
       .from("service_types")
-      .select("*, facilities(*)")
+      .select("*, facilities(*, incharge:profiles(*))")
       .eq("slug", filters.type)
       .single();
   }
   if (filters?.id) {
     return await supabase
       .from("facilities")
-      .select("*, services(*)")
+      .select("*, services(*), incharge:profiles(*)")
       .eq("id", filters.id)
       .single();
   }
   if (filters?.incharge_id) {
     return await supabase
       .from("facilities")
-      .select("*, services(*)")
+      .select("*, services(*), incharge:profiles(*)")
       .eq("incharge_id", filters.incharge_id);
   }
 
   if (filters?.kind) {
     return await supabase
       .from("facilities")
-      .select("*, services(*)")
+      .select("*, services(*), incharge:profiles(*)")
       .eq("type", filters.kind);
   }
-  return await supabase.from("facilities").select("*, services(*)");
+  return await supabase
+    .from("facilities")
+    .select("*, services(*), incharge:profiles(*)");
+};
+
+export const verifyFacility = async (facility_id: string) => {
+  const { data } = await getProfile();
+  if (data?.role !== "admin") {
+    return { error: "Unauthorized" };
+  }
+  return (await createClient())
+    .from("facilities")
+    .update({ verified: true })
+    .eq("id", facility_id);
 };
 
 export const createFacility = async (facility: any) => {
@@ -309,11 +323,29 @@ export const fetchDocuments = async (userId?: string) => {
     .single();
 };
 
-export const uploadDocuments = async (urls: string[], doctor_id: string) => {
-  return (await createClient())
-    .from("doctors")
-    .update({ documents: urls })
-    .eq("id", doctor_id);
+export const uploadDocuments = async (options: {
+  urls: string[];
+  doctor_id?: string;
+  facility_id?: string;
+}) => {
+  const { urls, doctor_id, facility_id } = options;
+  if (doctor_id) {
+    return (await createClient())
+      .from("doctors")
+      .update({ documents: urls })
+      .eq("id", doctor_id);
+  }
+
+  if (facility_id) {
+    return (await createClient())
+      .from("facilities")
+      .update({ documents: urls })
+      .eq("id", facility_id);
+  }
+
+  return {
+    error: { message: "You must specify either the doctor_id or facility_id" },
+  } as unknown as PostgrestError;
 };
 
 export const verifySpecialist = async (doctor_id: string) => {
