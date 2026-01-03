@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from 'react';
-import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useState } from "react";
+import {
+  Line,
+  LineChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -9,8 +17,8 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,9 +26,9 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type ChartData = {
   date: string;
@@ -35,18 +43,28 @@ type ChartTrackerProps = {
   unit: string;
 };
 
-export function ChartTracker({ title, description, data, dataKey, unit }: ChartTrackerProps) {
+export function ChartTracker({
+  title,
+  description,
+  data,
+  dataKey,
+  unit,
+}: ChartTrackerProps) {
   const [chartData, setChartData] = useState(data);
-  const [newValue, setNewValue] = useState('');
+  const [newValue, setNewValue] = useState("");
 
   const handleAddEntry = () => {
     if (!newValue) return;
     const newEntry = {
-      date: new Date().toLocaleDateString('en-CA'),
+      date: new Date().toLocaleDateString("en-CA"),
       [dataKey]: parseFloat(newValue),
     };
+    localStorage.setItem(
+      `healthData${title.replace(" ", "")}`,
+      JSON.stringify([...chartData, newEntry])
+    );
     setChartData([...chartData, newEntry]);
-    setNewValue('');
+    setNewValue("");
   };
 
   return (
@@ -60,7 +78,12 @@ export function ChartTracker({ title, description, data, dataKey, unit }: ChartT
           <ResponsiveContainer>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
+              <XAxis
+                dataKey="date"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
               <YAxis
                 fontSize={12}
                 tickLine={false}
@@ -69,11 +92,17 @@ export function ChartTracker({ title, description, data, dataKey, unit }: ChartT
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'hsl(var(--background))',
-                  border: '1px solid hsl(var(--border))',
+                  backgroundColor: "hsl(var(--background))",
+                  border: "1px solid hsl(var(--border))",
                 }}
               />
-              <Line type="monotone" dataKey={dataKey} stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+              <Line
+                type="monotone"
+                dataKey={dataKey}
+                stroke="hsl(var(--primary))"
+                strokeWidth={2}
+                dot={false}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>

@@ -1,59 +1,65 @@
+"use client";
 
-'use client';
-
-import { useEffect, useState } from 'react';
-import { ChatLayout } from '@/components/chat/chat-layout';
-import type { UserProfile, Contact, Message } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useState } from "react";
+import { ChatLayout } from "@/components/chat/chat-layout";
+import type { UserProfile, Contact, Message, User } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProfile } from "@/server-actions/auth";
+import { fetchMessages, getContacts } from "@/server-actions/fetch";
 
 export default function InboxPage() {
-    const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-    const [contacts, setContacts] = useState<Contact[] | null>(null);
-    const [messages, setMessages] = useState<Message[] | null>(null);
-    const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [contacts, setContacts] = useState<Contact[] | null>(null);
+  const [messages, setMessages] = useState<Message[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchChatData() {
-            try {
-                const [userRes, contactsRes, messagesRes] = await Promise.all([
-                    fetch('/api/user-profile'),
-                    fetch('/api/chat/specialists'),
-                    fetch('/api/chat/messages')
-                ]);
-                setCurrentUser(await userRes.json());
-                setContacts(await contactsRes.json());
-                setMessages(await messagesRes.json());
-            } catch (error) {
-                console.error("Failed to fetch chat data:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchChatData();
-    }, []);
+  useEffect(() => {
+    async function fetchChatData() {
+      setLoading(false);
+      const { data } = await getProfile();
+      const { data: threads } = await fetchMessages();
+      const { data: contacts } = await getContacts(
+        currentUser?.role as "patient" | "specialist"
+      );
+      setContacts(
+        contacts?.map((c) => ({
+          ...c.profile,
+          name: `${c.profile.first_name} ${c.profile.last_name}`,
+        })) || []
+      );
+      setMessages(threads || []);
+      if (!data) {
+        setLoading(false);
+        return;
+      }
 
-    if (loading || !currentUser) {
-        return (
-             <div className="h-[calc(100vh_-_8rem)] flex">
-                <Skeleton className="w-1/4 h-full" />
-                <Skeleton className="w-3/4 h-full" />
-             </div>
-        );
+      setCurrentUser(data);
     }
-    
-    const typedProfile = {
-        id: currentUser.avatar, // mock id
-        name: currentUser.name,
-        avatar: currentUser.avatar
-    }
+    fetchChatData();
+  }, []);
 
+  if (loading || !currentUser) {
     return (
-        <div className="h-[calc(100vh_-_8rem)]">
-            <ChatLayout 
-                currentUser={typedProfile}
-                contacts={contacts || []}
-                messages={messages || []}
-            />
-        </div>
-    )
+      <div className="h-[calc(100vh_-_8rem)] flex">
+        <Skeleton className="w-1/4 h-full" />
+        <Skeleton className="w-3/4 h-full" />
+      </div>
+    );
+  }
+
+  const typedProfile = {
+    id: currentUser.id, // mock id
+    name: currentUser.first_name + " " + currentUser.last_name,
+    avatar: currentUser.avatar,
+  };
+
+  return (
+    <div className="h-[calc(100vh_-_8rem)]">
+      <ChatLayout
+        currentUser={typedProfile}
+        contacts={contacts || []}
+        messages={messages || []}
+      />
+    </div>
+  );
 }

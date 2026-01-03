@@ -1,7 +1,16 @@
 "use client";
 
-import { useState } from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useState } from "react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -9,8 +18,8 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,9 +27,9 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type BloodPressureReading = {
   date: string;
@@ -35,53 +44,83 @@ type BloodPressureTrackerProps = {
   unit: string;
 };
 
-export function BloodPressureTracker({ title, description, data, unit }: BloodPressureTrackerProps) {
+export function BloodPressureTracker({
+  title,
+  description,
+  data,
+  unit,
+}: BloodPressureTrackerProps) {
   const [chartData, setChartData] = useState(data);
-  const [systolic, setSystolic] = useState('');
-  const [diastolic, setDiastolic] = useState('');
+  const [systolic, setSystolic] = useState("");
+  const [diastolic, setDiastolic] = useState("");
 
   const handleAddEntry = () => {
     if (!systolic || !diastolic) return;
     const newEntry = {
-      date: new Date().toLocaleDateString('en-CA'),
+      date: new Date().toLocaleDateString("en-CA"),
       systolic: parseFloat(systolic),
       diastolic: parseFloat(diastolic),
     };
+    localStorage.setItem(
+      "healthDataBloodPressure",
+      JSON.stringify([...chartData, newEntry])
+    );
     setChartData([...chartData, newEntry]);
-    setSystolic('');
-    setDiastolic('');
+    setSystolic("");
+    setDiastolic("");
   };
 
   return (
-    <Card>
+    <Card className="flex flex-col">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-64 w-full">
-          <ResponsiveContainer>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-                tickFormatter={(value) => `${value} ${unit}`}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'hsl(var(--background))',
-                  border: '1px solid hsl(var(--border))',
-                }}
-              />
-              <Legend />
-              <Bar dataKey="systolic" fill="hsl(var(--chart-1))" name="Systolic" />
-              <Bar dataKey="diastolic" fill="hsl(var(--chart-2))" name="Diastolic" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      <CardContent className="flex-1">
+        {data.length === 0 ? (
+          <div className="flex h-48 w-full flex-col items-center justify-center space-y-2">
+            <p className="text-center text-sm text-muted-foreground">
+              No blood pressure readings logged yet.
+            </p>
+          </div>
+        ) : (
+          <div className="h-64 w-full">
+            <ResponsiveContainer>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `${value} ${unit}`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--background))",
+                    border: "1px solid hsl(var(--border))",
+                  }}
+                />
+                <Legend />
+                <Bar
+                  dataKey="systolic"
+                  fill="hsl(var(--chart-1))"
+                  name="Systolic"
+                />
+                <Bar
+                  dataKey="diastolic"
+                  fill="hsl(var(--chart-2))"
+                  name="Diastolic"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </CardContent>
       <CardFooter>
         <Dialog>

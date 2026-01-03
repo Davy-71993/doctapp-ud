@@ -14,21 +14,7 @@ export default function InboxPage() {
 
     useEffect(() => {
         async function fetchChatData() {
-            try {
-                const [userRes, specialistsRes, messagesRes] = await Promise.all([
-                    fetch('/api/user-profile'), // Mocking admin profile
-                    fetch('/api/chat/specialists'),
-                    fetch('/api/chat/messages')
-                ]);
-                const adminData = { ...(await userRes.json()), id: 'admin-user', name: 'Admin' };
-                setAdminUser(adminData);
-                setSpecialists(await specialistsRes.json());
-                setMessages(await messagesRes.json());
-            } catch (error) {
-                console.error("Failed to fetch chat data:", error);
-            } finally {
-                setLoading(false);
-            }
+           
         }
         fetchChatData();
     }, []);

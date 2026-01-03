@@ -1,48 +1,65 @@
-
-import type { LucideIcon } from 'lucide-react';
+import type { LucideIcon } from "lucide-react";
 
 export type User = {
   id: string;
   email: string;
   password?: string;
-  firstName: string;
-  lastName: string;
-  role: 'patient' | 'specialist' | 'admin';
-  dateJoined: string;
+  first_name: string;
+  last_name: string;
+  role: "patient" | "specialist" | "admin";
+  created_at: string;
+  doctor?: Doctor;
+  patient?: Patient;
   phone?: string;
+  gender?: "male" | "female";
   avatar?: string;
   bloodGroup?: string;
   district?: string;
 };
 
+export type UserProfile = {
+  name: string;
+  phone: string;
+  district: string;
+  role: "patient" | "specialist" | "admin";
+  email: string;
+  bloodGroup: string;
+  avatar: string;
+};
+
 export type DoctorComment = {
-    id: string;
-    author: string;
-    avatar: string;
-    date: string;
-    comment: string;
-    rating: number;
-}
+  id: string;
+  author: string;
+  avatar: string;
+  date: string;
+  comment: string;
+  rating: number;
+};
 
 export type Doctor = {
   id: string;
   name: string;
   specialty: string;
   hospital: string;
+  profile?: User;
+  patients?: Patient[];
   rating: number;
   reviews: number;
   image: string;
   location: string;
   comments?: DoctorComment[];
   verified: boolean;
+  documents?: string[];
 };
 
 export type Appointment = {
   id: string;
-  doctor: Doctor;
-  date: string;
+  doctor?: Doctor;
+  patient?: Patient;
+  facility?: Facility;
+  appointment_date: string;
   time: string;
-  status: 'upcoming' | 'past' | 'cancelled';
+  status: "upcoming" | "past" | "cancelled" | "deleted";
   reason?: string;
   patientId?: string;
 };
@@ -56,30 +73,39 @@ export type Activity = {
 };
 
 export type Patient = {
-    id: string;
-    name: string;
-    avatar: string;
-    lastCheckup: string;
-    status: 'Stable' | 'Critical' | 'Needs Review';
-    phone?: string;
-    district?: string;
-    bloodGroup?: string;
-    vitals?: {
-        bloodPressure: string;
-        bloodSugar: string;
-        temperature: string;
-    }
+  id: string;
+  name: string;
+  avatar: string;
+  doctors?: Doctor[];
+  profile?: User;
+  last_checkup: string;
+  status: "Stable" | "Critical" | "Needs Review";
+  phone?: string;
+  district?: string;
+  bloodGroup?: string;
+  vitals?: {
+    bloodPressure: string;
+    bloodSugar: string;
+    temperature: string;
+  };
 };
 
-export type PeriodData = { date: Date };
+export type PeriodData = Date[];
 export type TemperatureData = { date: string; temperature: number };
 export type BloodSugarData = { date: string; level: number };
-export type BloodPressureData = { date: string; systolic: number; diastolic: number };
+export type BloodPressureData = {
+  date: string;
+  systolic: number;
+  diastolic: number;
+};
 export type AllergyData = string;
-export type PregnancyData = { status: 'Not Pregnant' | 'Pregnant'; dueDate?: Date };
+export type PregnancyData = {
+  status: "Not Pregnant" | "Pregnant";
+  dueDate?: Date;
+};
 
 export type HealthData = {
-  period: PeriodData[];
+  period: PeriodData;
   temperature: TemperatureData[];
   bloodSugar: BloodSugarData[];
   bloodPressure: BloodPressureData[];
@@ -88,51 +114,54 @@ export type HealthData = {
 };
 
 export type SpecialistService = {
-    id: string;
-    name: string;
-    description: string;
-    duration: number; // in minutes
-    price: number; // in UGX
+  id: string;
+  name: string;
+  description: string;
+  duration: number; // in minutes
+  price: number; // in UGX
 };
 
 export type Service = {
-    id: string;
-    name: string;
-    category: string;
-    description?: string;
+  id: string;
+  name: string;
+  category: string;
+  description?: string;
+  facilities?: Facility[];
 };
 
-
 export type Specialist =
-  | 'Medical Officer'
-  | 'Pharmacist'
-  | 'Midwife'
-  | 'Orthopedist'
-  | 'Lab Technician'
-  | 'Gynecologist'
-  | 'Dentist'
-  | 'ENT Specialist'
-  | 'Cardiologist'
-  | 'Pediatrician'
-  | 'Dermatologist'
-  | 'Neurologist'
-  | 'Oncologist'
-  | 'Psychiatrist'
-  | 'General Practitioner'
-  | 'Endocrinologist'
-  | 'Urologist'
-  | 'Ophthalmologist'
-  | 'Radiologist';
+  | "Medical Officer"
+  | "Pharmacist"
+  | "Midwife"
+  | "Orthopedist"
+  | "Lab Technician"
+  | "Gynecologist"
+  | "Dentist"
+  | "ENT Specialist"
+  | "Cardiologist"
+  | "Pediatrician"
+  | "Dermatologist"
+  | "Neurologist"
+  | "Oncologist"
+  | "Psychiatrist"
+  | "General Practitioner"
+  | "Endocrinologist"
+  | "Urologist"
+  | "Ophthalmologist"
+  | "Radiologist";
 
 export type Facility = {
-    id: string;
-    name: string;
-    type: 'Hospital' | 'Clinic' | 'Pharmacy' | 'Drug Shop' | 'Home-Based Care';
-    specialistId: string; // The ID of the specialist in charge
-    documents?: string[];
-    location?: string;
-    services: SpecialistService[];
-    verified: boolean;
+  id: string;
+  name: string;
+  type: "Hospital" | "Clinic" | "Pharmacy" | "Drug Shop" | "Home-Based Care";
+  specialistId: string; // The ID of the specialist in charge
+  image?: {
+    url: string;
+  };
+  documents?: string[];
+  location?: string;
+  services: SpecialistService[];
+  verified: boolean;
 };
 
 export type TimeBlock = {
@@ -140,21 +169,21 @@ export type TimeBlock = {
   title: string;
   start: Date;
   end: Date;
-  type: 'appointment' | 'unavailable';
+  type: "appointment" | "unavailable";
 };
 
 export type Medicine = {
-    name: string;
-    dosage: string;
-    frequency: string;
-    duration: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
 };
 
 export type Prescription = {
-    id: string;
-    patient: Patient;
-    date: Date;
-    medicines: Medicine[];
+  id: string;
+  patient: Patient;
+  date: Date;
+  medicines: Medicine[];
 };
 
 export type Complaint = {
@@ -164,26 +193,39 @@ export type Complaint = {
   reportedBy: string;
   reason: string;
   date: string;
-  status: 'Pending' | 'Resolved';
-  targetType: 'patient' | 'specialist';
-}
+  status: "Pending" | "Resolved";
+  targetType: "patient" | "specialist";
+};
 
 export type Contact = {
-    id: string;
-    name: string;
-    avatar: string;
+  id: string;
+  name: string;
+  avatar: string;
 };
 
 export type Message = {
-    id: string;
-    senderId: string;
-    receiverId: string;
-    text: string;
-    timestamp: string;
+  id?: string;
+  sender_id: string;
+  receiver_id: string;
+  content: string;
+  sent_at: string;
 };
 
 export type Chat = {
-    id: string;
-    contact: Contact;
-    messages: Message[];
+  id: string;
+  contact: Contact;
+  messages: Message[];
+};
+
+// src/types/ApiResponse.ts
+export type ApiResponse<T> = {
+  data: T | null;
+  error: string | null;
+  message?: string;
+};
+
+export type DatabaseError = {
+  name: string;
+  message: string;
+  stack?: string;
 };
