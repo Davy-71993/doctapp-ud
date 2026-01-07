@@ -15,6 +15,7 @@ export type User = {
   avatar?: string;
   bloodGroup?: string;
   district?: string;
+  dob: string;
 };
 
 export type UserProfile = {

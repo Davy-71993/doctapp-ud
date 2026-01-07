@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import React, { use } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -20,12 +20,14 @@ import {
   YAxis,
 } from "recharts";
 
-export default function BloodPressureCard({
-  healthDataPromise,
-}: {
-  healthDataPromise: Promise<PostgrestSingleResponse<{ health_data: any }>>;
-}) {
-  const { health_data: healthData } = use(healthDataPromise).data || {};
+export default function BloodPressureCard() {
+  const [bloodPressureData, setBloodPressureData] = useState<any[]>([]);
+
+  useEffect(() => {
+    setBloodPressureData(
+      JSON.parse(localStorage.getItem("healthDataBloodPressure") || "[]")
+    );
+  }, []);
   return (
     <Card>
       <CardHeader>
@@ -35,7 +37,7 @@ export default function BloodPressureCard({
       <CardContent>
         <div className="h-64 w-full">
           <ResponsiveContainer>
-            <BarChart data={healthData?.bloodPressure?.slice(-7)}>
+            <BarChart data={bloodPressureData?.slice(-7)}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"

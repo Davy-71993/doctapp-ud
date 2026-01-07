@@ -7,8 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { BloodSugarData } from "@/lib/types";
 import { PostgrestSingleResponse } from "@supabase/supabase-js";
-import React, { use } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -20,12 +21,17 @@ import {
   YAxis,
 } from "recharts";
 
-export default function BloodSugarCard({
-  healthDataPromise,
-}: {
-  healthDataPromise: Promise<PostgrestSingleResponse<{ health_data: any }>>;
-}) {
-  const { health_data: healthData } = use(healthDataPromise).data || {};
+export default function BloodSugarCard() {
+  const [bloodSugarData, setbloodSugarData] = useState<BloodSugarData[]>([]);
+
+  useEffect(() => {
+    setbloodSugarData(
+      JSON.parse(localStorage.getItem("healthDataBloodSugar") || "[]")
+    );
+    console.log(
+      JSON.parse(localStorage.getItem("healthDataBloodSugar") || "[]")
+    );
+  }, []);
   return (
     <Card>
       <CardHeader>
@@ -35,7 +41,7 @@ export default function BloodSugarCard({
       <CardContent>
         <div className="h-64 w-full">
           <ResponsiveContainer>
-            <LineChart data={healthData?.bloodSugar?.slice(-7)}>
+            <LineChart data={bloodSugarData?.slice(-7)}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"

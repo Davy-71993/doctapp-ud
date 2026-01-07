@@ -13,7 +13,11 @@ import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 
 const settingsItems = [
-  { icon: User, text: "Edit Profile Information", url: "" },
+  {
+    icon: User,
+    text: "Edit Profile Information",
+    url: "/specialist/profile/edit",
+  },
   { icon: Bell, text: "Notification Settings", url: "" },
   {
     icon: Folder,
@@ -75,8 +79,8 @@ export default function ProfilePage() {
               </h2>
               <p className="text-muted-foreground">{profile.phone}</p>
               <p className="text-muted-foreground">
-                {profile.doctor?.specialty} |{" "}
-                {profile.doctor?.location ?? "No location specified"}
+                {profile.doctor?.specialty ?? "No specailty"} |{" "}
+                {profile.district ?? "No location"}
               </p>
             </div>
             <div className="w-60 mx-auto flex justify-center sm:justify-end items-center">

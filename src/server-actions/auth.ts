@@ -14,6 +14,10 @@ type UserRegisterData = {
   email: string;
   password: string;
   role: string;
+  dob: string;
+  gender: string;
+  district: string;
+  phone: string;
 };
 
 export const login = async (authData: UserLoginData) => {
@@ -41,7 +45,17 @@ export const login = async (authData: UserLoginData) => {
 };
 
 export const register = async (authData: UserRegisterData) => {
-  const { firstName, lastName, email, password, role } = authData;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    role,
+    gender,
+    dob,
+    district,
+    phone,
+  } = authData;
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -50,7 +64,11 @@ export const register = async (authData: UserRegisterData) => {
       data: {
         first_name: firstName,
         last_name: lastName,
-        role: ["admin", "patient", "doctor"].includes(role) ? role : "patient",
+        role: ["patient", "specialist"].includes(role) ? role : "patient",
+        dob,
+        gender,
+        district,
+        phone,
       },
     },
   });
@@ -64,13 +82,6 @@ export const register = async (authData: UserRegisterData) => {
 
   const { user, session } = data;
   const { id, user_metadata } = user;
-  console.log({
-    id: id,
-    first_name: user_metadata.first_name,
-    last_name: user_metadata.last_name,
-    email: user.email,
-    role: user_metadata.role,
-  });
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")
     .insert([
@@ -80,6 +91,10 @@ export const register = async (authData: UserRegisterData) => {
         last_name: user_metadata.last_name,
         email: user.email,
         role: user_metadata.role,
+        gender: user_metadata.gender,
+        dob: user_metadata.dob,
+        district: user_metadata.district,
+        phone: user_metadata.phone,
       },
     ]);
 
@@ -147,4 +162,8 @@ export const getUser = async () => {
   }
 
   return { data: user };
+};
+
+export const editProfile = async (data: User) => {
+  return (await createClient()).from("profiles").update(data).eq("id", data.id);
 };

@@ -50,13 +50,13 @@ export default function SpecialistDashboardPage() {
   useEffect(() => {
     async function fetchPatients() {
       const { data, error } = await getPatients();
-      setPatients(data.doctor?.patients);
+      setPatients(data.doctor?.patients ?? []);
       setLoading(false);
     }
     fetchPatients();
   }, []);
 
-  const patientCount = patients.length;
+  const patientCount = patients.length ?? 0;
   const criticalCount = patients.filter((p) => p.status === "Critical").length;
   const needsReviewCount = patients.filter(
     (p) => p.status === "Needs Review"

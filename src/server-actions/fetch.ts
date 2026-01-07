@@ -1,20 +1,9 @@
 "use server";
 
-import { Facility, Message } from "@/lib/types";
+import { Message } from "@/lib/types";
 import { createClient } from "@/supabase/server";
 import { getProfile } from "./auth";
-import { error } from "console";
 import { PostgrestError } from "@supabase/supabase-js";
-
-export const getHealthData = async () => {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-  return await supabase
-    .from("patients")
-    .select("health_data")
-    .eq("user_id", data.user?.id)
-    .single();
-};
 
 export const getRecentActivities = async () => {
   const supabase = await createClient();
@@ -357,4 +346,12 @@ export const verifySpecialist = async (doctor_id: string) => {
     .from("doctors")
     .update({ verified: true })
     .eq("id", doctor_id);
+};
+
+export const changeSpecialty = async (specialty: string, user_id: string) => {
+  const { data } = await getProfile();
+  return (await createClient())
+    .from("doctors")
+    .update({ specialty })
+    .eq("user_id", user_id);
 };

@@ -159,6 +159,7 @@ export default function DocumentsPage() {
         profile = data ?? null;
       }
       const { data, error } = await fetchDocuments();
+
       if (error) {
         toast({
           title: "Error.",

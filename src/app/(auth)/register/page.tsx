@@ -21,22 +21,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios, { AxiosError } from "axios";
-import { API_URL } from "@/lib/constants";
-import { login, register } from "@/server-actions/auth";
+import { register } from "@/server-actions/auth";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const { toast } = useToast();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [confirmPassword, setConfirmPAssword] = useState("");
+  const [role, setRole] = useState<"patient" | "specialist">();
   const [loading, setLoading] = useState(false);
+  const [gender, setGender] = useState("");
+  const [dob, setDob] = useState("");
+  const [phone, setPhone] = useState("");
+  const [district, setDistrict] = useState("");
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error.",
+        description:
+          "The two passwords didn't mutch. Please check and try again.",
+        variant: "destructive",
+      });
+
+      return;
+    }
 
     setLoading(true);
     // Registration logic
@@ -45,7 +58,11 @@ export default function RegisterPage() {
       lastName,
       email,
       password,
-      role,
+      role: role as "patient" | "specialist",
+      gender,
+      dob,
+      phone,
+      district,
     });
 
     if (error) {
@@ -72,8 +89,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <Card className="mx-auto max-w-sm">
+    <div className="flex items-center justify-center min-h-screen bg-background py-5">
+      <Card className="mx-auto max-w-md">
         <CardHeader>
           <CardTitle className="text-xl">Sign Up</CardTitle>
           <CardDescription>
@@ -82,7 +99,7 @@ export default function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister}>
-            <div className="grid gap-4">
+            <div className="grid gap-5">
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="first-name">First name</Label>
@@ -111,17 +128,32 @@ export default function RegisterPage() {
                   />
                 </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    placeholder="Your phone number"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                    }}
+                    required
+                    disabled={loading}
+                  />
+                </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
@@ -140,22 +172,79 @@ export default function RegisterPage() {
                   id="confirm-password"
                   type="password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPAssword(e.target.value)}
                   disabled={loading}
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="role">I am a...</Label>
-                <Select onValueChange={setRole} value={role} disabled={loading}>
-                  <SelectTrigger id="role">
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="patient">Patient</SelectItem>
-                    <SelectItem value="specialist">Specialist</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex gap-4">
+                <div className="grid gap-2 w-full">
+                  <Label htmlFor="gender">Gender</Label>
+                  <Select
+                    onValueChange={setGender}
+                    value={gender}
+                    disabled={loading}
+                  >
+                    <SelectTrigger
+                      id="gender"
+                      className="ring-0 active:ring-0 focus:ring-0"
+                    >
+                      <SelectValue placeholder="Select your gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2 w-full">
+                  <Label htmlFor="role">Role</Label>
+                  <Select
+                    onValueChange={(e) =>
+                      setRole(e as "patient" | "specialist")
+                    }
+                    value={role}
+                    disabled={loading}
+                  >
+                    <SelectTrigger
+                      id="role"
+                      className="ring-0 active:ring-0 focus:ring-0"
+                    >
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="patient">Patient</SelectItem>
+                      <SelectItem value="specialist">Specialist</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="grid gap-2 w-full">
+                  <Label htmlFor="dob">Date of birth</Label>
+                  <Input
+                    type="date"
+                    id="dob"
+                    value={dob ?? ""}
+                    placeholder="Select your date of birth"
+                    onChange={(e) => {
+                      setDob(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="grid gap-2 w-full">
+                  <Label htmlFor="district">district</Label>
+                  <Input
+                    id="district"
+                    placeholder="Your district"
+                    value={district}
+                    onChange={(e) => {
+                      setDistrict(e.target.value);
+                    }}
+                    required
+                    disabled={loading}
+                  />
+                </div>
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Creating Account..." : "Create an account"}

@@ -16,8 +16,8 @@ import {
 import BloodPressureCard from "@/components/parts/cards/blood-pressure-card";
 import RecentActivitiesCard from "@/components/parts/cards/recent-activities-card";
 import BloodSugarCard from "@/components/parts/cards/blood-sugar-card";
-import { getHealthData, getRecentActivities } from "@/server-actions/fetch";
-import { act, Suspense } from "react";
+import { getRecentActivities } from "@/server-actions/fetch";
+import { Suspense } from "react";
 
 const actionCards = [
   {
@@ -63,7 +63,6 @@ const actionCards = [
 ];
 
 export default async function DashboardPage() {
-  const healthDataPromise = getHealthData();
   const activitiesPromise = getRecentActivities();
   return (
     <div className="flex flex-col gap-8">
@@ -91,15 +90,11 @@ export default async function DashboardPage() {
         ))}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Suspense>
-          <BloodPressureCard healthDataPromise={healthDataPromise} />
-        </Suspense>
-        <Suspense>
-          <BloodSugarCard healthDataPromise={healthDataPromise} />
-        </Suspense>
-        <Suspense>
-          <RecentActivitiesCard activitiesPromise={activitiesPromise} />
-        </Suspense>
+        <BloodPressureCard />
+
+        <BloodSugarCard />
+
+        <RecentActivitiesCard activitiesPromise={activitiesPromise} />
       </div>
     </div>
   );
