@@ -42,7 +42,7 @@ const patientNavItems = [
   { href: "/patient", label: "Dashboard", icon: Home },
   { href: "/patient/my-specialists", label: "My Specialists", icon: Users },
   { href: "/patient/appointments", label: "Appointments", icon: Calendar },
-  { href: "/patient/track", label: "Health Trackers", icon: Activity },
+  // { href: "/patient/track", label: "Health Trackers", icon: Activity },
   { href: "/patient/inbox", label: "Inbox", icon: Inbox },
   { href: "/patient/medicine-orders", label: "Medicine orders", icon: Pill },
   { href: "/patient/services", label: "Services", icon: LayoutGrid },
@@ -174,14 +174,14 @@ export const PageHeader = ({
     userType === "patient"
       ? patientNavItems
       : userType === "specialist"
-      ? specialistNavItems
-      : [];
+        ? specialistNavItems
+        : [];
   const pathname = usePathname();
   const getPageTitle = () => {
     if (pathname === "/patient/dashboard") return "Dashboard";
     const activeItem = navItems.find(
       (item) =>
-        item.href !== "/patient/dashboard" && pathname.startsWith(item.href)
+        item.href !== "/patient/dashboard" && pathname.startsWith(item.href),
     );
     return activeItem ? activeItem.label : "Dashboard";
   };

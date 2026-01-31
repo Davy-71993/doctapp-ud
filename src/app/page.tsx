@@ -19,6 +19,8 @@ import {
   Hospital,
 } from "lucide-react";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { getFacilities } from "@/server-actions/fetch";
+import { Facility } from "@/lib/types";
 
 const features = [
   {
@@ -48,51 +50,6 @@ const features = [
     description:
       "Upload your prescription and get your medication delivered to your doorstep quickly and conveniently.",
     color: "text-rose-500",
-  },
-];
-
-const facilities = [
-  {
-    id: "partner-1",
-    name: "Nakasero Hospital",
-    title: "Hospital",
-    description:
-      "A leading private hospital in Kampala offering a wide range of specialized medical services.",
-  },
-  {
-    id: "partner-2",
-    name: "The Surgery",
-    title: "Clinic",
-    description:
-      "A premier GP clinic providing comprehensive primary healthcare for individuals and families.",
-  },
-  {
-    id: "partner-3",
-    name: "Pan Dental Surgery",
-    title: "Dental Clinic",
-    description:
-      "State-of-the-art dental services from routine check-ups to advanced cosmetic dentistry.",
-  },
-  {
-    id: "partner-4",
-    name: "Ecopharm Pharmacy",
-    title: "Pharmacy",
-    description:
-      "Your trusted source for quality medicines, health products, and professional advice.",
-  },
-  {
-    id: "partner-5",
-    name: "Dr. Amina Nakigudde",
-    title: "Specialist",
-    description:
-      "Renowned cardiologist specializing in the diagnosis and treatment of heart conditions.",
-  },
-  {
-    id: "partner-6",
-    name: "IMC Clinic",
-    title: "Clinic Network",
-    description:
-      "A network of clinics across Uganda providing accessible and affordable healthcare services.",
   },
 ];
 
@@ -132,6 +89,9 @@ export default async function LandingPage() {
       "https://images.unsplash.com/photo-1519494080410-f9aa76cb4283?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtZWRpY2FsJTIwaGVhbHRofGVufDB8fHx8MTc2NDQxNTA0MHww&ixlib=rb-4.1.0&q=80&w=1080",
     description: "",
   };
+
+  const { data, error } = await getFacilities();
+  const facilities: Facility[] = data || [];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -255,26 +215,25 @@ export default async function LandingPage() {
                     <div>
                       <CardTitle className="text-lg">{facility.name}</CardTitle>
                       <p className="text-sm font-medium text-primary">
-                        {facility.title}
+                        {facility.name}
                       </p>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
-                      {facility.description}
+                      {facility.location}
                     </p>
                   </CardContent>
-                  <CardFooter className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background via-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button className="w-full">View Details</Button>
-                  </CardFooter>
                 </Card>
               ))}
             </div>
             <div className="flex justify-center md:justify-end mt-8">
-              <Button variant="outline">
-                Register a Facility
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
+              <Link href={"/register"}>
+                <Button variant="outline">
+                  Register now
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -307,17 +266,6 @@ export default async function LandingPage() {
                   <CardContent className="text-center text-sm text-muted-foreground flex-grow">
                     <p>{service.description}</p>
                   </CardContent>
-                  <CardFooter className="justify-center">
-                    <Button
-                      variant={
-                        service.action === "Call Now"
-                          ? "destructive"
-                          : "default"
-                      }
-                    >
-                      {service.action}
-                    </Button>
-                  </CardFooter>
                 </Card>
               ))}
             </div>
